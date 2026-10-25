@@ -1,4 +1,7 @@
 import { Fragment, useMemo, useState } from 'react'
+import { Icone, PainelLateral } from '../../componentes/ui'
+import { inicioDaSemana, somarDias, somarMeses } from '../../regras/semana'
+import { VisaoMes, VisaoSemana } from './Visoes'
 import { Link } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { PadraoTag } from '../../componentes/Rotulos'
@@ -23,7 +26,7 @@ function situacaoLegivel(d: DataDoCalendario) {
   return <span className="pill">Livre</span>
 }
 
-export function Calendario() {
+function VisaoAno() {
   const { perfil } = useSessao()
   const hoje = hojeISO()
   const [ano, setAno] = useState(Number(hoje.slice(0, 4)))
@@ -42,11 +45,11 @@ export function Calendario() {
 
   return (
     <>
-      <Topo eyebrow="Parcerias" titulo="Calendário">
+      <div className="linha">
         <button className="botao leve" onClick={() => setAno(ano - 1)}>← {ano - 1}</button>
         <b className="num" style={{ color: 'var(--ink)' }}>{ano}</b>
         <button className="botao leve" onClick={() => setAno(ano + 1)}>{ano + 1} →</button>
-      </Topo>
+      </div>
       {datas.erro && <div className="aviso perigo">{datas.erro}</div>}
 
       <div className="ano">
@@ -115,7 +118,7 @@ export function Calendario() {
   )
 }
 
-function AcoesDaData({ d, todas, janelas, empresas, hoje, podeReservar, podePublicar, aoMudar }: {
+export function AcoesDaData({ d, todas, janelas, empresas, hoje, podeReservar, podePublicar, aoMudar }: {
   d: DataDoCalendario; todas: DataDoCalendario[]; janelas: Janela[]; empresas: Empresa[]; hoje: string
   podeReservar: boolean; podePublicar: boolean; aoMudar: () => Promise<void>
 }) {
@@ -226,5 +229,84 @@ function NovaDataForm({ aoSalvar }: { aoSalvar: () => Promise<void> }) {
       <label className="marcar"><input type="checkbox" checked={d.vespera_feriado} onChange={(e) => setD({ ...d, vespera_feriado: e.target.checked })} /><span>Véspera de feriado (só Bronze e Prata)</span></label>
       <div className="linha"><button className="botao primario" onClick={() => void salvar()}>Cadastrar data</button>{msg && <span className="muted">{msg}</span>}</div>
     </section>
+  )
+}
+
+type Visao = 'semana' | 'mes' | 'ano'
+const nomeMesAno = (mes: string) => { const t = new Date(`${mes}-15T12:00:00Z`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' }); return t[0].toUpperCase() + t.slice(1) }
+
+// REQ-023 — calendário com visões Semana (padrão), Mês e Ano; clique num bloco abre o painel com as ações.
+export function Calendario() {
+  const { perfil } = useSessao()
+  const hoje = hojeISO()
+  const [visao, setVisao] = useState<Visao>('semana')
+  const [referencia, setReferencia] = useState(hoje)
+  const [diaMovel, setDiaMovel] = useState(new Date(`${hoje}T12:00:00Z`).getUTCDay())
+  const [aberta, setAberta] = useState<DataDoCalendario | null>(null)
+  const inicio = inicioDaSemana(referencia)
+  const fim = somarDias(inicio, 6)
+  const anos = [...new Set([Number(inicio.slice(0, 4)), Number(fim.slice(0, 4)), Number(referencia.slice(0, 4))])]
+  const datas = useConsulta(async () => (await Promise.all(anos.map((a) => listarDatas(a)))).flat(), [anos.join(',')])
+  const janelas = useConsulta(async () => (await Promise.all(anos.map((a) => listarJanelas(a)))).flat(), [anos.join(',')])
+  const empresas = useConsulta(listarEmpresasParaReserva)
+  const podePublicar = pode(perfil, 'publicar_calendario')
+  const podeReservar = pode(perfil, 'conduzir') || pode(perfil, 'triar') || pode(perfil, 'decidir_direcao')
+  const lista = datas.dado ?? []
+  const mes = referencia.slice(0, 7)
+
+  function andar(n: number) {
+    if (visao === 'semana') setReferencia(somarDias(referencia, 7 * n))
+    else if (visao === 'mes') setReferencia(`${somarMeses(mes, n)}-01`)
+  }
+  const tituloPeriodo = visao === 'semana'
+    ? `${formatarData(inicio)} a ${formatarData(fim)}`
+    : visao === 'mes' ? nomeMesAno(mes) : ''
+  const atual = aberta ? lista.find((d) => d.id === aberta.id) ?? aberta : null
+  const empresaDe = (id: string | null) => empresas.dado?.find((e) => e.id === id)
+
+  return (
+    <>
+      <Topo eyebrow="Parcerias" titulo="Calendário">
+        <div className="alternar" role="group" aria-label="Visão">
+          {(['semana', 'mes', 'ano'] as Visao[]).map((v) => (
+            <button key={v} className={visao === v ? 'ativo' : ''} aria-pressed={visao === v} onClick={() => setVisao(v)}>{v === 'semana' ? 'Semana' : v === 'mes' ? 'Mês' : 'Ano'}</button>
+          ))}
+        </div>
+      </Topo>
+      {visao !== 'ano' && (
+        <div className="linha entre">
+          <div className="linha">
+            <button className="botao" onClick={() => { setReferencia(hoje); setDiaMovel(new Date(`${hoje}T12:00:00Z`).getUTCDay()) }}>Hoje</button>
+            <button className="botao-icone grande" aria-label="Anterior" onClick={() => andar(-1)}><Icone nome="recolher" /></button>
+            <button className="botao-icone grande" aria-label="Próximo" onClick={() => andar(1)}><Icone nome="expandir" /></button>
+            <b className="periodo">{tituloPeriodo}</b>
+          </div>
+          <div className="linha pequeno legenda-calendario">
+            <span><i className="amostra livre" /> Livre</span><span><i className="amostra reservada" /> Reservada</span><span><i className="amostra confirmada" /> Confirmada</span><span className="selo-a">A</span> alta procura
+          </div>
+        </div>
+      )}
+      {datas.erro && <div className="aviso perigo">{datas.erro}</div>}
+      {visao === 'semana' && <VisaoSemana referencia={referencia} hoje={hoje} datas={lista} empresas={empresas.dado ?? []} aoAbrir={setAberta} diaMovel={diaMovel} mudarDiaMovel={setDiaMovel} />}
+      {visao === 'mes' && <VisaoMes mes={mes} hoje={hoje} datas={lista} empresas={empresas.dado ?? []} aoAbrir={setAberta} aoAbrirDia={(dia) => { setReferencia(dia); setDiaMovel(new Date(`${dia}T12:00:00Z`).getUTCDay()); setVisao('semana') }} />}
+      {visao === 'ano' && <VisaoAno />}
+
+      {atual && (
+        <PainelLateral titulo={`${formatarData(atual.data)} · ${atual.aula ?? 'Data'} ${atual.horario ?? ''}`} aoFechar={() => setAberta(null)}>
+          <dl className="perfil-contato" style={{ borderTop: 0, paddingTop: 0 }}>
+            <div><dt>Tipo</dt><dd>{rotuloTipoData[atual.tipo]}{atual.vespera_feriado ? ' · véspera de feriado' : ''}</dd></div>
+            <div><dt>Prioridade</dt><dd>{prioridadeDaData(atual)}</dd></div>
+            <div><dt>Alunos (média)</dt><dd>{atual.media_alunos ?? '—'}</dd></div>
+            <div><dt>Situação</dt><dd>{situacaoLegivel(atual)}</dd></div>
+            <div><dt>Empresa</dt><dd>{empresaDe(atual.empresa_id) ? <Link to={`/empresas/${atual.empresa_id}`}>{empresaDe(atual.empresa_id)!.marca}</Link> : '—'}{atual.tipo_acao ? ` · ${rotuloTipoAcao[atual.tipo_acao]}` : ''}</dd></div>
+            <div><dt>Tema</dt><dd>{atual.tema ?? '—'}</dd></div>
+          </dl>
+          {atual.data >= hoje && (podeReservar || podePublicar) && (
+            <AcoesDaData d={atual} todas={lista} janelas={janelas.dado ?? []} empresas={empresas.dado ?? []} hoje={hoje}
+              podeReservar={podeReservar} podePublicar={podePublicar} aoMudar={async () => { await datas.recarregar() }} />
+          )}
+        </PainelLateral>
+      )}
+    </>
   )
 }

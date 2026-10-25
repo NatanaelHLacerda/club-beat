@@ -346,3 +346,50 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .proximo-passo { border-color: var(--gold-soft); background: var(--bg-2); }
 .destaque-texto { color: var(--ink); font-size: 1.05rem; font-weight: 600; }
 .ok { color: var(--ok); }
+
+/* ── REQ-023: calendário em semana e mês ── */
+.periodo { color: var(--ink); font-weight: 600; }
+.legenda-calendario { gap: 14px; color: var(--muted); }
+.amostra { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -2px; margin-right: 4px; }
+.amostra.livre { border: 1px dashed var(--line); background: var(--bg-2); }
+.amostra.reservada { background: #F4EEE2; border: 1px solid var(--gold-soft); }
+.amostra.confirmada { background: var(--primary); }
+.selo-a, .selo-v { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; background: var(--gold-soft); color: var(--primary); }
+.selo-v { background: var(--surface-2); color: var(--warn); }
+.semana { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.semana-movel { display: none; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.semana-grade { display: grid; grid-template-columns: 56px repeat(7, minmax(0, 1fr)); max-height: 640px; overflow-y: auto; }
+.semana-cabeca { height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); z-index: 2; }
+.semana-cabeca b { color: var(--ink); font-size: 1rem; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 10px; }
+.semana-cabeca b.dia-hoje { background: var(--primary); color: var(--primary-ink); }
+.semana-horas .hora { font-size: 0.7rem; color: var(--muted); text-align: right; padding: 2px 6px 0 0; box-sizing: border-box; }
+.semana-dia { border-left: 1px solid var(--line); min-width: 0; }
+.semana-dia.hoje { background: color-mix(in srgb, var(--gold-soft) 8%, transparent); }
+.semana-corpo { position: relative; }
+.linha-hora { position: absolute; left: 0; right: 0; border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+.posicao-bloco { position: absolute; left: 4px; right: 4px; z-index: 1; }
+.sem-hora { position: absolute; left: 4px; right: 4px; bottom: 4px; display: flex; flex-direction: column; gap: 4px; }
+.bloco-data { width: 100%; height: 100%; text-align: left; border-radius: 8px; padding: 4px 6px; display: flex; flex-direction: column; gap: 1px; cursor: pointer; font: inherit; font-size: 0.78rem; overflow: hidden; border: 1px dashed var(--line); background: var(--bg-2); color: var(--text); }
+.bloco-data b { font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bloco-data.reservada { background: #F4EEE2; border: 1px solid var(--gold-soft); border-left: 3px solid var(--gold-soft); }
+.bloco-data.confirmada { background: var(--primary); border: 1px solid var(--primary); color: var(--primary-ink); }
+.bloco-data.confirmada b { color: var(--primary-ink); }
+.bloco-data.compacto { height: auto; flex-direction: row; padding: 2px 6px; }
+.bloco-data:hover { box-shadow: 0 2px 8px rgba(20, 37, 64, 0.12); }
+.mes-grade { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.mes-cabeca { padding: 8px; text-align: center; border-bottom: 1px solid var(--line); text-transform: uppercase; letter-spacing: 0.08em; }
+.mes-dia { min-height: 108px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); padding: 4px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.mes-dia:nth-child(7n + 1) { border-left: 0; }
+.mes-dia.fora { background: var(--bg); opacity: 0.6; }
+.mes-dia.hoje .mes-numero { background: var(--primary); color: var(--primary-ink); }
+.mes-numero { align-self: flex-end; border: 0; background: none; width: 26px; height: 26px; border-radius: 8px; cursor: pointer; color: var(--ink); font-weight: 500; }
+.mais-n { border: 0; background: none; color: var(--gold); cursor: pointer; text-align: left; }
+@media (max-width: 860px) {
+  .semana-movel { display: flex; }
+  .semana-grade { grid-template-columns: 52px minmax(0, 1fr); }
+  .semana-dia { display: none; }
+  .semana-dia.movel { display: block; }
+  .mes-dia { min-height: 70px; }
+  .mes-dia .bloco-data b { font-size: 0.65rem; }
+  .legenda-calendario { display: none; }
+}
