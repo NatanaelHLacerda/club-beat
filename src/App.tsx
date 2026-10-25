@@ -12,6 +12,7 @@ import { Funil } from './telas/funil/Funil'
 import { MinhaFila } from './telas/fila/MinhaFila'
 import { Calendario } from './telas/calendario/Calendario'
 import { Operacoes } from './telas/operacoes/Operacoes'
+import { Direcao } from './telas/direcao/Direcao'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -33,6 +34,7 @@ export function App() {
         <Route path="/parcerias" element={<EmBreve titulo="Parcerias ativas" />} />
         <Route path="/calendario" element={<Calendario />} />
         <Route path="/operacoes" element={<Operacoes />} />
+        <Route path="/direcao" element={<Direcao />} />
         <Route path="/renovacoes" element={<EmBreve titulo="Renovações" />} />
         <Route path="/painel" element={<EmBreve titulo="Painel" />} />
         <Route path="/avisos" element={<Avisos />} />

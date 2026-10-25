@@ -12,6 +12,7 @@ import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
 import { AbaAnexos } from './AbaAnexos'
 import { AbaClassificacao } from './AbaClassificacao'
+import { AbaDirecao } from './AbaDirecao'
 import { AbaGerentes } from './AbaGerentes'
 import { AbaProposta } from './AbaProposta'
 import { AbaMensagens } from './AbaMensagens'
@@ -36,6 +37,7 @@ const abas: Aba[] = [
   { id: 'classificacao', titulo: 'Classificação', render: (p) => <AbaClassificacao {...p} /> },
   { id: 'gerentes', titulo: 'Gerentes', render: (p) => <AbaGerentes {...p} /> },
   { id: 'proposta', titulo: 'Reunião e proposta', render: (p) => <AbaProposta {...p} /> },
+  { id: 'direcao', titulo: 'Direção', mostrar: (e) => Boolean(e.direcao?.levada_em), render: (p) => <AbaDirecao {...p} /> },
   { id: 'anexos', titulo: 'Anexos', render: (p) => <AbaAnexos {...p} /> },
   { id: 'mensagens', titulo: 'Mensagens', render: (p) => <AbaMensagens {...p} /> },
   { id: 'tempo', titulo: 'Linha do tempo', render: (p) => <AbaTempo {...p} /> },
@@ -46,7 +48,7 @@ export function Ficha() {
   const { perfil } = useSessao()
   const empresa = useConsulta(() => obterEmpresa(id), [id])
   const usuarios = useConsulta(listarUsuarios)
-  const [aba, setAba] = useState('resumo')
+  const [aba, setAba] = useState('')
   const [versao, setVersao] = useState(0)
   const [modeloInicial, setModeloInicial] = useState<string | undefined>()
 
@@ -57,7 +59,8 @@ export function Ficha() {
 
   const atualizar = async () => { await empresa.recarregar(); setVersao((v) => v + 1) }
   const visiveis = abas.filter((a) => !a.mostrar || a.mostrar(e))
-  const atual = visiveis.find((a) => a.id === aba) ?? visiveis[0]
+  const padraoDaEtapa = e.etapa === 'direcao' ? 'direcao' : ['reuniao', 'proposta'].includes(e.etapa) ? 'proposta' : e.etapa === 'triagem1' ? 'triagem1' : e.etapa === 'triagem2' ? 'classificacao' : 'resumo'
+  const atual = visiveis.find((a) => a.id === (aba || padraoDaEtapa)) ?? visiveis[0]
   const lista = usuarios.dado ?? []
 
   return (

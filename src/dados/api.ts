@@ -6,6 +6,7 @@ import type { MarcasTriagem1 } from '../regras/triagem1'
 import type { FichaPassagem } from '../regras/passagem'
 import type { Janela, TipoAcao } from '../regras/calendario'
 import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../regras/proposta'
+import type { Decisao } from '../regras/direcao'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
@@ -406,4 +407,43 @@ export async function listarParaOperacoes(): Promise<Empresa[]> {
   const { data, error } = await supabase.from('empresas').select('*').in('etapa', ['proposta', 'direcao']).order('etapa_desde')
   falhou(error, 'Não foi possível carregar as propostas.')
   return (data ?? []) as Empresa[]
+}
+
+// ── Porta da Direção (REQ-009) ────────────────────────────────────
+
+export async function levarADirecao(empresa: string, recomendacao: string) {
+  const { error } = await supabase.rpc('levar_a_direcao', { empresa, recomendacao })
+  falhou(error, 'Não foi possível levar à Direção.')
+}
+
+export async function decidirDirecao(empresa: string, decisao: Decisao, motivo: string, comoMaster: boolean, destinoRecusa: 'espera' | 'recusada', retomar: string | null) {
+  const { data, error } = await supabase.rpc('decidir_direcao', {
+    empresa, decisao, motivo, como_master: comoMaster, destino_recusa: destinoRecusa, retomar,
+  })
+  falhou(error, 'Não foi possível registrar a decisão.')
+  return data as Etapa
+}
+
+export async function listarParaDirecao(): Promise<Empresa[]> {
+  const { data, error } = await supabase.from('empresas').select('*').eq('etapa', 'direcao').order('etapa_desde')
+  falhou(error, 'Não foi possível carregar as decisões.')
+  return (data ?? []) as Empresa[]
+}
+
+export async function vagaMasterOcupada(exceto: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc('vaga_master_ocupada', { exceto })
+  falhou(error, 'Não foi possível conferir a vaga de Master.')
+  return Boolean(data)
+}
+
+export async function listarFeriados(): Promise<{ data: string; nome: string }[]> {
+  const { data, error } = await supabase.from('feriados').select('*').order('data')
+  falhou(error, 'Não foi possível carregar os feriados.')
+  return (data ?? []) as { data: string; nome: string }[]
+}
+
+export async function listarDatasDaEmpresa(empresa: string): Promise<DataDoCalendario[]> {
+  const { data, error } = await supabase.from('calendario_datas').select('*').eq('empresa_id', empresa).order('data')
+  falhou(error, 'Não foi possível carregar as datas da empresa.')
+  return (data ?? []) as DataDoCalendario[]
 }

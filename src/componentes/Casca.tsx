@@ -12,6 +12,7 @@ const grupos: { titulo: string; itens: Item[] }[] = [
     { para: '/funil', rotulo: 'Funil' },
     { para: '/empresas', rotulo: 'Empresas' },
     { para: '/fila', rotulo: 'Minha fila', acao: 'conduzir' },
+    { para: '/direcao', rotulo: 'Direção' },
   ] },
   { titulo: 'Parcerias', itens: [
     { para: '/parcerias', rotulo: 'Parcerias ativas' },

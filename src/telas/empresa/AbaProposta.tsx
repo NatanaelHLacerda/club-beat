@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  enviarAnexo, enviarProposta, listarAnexos, listarCardapio, listarCategorias, moverEtapa, registrarAceite, salvarProposta, salvarReuniao,
+  enviarAnexo, enviarProposta, levarADirecao, listarAnexos, listarCardapio, listarCategorias, moverEtapa, registrarAceite, salvarProposta, salvarReuniao,
 } from '../../dados/api'
 import { formatarData, formatarDataHora, formatarDinheiro, hojeISO } from '../../regras/formato'
 import {
@@ -22,6 +22,7 @@ export function AbaProposta({ empresa, atualizar, abrirAba }: PropsAba) {
   const [formato, setFormato] = useState<string>(empresa.formato ?? '')
   const [tipo, setTipo] = useState<string>(empresa.tipo_parceria ?? '')
   const [valorTexto, setValorTexto] = useState(empresa.proposta?.valor_mensal_centavos ? String(empresa.proposta.valor_mensal_centavos / 100) : '')
+  const [recomendacao, setRecomendacao] = useState('')
   const [erro, setErro] = useState('')
   const [aviso, setAviso] = useState('')
   const hoje = hojeISO()
@@ -48,15 +49,16 @@ export function AbaProposta({ empresa, atualizar, abrirAba }: PropsAba) {
     setProposta({ ...proposta, itens: quantidade > 0 ? [...resto, { item, quantidade }] : resto })
   }
 
-  async function salvarPropostaAgora() {
+  // Grava a proposta; lança erro para quem chamou decidir o que fazer.
+  async function gravarProposta() {
     const v = validarItens(cardapio.dado ?? [], empresa.padrao_final, itens as ItemProposta[])
-    if (v) { setErro(v); return }
+    if (v) throw new Error(v)
     const valor = valorTexto.trim() ? Math.round(Number(valorTexto.replace(/\./g, '').replace(',', '.')) * 100) : null
-    await agir(async () => {
-      if (empresa.etapa === 'reuniao') await moverEtapa(empresa.id, 'proposta')
-      await salvarProposta(empresa.id, { ...proposta, valor_mensal_centavos: Number.isFinite(valor) ? valor : null }, formato, tipo)
-    }, 'Proposta salva. Operações confirma a viabilidade antes do envio.')
+    if (empresa.etapa === 'reuniao') await moverEtapa(empresa.id, 'proposta')
+    await salvarProposta(empresa.id, { ...proposta, valor_mensal_centavos: Number.isFinite(valor) ? valor : null }, formato, tipo)
   }
+
+  const salvarPropostaAgora = () => agir(gravarProposta, 'Proposta salva. Operações confirma a viabilidade antes do envio.')
 
   return (
     <div className="pilha">
@@ -143,6 +145,12 @@ export function AbaProposta({ empresa, atualizar, abrirAba }: PropsAba) {
         </div>
         {motivos.length > 0 && (
           <div className="aviso alerta">Precisa da Direção: {motivos.join(', ')}.{empresa.proposta?.direcao_aprovada_em ? ` Aprovada em ${formatarDataHora(empresa.proposta.direcao_aprovada_em)}.` : ''}</div>
+        )}
+        {motivos.length > 0 && !empresa.proposta?.direcao_aprovada_em && conduz && empresa.etapa === 'proposta' && !enviada && (
+          <div className="pilha">
+            <label className="campo"><span>Sua recomendação para a Direção</span><textarea id="p-recomendacao" value={recomendacao} onChange={(e) => setRecomendacao(e.target.value)} /></label>
+            <div><button className="botao" onClick={() => void agir(async () => { await gravarProposta(); await levarADirecao(empresa.id, recomendacao) }, 'Caso levado à Direção. Resposta em até 3 dias úteis.')}>Salvar e levar à Direção</button></div>
+          </div>
         )}
         {podeProposta && <div className="linha"><button className="botao primario" onClick={() => void salvarPropostaAgora()}>Salvar proposta</button></div>}
       </section>
