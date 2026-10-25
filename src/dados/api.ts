@@ -8,6 +8,7 @@ import type { Janela, TipoAcao } from '../regras/calendario'
 import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../regras/proposta'
 import type { Decisao } from '../regras/direcao'
 import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../regras/contrato'
+import type { Caminho, Renovacao } from '../regras/renovacao'
 import type { Entrega, Material, Parceria, ParceriaComEmpresa, Relatorio } from './tipos'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
@@ -543,4 +544,25 @@ export async function registrarRelatorio(parceria: string, tipo: 'relatorio' | '
 export async function informarMedidas(parceria: string) {
   const { error } = await supabase.rpc('informar_medidas', { parceria })
   falhou(error, 'Não foi possível registrar.')
+}
+
+// ── Renovação (REQ-013) ───────────────────────────────────────────
+
+export async function listarRenovacoes(): Promise<ParceriaComEmpresa[]> {
+  const limite = new Date(Date.now() + 90 * 86_400_000).toISOString().slice(0, 10)
+  const { data, error } = await supabase.from('parcerias').select('*, empresas(id, marca, etapa, exemplo, categoria)')
+    .eq('situacao', 'vigente').or(`fim.lte.${limite},renovacao->>aguardando_direcao.eq.true`).order('fim')
+  falhou(error, 'Não foi possível carregar as renovações.')
+  return (data ?? []) as ParceriaComEmpresa[]
+}
+
+export async function decidirRenovacao(parceria: string, caminho: Caminho, avaliacao: Renovacao['avaliacao'], novoPadrao: Padrao | null) {
+  const { data, error } = await supabase.rpc('decidir_renovacao', { parceria, caminho, avaliacao, novo_padrao: novoPadrao })
+  falhou(error, 'Não foi possível registrar a decisão.')
+  return data as string
+}
+
+export async function encerrarParceria(parceria: string, checklist: Record<string, boolean>) {
+  const { error } = await supabase.rpc('encerrar_parceria', { parceria, checklist })
+  falhou(error, 'Não foi possível encerrar a parceria.')
 }

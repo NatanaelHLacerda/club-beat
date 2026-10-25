@@ -15,6 +15,7 @@ import { Operacoes } from './telas/operacoes/Operacoes'
 import { Direcao } from './telas/direcao/Direcao'
 import { Juridico } from './telas/juridico/Juridico'
 import { Parcerias } from './telas/parcerias/Parcerias'
+import { Renovacoes } from './telas/renovacoes/Renovacoes'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -38,7 +39,7 @@ export function App() {
         <Route path="/operacoes" element={<Operacoes />} />
         <Route path="/direcao" element={<Direcao />} />
         <Route path="/juridico" element={<Juridico />} />
-        <Route path="/renovacoes" element={<EmBreve titulo="Renovações" />} />
+        <Route path="/renovacoes" element={<Renovacoes />} />
         <Route path="/painel" element={<EmBreve titulo="Painel" />} />
         <Route path="/avisos" element={<Avisos />} />
         <Route path="/config/usuarios" element={<Usuarios />} />
