@@ -7,6 +7,7 @@ import { Regras } from './telas/config/Regras'
 import { Usuarios } from './telas/config/Usuarios'
 import { Ficha } from './telas/empresa/Ficha'
 import { Empresas } from './telas/empresas/Empresas'
+import { NovaEmpresa } from './telas/empresas/NovaEmpresa'
 import { Funil } from './telas/funil/Funil'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
@@ -23,6 +24,7 @@ export function App() {
         <Route path="/" element={<Navigate to="/funil" replace />} />
         <Route path="/funil" element={<Funil />} />
         <Route path="/empresas" element={<Empresas />} />
+        <Route path="/empresas/nova" element={<NovaEmpresa />} />
         <Route path="/empresas/:id" element={<Ficha />} />
         <Route path="/parcerias" element={<EmBreve titulo="Parcerias ativas" />} />
         <Route path="/calendario" element={<EmBreve titulo="Calendário" />} />

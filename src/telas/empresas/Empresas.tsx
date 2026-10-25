@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { Filtros, nomeDe } from '../../componentes/Filtros'
 import { EtapaTag, Exemplo, PadraoTag } from '../../componentes/Rotulos'
 import { listarEmpresas, listarUsuarios } from '../../dados/api'
 import { rotuloOrigem, type FiltrosEmpresas } from '../../dados/tipos'
 import { formatarCnpj, formatarData } from '../../regras/formato'
+import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
+import { useSessao } from '../../sessao'
 
 export function Empresas() {
   const navegar = useNavigate()
+  const { perfil } = useSessao()
   const [filtros, setFiltros] = useState<FiltrosEmpresas>({})
   const empresas = useConsulta(() => listarEmpresas(filtros), [JSON.stringify(filtros)])
   const usuarios = useConsulta(listarUsuarios)
@@ -19,6 +22,7 @@ export function Empresas() {
     <>
       <Topo eyebrow="Funil de parcerias" titulo="Empresas">
         <span className="muted num">{lista.length} empresas</span>
+        {pode(perfil, 'editar_empresa') && <Link className="botao primario" to="/empresas/nova">Nova empresa</Link>}
       </Topo>
       <Filtros filtros={filtros} mudar={setFiltros} usuarios={usuarios.dado ?? []} busca />
       {empresas.erro && <div className="aviso perigo" role="alert">{empresas.erro}</div>}

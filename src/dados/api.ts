@@ -1,5 +1,6 @@
 // Único ponto de acesso a dados. As telas importam daqui, nunca do cliente Supabase.
 import { supabase } from './supabase'
+import type { Conferencia } from '../regras/entrada'
 import type { Ficha } from '../regras/formulario'
 import type { Anexo, Aviso, CamposEditaveis, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
@@ -215,4 +216,19 @@ export async function contarAvisosNaoLidos(): Promise<number> {
 export async function marcarAvisoLido(id: number) {
   const { error } = await supabase.from('avisos').update({ lido_em: new Date().toISOString() }).eq('id', id)
   falhou(error, 'Não foi possível marcar o aviso.')
+}
+
+// ── Entrada manual (REQ-003) ──────────────────────────────────────
+
+export async function conferirCnpj(cnpj: string): Promise<Conferencia | null> {
+  const { data, error } = await supabase.rpc('conferir_cnpj', { cnpj_pedido: cnpj })
+  falhou(error, 'Não foi possível conferir o CNPJ.')
+  return ((data as Conferencia[] | null) ?? [])[0] ?? null
+}
+
+export async function cadastrarEmpresa(campos: Partial<CamposEditaveis>): Promise<string> {
+  const { data, error } = await supabase.from('empresas').insert({ ...campos, cnpj: (campos.cnpj ?? '').replace(/\D/g, '') }).select('id').single()
+  if (error?.code === '23505') throw new ErroApi('Já existe uma empresa com este CNPJ.')
+  falhou(error, 'Não foi possível cadastrar a empresa.')
+  return (data as { id: string }).id
 }
