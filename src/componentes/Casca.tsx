@@ -111,8 +111,8 @@ export function Topo({ eyebrow, titulo, children }: { eyebrow?: string; titulo: 
   const slot = useContext(SlotTitulo)
   const cabeca = (
     <div className="topo-titulo">
-      {eyebrow && <span className="eyebrow">{eyebrow}</span>}
       <h1>{titulo}</h1>
+      {eyebrow && <span className="contexto">{eyebrow}</span>}
     </div>
   )
   return (

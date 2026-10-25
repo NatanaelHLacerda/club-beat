@@ -53,7 +53,7 @@ src/estilo.css         tokens e estilos
 
 ## Visual
 
-Tema claro com a paleta de `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`: fundo Areia `#F4EEE2`, cartões Areia clara `#FBF8F1`, títulos e botão principal Oceano `#142540` (texto claro sobre Oceano), texto `#3B4256`, rótulos e links em Dourado escuro `#7F6024`, Dourado `#D2AE6A` só como detalhe, linhas `#DCCFB5`. Fonte única Sora, a mesma dos criativos da Iris Machine (`skills/iris-machine/design-system.md`), em títulos, números e textos. Peças visuais em `src/componentes/ui` (REQ-018); referência em `/config/componentes`. Cor-sinal por padrão só como detalhe; Master em dourado sobre Oceano. Redesenho das telas pela cadeia REQ-018 a REQ-025.
+Moldura escura em L (menu lateral e cabeçalho em Oceano `#0F1D33`→`#16294A`, brilho dourado num canto, como o ink + brand-glow dos criativos) e área de trabalho clara com a paleta de `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`: fundo Areia profunda `#ECE3D2`, cartões `#F7F1E6`, sem faixas laterais coloridas, títulos e botão principal Oceano `#142540` (texto claro sobre Oceano), texto `#3B4256`, rótulos e links em Dourado escuro `#7F6024`, Dourado `#D2AE6A` só como detalhe, linhas `#DCCFB5`. Fonte única Sora, a mesma dos criativos da Iris Machine (`skills/iris-machine/design-system.md`), em títulos, números e textos. Peças visuais em `src/componentes/ui` (REQ-018); referência em `/config/componentes`. Cor-sinal por padrão só como detalhe; Master em dourado sobre Oceano. Redesenho das telas pela cadeia REQ-018 a REQ-025.
 
 ## Papéis
 
