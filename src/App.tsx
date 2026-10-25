@@ -20,6 +20,7 @@ import { Prazos } from './telas/prazos/Prazos'
 import { Painel } from './telas/painel/Painel'
 import { Importar } from './telas/config/Importar'
 import { Componentes } from './telas/config/Componentes'
+import { Inicio } from './telas/inicio/Inicio'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -32,7 +33,8 @@ export function App() {
       <Route path="/seja-parceiro" element={<Formulario />} />
       <Route path="/seja-parceiro/privacidade" element={<Privacidade />} />
       <Route element={<Casca />}>
-        <Route path="/" element={<Navigate to="/funil" replace />} />
+        <Route path="/" element={<Navigate to="/inicio" replace />} />
+        <Route path="/inicio" element={<Inicio />} />
         <Route path="/funil" element={<Funil />} />
         <Route path="/fila" element={<MinhaFila />} />
         <Route path="/empresas" element={<Empresas />} />

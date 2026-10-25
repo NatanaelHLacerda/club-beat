@@ -15,7 +15,7 @@ export function RedefinirSenha() {
     if (senha !== confirma) { setErro('As duas senhas não são iguais.'); return }
     try {
       await definirNovaSenha(senha)
-      navegar('/funil', { replace: true })
+      navegar('/inicio', { replace: true })
     } catch (err) {
       setErro((err as Error).message)
     }

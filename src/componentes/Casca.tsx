@@ -12,6 +12,7 @@ type Item = { para: string; rotulo: string; icone: NomeIcone; acao?: Acao }
 
 const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Funil', itens: [
+    { para: '/inicio', rotulo: 'Início', icone: 'inicio' },
     { para: '/funil', rotulo: 'Funil', icone: 'funil' },
     { para: '/empresas', rotulo: 'Empresas', icone: 'empresas' },
     { para: '/fila', rotulo: 'Minha fila', icone: 'fila', acao: 'conduzir' },

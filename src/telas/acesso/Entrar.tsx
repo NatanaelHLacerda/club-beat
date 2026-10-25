@@ -14,7 +14,7 @@ export function Entrar() {
 
   if (!carregando && perfil) {
     const de = (local.state as { de?: string } | null)?.de
-    return <Navigate to={de && de !== '/entrar' ? de : '/funil'} replace />
+    return <Navigate to={de && de !== '/entrar' ? de : '/inicio'} replace />
   }
 
   async function aoEnviar(e: FormEvent) {
