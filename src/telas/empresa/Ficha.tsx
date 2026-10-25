@@ -12,6 +12,7 @@ import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
 import { AbaAnexos } from './AbaAnexos'
 import { AbaClassificacao } from './AbaClassificacao'
+import { AbaContrato } from './AbaContrato'
 import { AbaDirecao } from './AbaDirecao'
 import { AbaGerentes } from './AbaGerentes'
 import { AbaProposta } from './AbaProposta'
@@ -38,6 +39,7 @@ const abas: Aba[] = [
   { id: 'gerentes', titulo: 'Gerentes', render: (p) => <AbaGerentes {...p} /> },
   { id: 'proposta', titulo: 'Reunião e proposta', render: (p) => <AbaProposta {...p} /> },
   { id: 'direcao', titulo: 'Direção', mostrar: (e) => Boolean(e.direcao?.levada_em), render: (p) => <AbaDirecao {...p} /> },
+  { id: 'contrato', titulo: 'Contrato', mostrar: (e) => ['contrato', 'ativa', 'renovacao', 'encerrada'].includes(e.etapa) || Boolean(e.contrato?.enviado_juridico_em), render: (p) => <AbaContrato {...p} /> },
   { id: 'anexos', titulo: 'Anexos', render: (p) => <AbaAnexos {...p} /> },
   { id: 'mensagens', titulo: 'Mensagens', render: (p) => <AbaMensagens {...p} /> },
   { id: 'tempo', titulo: 'Linha do tempo', render: (p) => <AbaTempo {...p} /> },
@@ -59,7 +61,7 @@ export function Ficha() {
 
   const atualizar = async () => { await empresa.recarregar(); setVersao((v) => v + 1) }
   const visiveis = abas.filter((a) => !a.mostrar || a.mostrar(e))
-  const padraoDaEtapa = e.etapa === 'direcao' ? 'direcao' : ['reuniao', 'proposta'].includes(e.etapa) ? 'proposta' : e.etapa === 'triagem1' ? 'triagem1' : e.etapa === 'triagem2' ? 'classificacao' : 'resumo'
+  const padraoDaEtapa = e.etapa === 'contrato' ? 'contrato' : e.etapa === 'direcao' ? 'direcao' : ['reuniao', 'proposta'].includes(e.etapa) ? 'proposta' : e.etapa === 'triagem1' ? 'triagem1' : e.etapa === 'triagem2' ? 'classificacao' : 'resumo'
   const atual = visiveis.find((a) => a.id === (aba || padraoDaEtapa)) ?? visiveis[0]
   const lista = usuarios.dado ?? []
 

@@ -5,6 +5,7 @@ import type { FichaPassagem } from '../regras/passagem'
 import type { SituacaoData, TipoAcao, TipoData } from '../regras/calendario'
 import type { ConfirmacaoOperacoes, Formato, Proposta, Reuniao, TipoParceria } from '../regras/proposta'
 import type { RegistroDirecao } from '../regras/direcao'
+import type { RegistroContrato } from '../regras/contrato'
 
 export type Papel = 'primeira_pessoa' | 'gerente' | 'direcao' | 'juridico' | 'financeiro' | 'operacoes'
 
@@ -107,6 +108,7 @@ export type Empresa = {
   operacoes: ConfirmacaoOperacoes
   direcao: RegistroDirecao
   fila_master: boolean
+  contrato: RegistroContrato
   exemplo: boolean
   criado_em: string
 }
@@ -116,7 +118,7 @@ export type CamposEditaveis = Omit<Empresa,
   'porte' | 'padrao_final' | 'exemplo' | 'criado_em' | 'consentimento_em' |
   'categoria' | 'triagem1' | 'receita_situacao' | 'receita_porte' | 'pedido_info_em' |
   'classificacao' | 'estudo' | 'candidata_master' | 'triagem2_concluida_em' | 'passada_em' | 'distribuicao' | 'passagem' |
-  'reuniao' | 'formato' | 'tipo_parceria' | 'proposta' | 'operacoes' | 'direcao' | 'fila_master'>
+  'reuniao' | 'formato' | 'tipo_parceria' | 'proposta' | 'operacoes' | 'direcao' | 'fila_master' | 'contrato'>
 
 export type ItemHistorico = {
   id: number

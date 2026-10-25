@@ -18,6 +18,7 @@ const grupos: { titulo: string; itens: Item[] }[] = [
     { para: '/parcerias', rotulo: 'Parcerias ativas' },
     { para: '/calendario', rotulo: 'Calendário' },
     { para: '/operacoes', rotulo: 'Operações', acao: 'ver_operacoes' },
+    { para: '/juridico', rotulo: 'Jurídico', acao: 'ver_juridico' },
     { para: '/renovacoes', rotulo: 'Renovações' },
   ] },
   { titulo: 'Acompanhamento', itens: [

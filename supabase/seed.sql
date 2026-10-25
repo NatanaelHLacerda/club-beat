@@ -147,3 +147,15 @@ update public.empresas set
 where cnpj = '11222333000181';
 update public.empresas set reuniao = jsonb_build_object('quando', to_char(now() + interval '2 days', 'YYYY-MM-DD"T"15:00'), 'local', 'Club (presencial)', 'presencial', true)
 where cnpj like '33444555%';
+
+-- REQ-010 — Pulso App (Em contrato) com aceite registrado; Sabor Leve com contrato assinado de exemplo.
+update public.empresas set proposta = '{"itens":[{"item":"telas","quantidade":1},{"item":"ativacao_1d","quantidade":2}],"prazo_meses":12,"aceite_em":"2026-10-20T12:00:00Z","enviada_em":"2026-10-15T12:00:00Z"}',
+  formato = 'continua', tipo_parceria = 'patrocinio'
+where cnpj like '66777888%';
+update public.empresas set contrato = jsonb_build_object('assinado_em', now() - interval '120 days'), tipo_parceria = 'patrocinio',
+  proposta = '{"itens":[{"item":"telas","quantidade":1},{"item":"ativacao_1d","quantidade":8},{"item":"marca_site","quantidade":1}],"prazo_meses":12}'
+where cnpj = '12345678000195';
+update public.parcerias set padrao = 'ouro', tipo_parceria = 'patrocinio', valor_mensal_centavos = null,
+  contrapartidas = '[{"item":"telas","quantidade":1},{"item":"ativacao_1d","quantidade":8},{"item":"marca_site","quantidade":1}]',
+  promessa_revisao = 'Rever tempo de tela na renovação', responsavel_id = '00000000-0000-4000-a000-000000000002'
+where empresa_id = (select id from public.empresas where cnpj = '12345678000195');

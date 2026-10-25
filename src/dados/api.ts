@@ -7,6 +7,7 @@ import type { FichaPassagem } from '../regras/passagem'
 import type { Janela, TipoAcao } from '../regras/calendario'
 import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../regras/proposta'
 import type { Decisao } from '../regras/direcao'
+import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../regras/contrato'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
@@ -446,4 +447,33 @@ export async function listarDatasDaEmpresa(empresa: string): Promise<DataDoCalen
   const { data, error } = await supabase.from('calendario_datas').select('*').eq('empresa_id', empresa).order('data')
   falhou(error, 'Não foi possível carregar as datas da empresa.')
   return (data ?? []) as DataDoCalendario[]
+}
+
+// ── Contrato e assinatura (REQ-010) ───────────────────────────────
+
+export async function obterPacote(empresa: string): Promise<Pacote | null> {
+  const { data, error } = await supabase.from('pacotes_contrato').select('endereco, signatario_nome, signatario_cpf, email_assinatura').eq('empresa_id', empresa).maybeSingle()
+  falhou(error, 'Não foi possível carregar o pacote do contrato.')
+  return (data as Pacote | null) ?? null
+}
+
+export async function enviarAoJuridico(empresa: string, p: Pacote) {
+  const { error } = await supabase.rpc('enviar_ao_juridico', { empresa, endereco: p.endereco, nome: p.signatario_nome, cpf: p.signatario_cpf, email: p.email_assinatura })
+  falhou(error, 'Não foi possível enviar ao Jurídico.')
+}
+
+export async function conferirContrato(empresa: string, minutaTipo: TipoMinuta, conferencia: ConferenciaContrato, divergencia: string, pronto: boolean) {
+  const { error } = await supabase.rpc('conferir_contrato', { empresa, minuta_tipo: minutaTipo, conferencia, divergencia, pronto })
+  falhou(error, 'Não foi possível salvar a conferência.')
+}
+
+export async function registrarAssinatura(empresa: string, inicio: string, fim: string, testemunhas: boolean) {
+  const { error } = await supabase.rpc('registrar_assinatura', { empresa, inicio, fim, testemunhas })
+  falhou(error, 'Não foi possível registrar a assinatura.')
+}
+
+export async function listarParaJuridico(): Promise<Empresa[]> {
+  const { data, error } = await supabase.from('empresas').select('*').eq('etapa', 'contrato').order('etapa_desde')
+  falhou(error, 'Não foi possível carregar os contratos.')
+  return (data ?? []) as Empresa[]
 }
