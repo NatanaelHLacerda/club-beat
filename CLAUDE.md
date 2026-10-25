@@ -53,7 +53,7 @@ src/estilo.css         tokens e estilos
 
 ## Visual
 
-Tema claro com a paleta de `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`: fundo Areia `#F4EEE2`, cartões Areia clara `#FBF8F1`, títulos e botão principal Oceano `#142540` (texto claro sobre Oceano), texto `#3B4256`, rótulos e links em Dourado escuro `#7F6024`, Dourado `#D2AE6A` só como detalhe, linhas `#DCCFB5`. Libre Bodoni nos títulos e números de destaque, Space Grotesk no resto. Peças visuais em `src/componentes/ui` (REQ-018); referência em `/config/componentes`. Cor-sinal por padrão só como detalhe; Master em dourado sobre Oceano. Redesenho das telas pela cadeia REQ-018 a REQ-025.
+Tema claro com a paleta de `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`: fundo Areia `#F4EEE2`, cartões Areia clara `#FBF8F1`, títulos e botão principal Oceano `#142540` (texto claro sobre Oceano), texto `#3B4256`, rótulos e links em Dourado escuro `#7F6024`, Dourado `#D2AE6A` só como detalhe, linhas `#DCCFB5`. Fonte única Sora, a mesma dos criativos da Iris Machine (`skills/iris-machine/design-system.md`), em títulos, números e textos. Peças visuais em `src/componentes/ui` (REQ-018); referência em `/config/componentes`. Cor-sinal por padrão só como detalhe; Master em dourado sobre Oceano. Redesenho das telas pela cadeia REQ-018 a REQ-025.
 
 ## Papéis
 

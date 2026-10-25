@@ -1,4 +1,4 @@
-/* CRM de Parcerias Club Beat — Libre Bodoni nos títulos, Space Grotesk no resto; tema claro com a paleta da marca (Elementos de marca, v1.0):
+/* CRM de Parcerias Club Beat — fonte única Sora (a mesma dos criativos da Iris Machine); tema claro com a paleta da marca (Elementos de marca, v1.0):
    Areia e Areia clara no fundo, Oceano nos títulos e ações, Dourado escuro em rótulos, Dourado só como detalhe. */
 :root {
   --bg: #F4EEE2;          /* Areia: fundo da página */
@@ -19,8 +19,8 @@
   --bronze: #8C5A2B;
   --prata: #6B7280;
   --ouro: #7F6024;
-  --font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-titulo: "Libre Bodoni", Georgia, "Times New Roman", serif;
+  --font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-titulo: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
   --radius: 14px;
   --radius-p: 10px;
   --sombra: 0 8px 24px rgba(20, 37, 64, 0.10);
