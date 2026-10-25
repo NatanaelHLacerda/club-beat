@@ -4,12 +4,13 @@ import { Topo } from '../../componentes/Casca'
 import { Filtros, nomeDe } from '../../componentes/Filtros'
 import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
 import { TrocaEtapa } from '../../componentes/TrocaEtapa'
-import { listarEmpresas, listarUsuarios, moverEtapa } from '../../dados/api'
+import { listarEmpresas, listarPrazos, listarUsuarios, moverEtapa } from '../../dados/api'
 import type { Empresa, FiltrosEmpresas } from '../../dados/tipos'
 import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
 import { diasDesde, hojeISO } from '../../regras/formato'
 import { diasDesdePedido, semRetorno } from '../../regras/triagem1'
 import { respostaVencida } from '../../regras/proposta'
+import { rotuloSituacaoPrazo } from '../../regras/prazos'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
@@ -21,6 +22,7 @@ export function Funil() {
   const [filtros, setFiltros] = useState<FiltrosEmpresas>({})
   const empresas = useConsulta(() => listarEmpresas(filtros), [JSON.stringify(filtros)])
   const usuarios = useConsulta(listarUsuarios)
+  const prazos = useConsulta(listarPrazos)
   const [arrastando, setArrastando] = useState<Empresa | null>(null)
   const [sobre, setSobre] = useState<Etapa | null>(null)
   const [pendente, setPendente] = useState<{ empresa: Empresa; para: Etapa } | null>(null)
@@ -77,8 +79,9 @@ export function Funil() {
                     {cards.map((e) => {
                       const parado = e.etapa === 'triagem1' && semRetorno(e.pedido_info_em, hojeISO())
                       const semResposta = e.etapa === 'proposta' && respostaVencida(e.proposta?.prazo_resposta, e.proposta?.aceite_em, hojeISO())
+                      const prazo = prazos.dado?.find((p) => p.empresa_id === e.id)
                       return (
-                      <Link key={e.id} to={`/empresas/${e.id}`} className={`card${parado || semResposta ? ' atrasado' : ''}`} draggable={podeMover}
+                      <Link key={e.id} to={`/empresas/${e.id}`} className={`card${parado || semResposta || prazo?.situacao === 'atrasado' ? ' atrasado' : prazo?.situacao === 'vence_hoje' ? ' vence' : ''}`} draggable={podeMover}
                         onDragStart={() => setArrastando(e)} onDragEnd={() => { setArrastando(null); setSobre(null) }}>
                         <div className="linha entre"><b>{e.marca}</b><Exemplo mostrar={e.exemplo} /></div>
                         <span className="muted pequeno">{e.segmento}</span>
@@ -89,6 +92,7 @@ export function Funil() {
                         <span className="muted pequeno num">{diasDesde(e.etapa_desde)} dias na etapa</span>
                         {parado && <span className="erro pequeno">Sem retorno há {diasDesdePedido(e.pedido_info_em, hojeISO())} dias</span>}
                         {semResposta && <span className="erro pequeno">Prazo de resposta vencido</span>}
+                        {prazo && prazo.situacao !== 'no_prazo' && !semResposta && <span className={`pequeno ${prazo.situacao === 'atrasado' ? 'erro' : ''}`}>{prazo.descricao}: {rotuloSituacaoPrazo[prazo.situacao].toLowerCase()}</span>}
                       </Link>
                       )
                     })}

@@ -16,6 +16,7 @@ import { Direcao } from './telas/direcao/Direcao'
 import { Juridico } from './telas/juridico/Juridico'
 import { Parcerias } from './telas/parcerias/Parcerias'
 import { Renovacoes } from './telas/renovacoes/Renovacoes'
+import { Prazos } from './telas/prazos/Prazos'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -42,6 +43,7 @@ export function App() {
         <Route path="/renovacoes" element={<Renovacoes />} />
         <Route path="/painel" element={<EmBreve titulo="Painel" />} />
         <Route path="/avisos" element={<Avisos />} />
+        <Route path="/prazos" element={<Prazos />} />
         <Route path="/config/usuarios" element={<Usuarios />} />
         <Route path="/config/regras" element={<Regras />} />
         <Route path="*" element={<EmBreve titulo="Página não encontrada" />} />

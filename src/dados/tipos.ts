@@ -207,3 +207,9 @@ export type ParceriaComEmpresa = Parceria & { empresas: Pick<Empresa, 'id' | 'ma
 export type Entrega = { id: string; parceria_id: string; item: string; data: string; descricao: string | null; privacidade_ok: boolean; nota_membros: number | null; autor_id: string | null; criado_em: string }
 export type Material = { id: string; parceria_id: string; descricao: string; situacao: 'aguardando' | 'aprovado' | 'recusado'; motivo: string | null; decidido_por: string | null; decidido_em: string | null; criado_em: string }
 export type Relatorio = { id: string; parceria_id: string; tipo: 'relatorio' | 'balanco'; referencia: string; resumo: string; enviado_em: string; autor_id: string | null }
+
+// ── Prazos (REQ-014) ──────────────────────────────────────────────
+export type PrazoAberto = {
+  empresa_id: string; marca: string; etapa: Etapa; descricao: string; prazo: string
+  responsavel_id: string | null; papel_responsavel: Papel; situacao: 'no_prazo' | 'vence_hoje' | 'atrasado'
+}

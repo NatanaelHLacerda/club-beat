@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Topo } from '../../componentes/Casca'
-import { listarCardapio, listarCategorias, listarModelos, salvarCategoria, salvarItemCardapio, salvarModelo } from '../../dados/api'
+import { apagarFeriado, cadastrarFeriado, listarCardapio, listarCategorias, listarFeriados, listarModelos, salvarCategoria, salvarItemCardapio, salvarModelo } from '../../dados/api'
+import { formatarData } from '../../regras/formato'
 import type { Categoria, ModeloMensagem } from '../../dados/tipos'
 import { formatarDataHora } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
@@ -15,6 +16,7 @@ export function Regras() {
       <Modelos />
       <Categorias />
       <Cardapio />
+      <Feriados />
     </>
   )
 }
@@ -144,6 +146,38 @@ function Cardapio() {
             ))}
           </tbody>
         </table>
+      </div>
+    </section>
+  )
+}
+
+function Feriados() {
+  const { perfil } = useSessao()
+  const feriados = useConsulta(listarFeriados)
+  const [data, setData] = useState('')
+  const [nome, setNome] = useState('')
+  const [erro, setErro] = useState('')
+  const podeEditar = pode(perfil, 'publicar_calendario')
+  async function agir(f: () => Promise<void>) {
+    setErro('')
+    try { await f(); await feriados.recarregar() } catch (e) { setErro((e as Error).message) }
+  }
+  return (
+    <section className="pilha">
+      <h2>Feriados</h2>
+      <p className="muted">Contam para os prazos em dias úteis. Os nacionais fixos já estão cadastrados; inclua os móveis (Carnaval, Sexta-feira Santa, Corpus Christi) e os de Belo Horizonte e Nova Lima.</p>
+      {erro && <div className="aviso perigo">{erro}</div>}
+      {podeEditar && (
+        <div className="linha">
+          <input className="entrada" style={{ width: 'auto' }} type="date" aria-label="Data do feriado" value={data} onChange={(e) => setData(e.target.value)} />
+          <input className="entrada" style={{ maxWidth: 280 }} aria-label="Nome do feriado" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+          <button className="botao" disabled={!data || !nome.trim()} onClick={() => void agir(async () => { await cadastrarFeriado(data, nome.trim()); setData(''); setNome('') })}>Cadastrar feriado</button>
+        </div>
+      )}
+      <div className="linha">
+        {(feriados.dado ?? []).filter((f) => f.data >= new Date().toISOString().slice(0, 10)).map((f) => (
+          <span key={f.data} className="pill">{formatarData(f.data)} · {f.nome}{podeEditar && <button className="botao leve" style={{ padding: '0 4px', border: 0 }} aria-label={`Apagar ${f.nome}`} onClick={() => void agir(() => apagarFeriado(f.data))}>×</button>}</span>
+        ))}
       </div>
     </section>
   )

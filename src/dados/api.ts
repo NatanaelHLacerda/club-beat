@@ -9,7 +9,7 @@ import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../r
 import type { Decisao } from '../regras/direcao'
 import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../regras/contrato'
 import type { Caminho, Renovacao } from '../regras/renovacao'
-import type { Entrega, Material, Parceria, ParceriaComEmpresa, Relatorio } from './tipos'
+import type { Entrega, Material, Parceria, ParceriaComEmpresa, PrazoAberto, Relatorio } from './tipos'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
@@ -565,4 +565,23 @@ export async function decidirRenovacao(parceria: string, caminho: Caminho, avali
 export async function encerrarParceria(parceria: string, checklist: Record<string, boolean>) {
   const { error } = await supabase.rpc('encerrar_parceria', { parceria, checklist })
   falhou(error, 'Não foi possível encerrar a parceria.')
+}
+
+// ── Prazos e feriados (REQ-014) ───────────────────────────────────
+
+export async function listarPrazos(): Promise<PrazoAberto[]> {
+  const { data, error } = await supabase.rpc('prazos_abertos')
+  falhou(error, 'Não foi possível carregar os prazos.')
+  return (data ?? []) as PrazoAberto[]
+}
+
+export async function cadastrarFeriado(data: string, nome: string) {
+  const { error } = await supabase.from('feriados').insert({ data, nome })
+  if (error?.code === '23505') throw new ErroApi('Esta data já é feriado.')
+  falhou(error, 'Não foi possível cadastrar o feriado.')
+}
+
+export async function apagarFeriado(data: string) {
+  const { error } = await supabase.from('feriados').delete().eq('data', data)
+  falhou(error, 'Não foi possível apagar o feriado.')
 }

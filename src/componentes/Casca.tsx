@@ -23,6 +23,7 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   ] },
   { titulo: 'Acompanhamento', itens: [
     { para: '/painel', rotulo: 'Painel' },
+    { para: '/prazos', rotulo: 'Prazos' },
     { para: '/avisos', rotulo: 'Avisos' },
   ] },
   { titulo: 'Configuração', itens: [
