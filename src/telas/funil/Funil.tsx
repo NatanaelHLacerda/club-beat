@@ -7,7 +7,8 @@ import { TrocaEtapa } from '../../componentes/TrocaEtapa'
 import { listarEmpresas, listarUsuarios, moverEtapa } from '../../dados/api'
 import type { Empresa, FiltrosEmpresas } from '../../dados/tipos'
 import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
-import { diasDesde } from '../../regras/formato'
+import { diasDesde, hojeISO } from '../../regras/formato'
+import { diasDesdePedido, semRetorno } from '../../regras/triagem1'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
@@ -72,8 +73,10 @@ export function Funil() {
                   onDrop={(ev) => { ev.preventDefault(); void soltar(etapa) }}>
                   <header><b>{rotuloEtapa[etapa]}</b><span className="muted num">{cards.length}</span></header>
                   <div className="cards">
-                    {cards.map((e) => (
-                      <Link key={e.id} to={`/empresas/${e.id}`} className="card" draggable={podeMover}
+                    {cards.map((e) => {
+                      const parado = e.etapa === 'triagem1' && semRetorno(e.pedido_info_em, hojeISO())
+                      return (
+                      <Link key={e.id} to={`/empresas/${e.id}`} className={`card${parado ? ' atrasado' : ''}`} draggable={podeMover}
                         onDragStart={() => setArrastando(e)} onDragEnd={() => { setArrastando(null); setSobre(null) }}>
                         <div className="linha entre"><b>{e.marca}</b><Exemplo mostrar={e.exemplo} /></div>
                         <span className="muted pequeno">{e.segmento}</span>
@@ -82,8 +85,10 @@ export function Funil() {
                           <span className="muted">{nomeDe(usuarios.dado, e.responsavel_id ?? e.gerente1_id)}</span>
                         </div>
                         <span className="muted pequeno num">{diasDesde(e.etapa_desde)} dias na etapa</span>
+                        {parado && <span className="erro pequeno">Sem retorno há {diasDesdePedido(e.pedido_info_em, hojeISO())} dias</span>}
                       </Link>
-                    ))}
+                      )
+                    })}
                   </div>
                 </section>
               )

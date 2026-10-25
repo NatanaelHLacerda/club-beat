@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { nomeDe } from '../../componentes/Filtros'
 import { listarMensagens, listarModelos, registrarMensagem } from '../../dados/api'
 import { rotuloPadrao, rotuloSituacaoMensagem } from '../../dados/tipos'
@@ -9,7 +9,7 @@ import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
 import type { PropsAba } from './Ficha'
 
-export function AbaMensagens({ empresa, usuarios }: PropsAba) {
+export function AbaMensagens({ empresa, usuarios, modeloInicial }: PropsAba) {
   const { perfil } = useSessao()
   const modelos = useConsulta(listarModelos)
   const mensagens = useConsulta(() => listarMensagens(empresa.id), [empresa.id])
@@ -44,6 +44,12 @@ export function AbaMensagens({ empresa, usuarios }: PropsAba) {
       await mensagens.recarregar()
     } catch (err) { setErro((err as Error).message) }
   }
+
+  const prontos = Boolean(modelos.dado)
+  useEffect(() => {
+    if (prontos && modeloInicial) escolher(modeloInicial)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prontos, modeloInicial])
 
   const abertos = camposAbertos(texto)
   const lista = mensagens.dado ?? []

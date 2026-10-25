@@ -14,14 +14,22 @@ import { AbaAnexos } from './AbaAnexos'
 import { AbaMensagens } from './AbaMensagens'
 import { AbaResumo } from './AbaResumo'
 import { AbaTempo } from './AbaTempo'
+import { AbaTriagem1 } from './AbaTriagem1'
 
-export type PropsAba = { empresa: Empresa; usuarios: Perfil[]; atualizar: () => Promise<void> }
+export type PropsAba = {
+  empresa: Empresa
+  usuarios: Perfil[]
+  atualizar: () => Promise<void>
+  abrirAba: (id: string, modelo?: string) => void
+  modeloInicial?: string
+}
 
 type Aba = { id: string; titulo: string; mostrar?: (e: Empresa) => boolean; render: (p: PropsAba) => ReactNode }
 
 // As abas crescem a cada REQ (triagem, classificação, proposta, contrato, parceria).
 const abas: Aba[] = [
   { id: 'resumo', titulo: 'Resumo', render: (p) => <AbaResumo {...p} /> },
+  { id: 'triagem1', titulo: 'Triagem 1', render: (p) => <AbaTriagem1 {...p} /> },
   { id: 'anexos', titulo: 'Anexos', render: (p) => <AbaAnexos {...p} /> },
   { id: 'mensagens', titulo: 'Mensagens', render: (p) => <AbaMensagens {...p} /> },
   { id: 'tempo', titulo: 'Linha do tempo', render: (p) => <AbaTempo {...p} /> },
@@ -34,6 +42,7 @@ export function Ficha() {
   const usuarios = useConsulta(listarUsuarios)
   const [aba, setAba] = useState('resumo')
   const [versao, setVersao] = useState(0)
+  const [modeloInicial, setModeloInicial] = useState<string | undefined>()
 
   if (empresa.carregando && !empresa.dado) return <p className="muted">Carregando…</p>
   if (empresa.erro) return <div className="aviso perigo" role="alert">{empresa.erro}</div>
@@ -56,10 +65,10 @@ export function Ficha() {
         <div className="pilha" style={{ minWidth: 0 }}>
           <nav className="abas" aria-label="Seções da empresa">
             {visiveis.map((a) => (
-              <button key={a.id} className={a.id === atual.id ? 'ativa' : ''} onClick={() => setAba(a.id)}>{a.titulo}</button>
+              <button key={a.id} className={a.id === atual.id ? 'ativa' : ''} onClick={() => { setModeloInicial(undefined); setAba(a.id) }}>{a.titulo}</button>
             ))}
           </nav>
-          <div key={`${atual.id}-${versao}`}>{atual.render({ empresa: e, usuarios: lista, atualizar })}</div>
+          <div key={`${atual.id}-${versao}`}>{atual.render({ empresa: e, usuarios: lista, atualizar, modeloInicial, abrirAba: (id, modelo) => { setModeloInicial(modelo); setAba(id) } })}</div>
         </div>
         <aside className="pilha">
           <div className="cartao">

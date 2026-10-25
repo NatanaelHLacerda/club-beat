@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Topo } from '../../componentes/Casca'
-import { listarModelos, salvarModelo } from '../../dados/api'
-import type { ModeloMensagem } from '../../dados/tipos'
+import { listarCategorias, listarModelos, salvarCategoria, salvarModelo } from '../../dados/api'
+import type { Categoria, ModeloMensagem } from '../../dados/tipos'
 import { formatarDataHora } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
@@ -13,6 +13,7 @@ export function Regras() {
     <>
       <Topo eyebrow="Configuração" titulo="Regras e modelos" />
       <Modelos />
+      <Categorias />
     </>
   )
 }
@@ -68,5 +69,46 @@ function Modelo({ modelo, podeEditar, aoSalvar }: { modelo: ModeloMensagem; pode
         </>
       )}
     </div>
+  )
+}
+
+const rotuloSituacaoCategoria: Record<Categoria['situacao'], string> = { aceita: 'Aceita', nao_aceita: 'Não aceita', sensivel: 'Só com Jurídico e Direção' }
+
+function Categorias() {
+  const { perfil } = useSessao()
+  const categorias = useConsulta(listarCategorias)
+  const [erro, setErro] = useState('')
+  const podeEditar = pode(perfil, 'configurar')
+
+  async function mudar(c: Categoria, situacao: Categoria['situacao']) {
+    setErro('')
+    try { await salvarCategoria(c.nome, situacao); await categorias.recarregar() } catch (e) { setErro((e as Error).message) }
+  }
+
+  return (
+    <section className="pilha">
+      <h2>Categorias (cap. 12)</h2>
+      <p className="muted">A Isabela confere esta lista na Triagem 1. {podeEditar ? '' : 'Só a Direção muda a situação de uma categoria.'}</p>
+      {(erro || categorias.erro) && <div className="aviso perigo">{erro || categorias.erro}</div>}
+      <div className="tabela-rolagem">
+        <table>
+          <thead><tr><th>Categoria</th><th>Situação</th></tr></thead>
+          <tbody>
+            {(categorias.dado ?? []).map((c) => (
+              <tr key={c.nome}>
+                <td>{c.nome}</td>
+                <td>
+                  {podeEditar ? (
+                    <select className="entrada" style={{ width: 'auto' }} aria-label={`Situação de ${c.nome}`} value={c.situacao} onChange={(e) => void mudar(c, e.target.value as Categoria['situacao'])}>
+                      {(Object.keys(rotuloSituacaoCategoria) as Categoria['situacao'][]).map((s) => <option key={s} value={s}>{rotuloSituacaoCategoria[s]}</option>)}
+                    </select>
+                  ) : <span className={`pill ${c.situacao === 'nao_aceita' ? 'perigo' : c.situacao === 'sensivel' ? 'alerta' : 'ok'}`}>{rotuloSituacaoCategoria[c.situacao]}</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   )
 }

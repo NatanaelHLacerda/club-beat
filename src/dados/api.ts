@@ -2,7 +2,8 @@
 import { supabase } from './supabase'
 import type { Conferencia } from '../regras/entrada'
 import type { Ficha } from '../regras/formulario'
-import type { Anexo, Aviso, CamposEditaveis, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
+import type { MarcasTriagem1 } from '../regras/triagem1'
+import type { Anexo, Aviso, CamposEditaveis, Categoria, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
 
@@ -231,4 +232,29 @@ export async function cadastrarEmpresa(campos: Partial<CamposEditaveis>): Promis
   if (error?.code === '23505') throw new ErroApi('Já existe uma empresa com este CNPJ.')
   falhou(error, 'Não foi possível cadastrar a empresa.')
   return (data as { id: string }).id
+}
+
+// ── Primeira triagem (REQ-005) ────────────────────────────────────
+
+export async function listarCategorias(): Promise<Categoria[]> {
+  const { data, error } = await supabase.from('categorias').select('*').order('ordem')
+  falhou(error, 'Não foi possível carregar as categorias.')
+  return (data ?? []) as Categoria[]
+}
+
+export async function salvarCategoria(nome: string, situacao: Categoria['situacao']) {
+  const { error } = await supabase.from('categorias').update({ situacao }).eq('nome', nome)
+  falhou(error, 'Não foi possível salvar a categoria.')
+}
+
+export async function salvarTriagem1(empresa: string, itens: MarcasTriagem1, categoria: string, situacaoReceita: string, porteReceita: string) {
+  const { error } = await supabase.rpc('salvar_triagem1', {
+    empresa, itens, categoria_escolhida: categoria, situacao_receita: situacaoReceita, porte_receita: porteReceita,
+  })
+  falhou(error, 'Não foi possível salvar a triagem.')
+}
+
+export async function encerrarComA5(empresa: string, textoA5: string, motivo: string) {
+  await registrarMensagem(empresa, 'A5', 'email', textoA5)
+  await moverEtapa(empresa, 'recusada', motivo)
 }
