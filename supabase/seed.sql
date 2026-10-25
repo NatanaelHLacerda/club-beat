@@ -1,5 +1,5 @@
 -- Dados de EXEMPLO para o banco local. Nenhum dado aqui é real.
--- Senha de todos os usuários de exemplo: clubbeat-exemplo
+-- Senha de todos os usuários de exemplo: admin
 
 -- REQ-001 — usuários de exemplo
 do $$
@@ -23,7 +23,7 @@ begin
       confirmation_token, recovery_token, email_change, email_change_token_new
     ) values (
       '00000000-0000-0000-0000-000000000000', u.id, 'authenticated', 'authenticated', u.email,
-      crypt('clubbeat-exemplo', gen_salt('bf')), now(),
+      crypt('admin', gen_salt('bf')), now(),
       '{"provider":"email","providers":["email"]}', jsonb_build_object('nome', u.nome), now(), now(),
       '', '', '', ''
     );
