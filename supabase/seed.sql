@@ -108,3 +108,31 @@ where exemplo and etapa in ('reuniao', 'proposta', 'direcao', 'contrato', 'ativa
 -- Empresas de exemplo já passadas à Gerente (revezamento coerente com o histórico).
 update public.empresas set passada_em = triagem2_concluida_em + interval '1 hour', distribuicao = 'revezamento'
 where exemplo and gerente1_id is not null and triagem2_concluida_em is not null;
+
+-- REQ-012 — calendário de EXEMPLO (a Direção cadastra o real): sábados de manhã tipo A, quartas tipo B, sextas tipo C.
+insert into public.calendario_datas (data, tipo, aula, horario, media_alunos, tema, exemplo)
+select d::date,
+  case extract(dow from d) when 6 then 'A' when 3 then 'B' else 'C' end,
+  case extract(dow from d) when 6 then 'Funcional' when 3 then 'Ciclismo' else 'Pilates' end,
+  case extract(dow from d) when 6 then '09:00' when 3 then '07:00' else '18:30' end,
+  case extract(dow from d) when 6 then 42 when 3 then 28 else 18 end,
+  null, true
+from generate_series(current_date + 3, current_date + 120, interval '1 day') d
+where extract(dow from d) in (3, 5, 6);
+
+update public.calendario_datas set vespera_feriado = true, tema = 'Véspera de feriado (exemplo)'
+where data = (select min(data) from public.calendario_datas where tipo = 'C' and data > current_date + 20);
+
+insert into public.janelas_escolha (ano, grupo, abre_em, fecha_em)
+select a, g.grupo, current_date + g.ini, current_date + g.fim
+from generate_series(extract(year from current_date)::int, extract(year from current_date)::int + 1) a,
+  (values ('master_ouro', -5, 10), ('prata', 11, 25), ('bronze', 26, 90)) g(grupo, ini, fim);
+
+-- Reserva da Rede Verde (Em proposta) e data confirmada da Sabor Leve (Ativa).
+update public.calendario_datas set situacao = 'reservada', tipo_acao = 'ativacao', reservada_em = now() - interval '2 days',
+  reservada_ate = current_date + 5, reservada_por = '00000000-0000-4000-a000-000000000002',
+  empresa_id = (select id from public.empresas where cnpj = '11222333000181')
+where data = (select min(data) from public.calendario_datas where tipo = 'C' and not vespera_feriado and data > current_date + 30);
+update public.calendario_datas set situacao = 'confirmada', tipo_acao = 'ativacao',
+  empresa_id = (select id from public.empresas where cnpj = '12345678000195')
+where data = (select min(data) from public.calendario_datas where tipo = 'A' and data > current_date + 6);

@@ -2,6 +2,7 @@ import type { Etapa } from '../regras/etapas'
 import type { MarcasTriagem1, SituacaoCategoria, SituacaoReceita } from '../regras/triagem1'
 import type { Aderencia, FaixaInvestimento, Pontos } from '../regras/classificacao'
 import type { FichaPassagem } from '../regras/passagem'
+import type { SituacaoData, TipoAcao, TipoData } from '../regras/calendario'
 
 export type Papel = 'primeira_pessoa' | 'gerente' | 'direcao' | 'juridico' | 'financeiro' | 'operacoes'
 
@@ -173,3 +174,10 @@ export type FichaClassificacao = {
   padrao_pontos?: Padrao | null
 }
 export type Conflito = { marca: string; fim: string }
+
+// ── Calendário (REQ-012) ──────────────────────────────────────────
+export type DataDoCalendario = {
+  id: string; data: string; tipo: TipoData; vespera_feriado: boolean; aula: string | null; horario: string | null
+  media_alunos: number | null; tema: string | null; situacao: SituacaoData; empresa_id: string | null; tipo_acao: TipoAcao | null
+  reservada_em: string | null; reservada_ate: string | null; reservada_por: string | null; exemplo: boolean
+}

@@ -4,7 +4,8 @@ import type { Conferencia } from '../regras/entrada'
 import type { Ficha } from '../regras/formulario'
 import type { MarcasTriagem1 } from '../regras/triagem1'
 import type { FichaPassagem } from '../regras/passagem'
-import type { Anexo, Aviso, CamposEditaveis, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
+import type { Janela, TipoAcao } from '../regras/calendario'
+import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
 
@@ -306,5 +307,57 @@ export async function listarMinhaFila(usuario: string): Promise<Empresa[]> {
     .in('etapa', etapasDaFila)
     .order('passada_em', { ascending: true })
   falhou(error, 'Não foi possível carregar a sua fila.')
+  return (data ?? []) as Empresa[]
+}
+
+// ── Calendário (REQ-012) ──────────────────────────────────────────
+
+export async function listarDatas(ano: number): Promise<DataDoCalendario[]> {
+  const { data, error } = await supabase.from('calendario_datas').select('*').gte('data', `${ano}-01-01`).lte('data', `${ano}-12-31`).order('data')
+  falhou(error, 'Não foi possível carregar o calendário.')
+  return (data ?? []) as DataDoCalendario[]
+}
+
+export async function listarJanelas(ano: number): Promise<Janela[]> {
+  const { data, error } = await supabase.from('janelas_escolha').select('*').eq('ano', ano)
+  falhou(error, 'Não foi possível carregar as janelas.')
+  return (data ?? []) as Janela[]
+}
+
+export async function salvarJanela(j: Janela) {
+  const { error } = await supabase.from('janelas_escolha').upsert(j)
+  falhou(error, 'Não foi possível salvar a janela.')
+}
+
+export type NovaData = Pick<DataDoCalendario, 'data' | 'tipo' | 'vespera_feriado' | 'aula' | 'horario' | 'media_alunos' | 'tema'>
+
+export async function cadastrarData(d: NovaData) {
+  const { error } = await supabase.from('calendario_datas').insert(d)
+  falhou(error, 'Não foi possível cadastrar a data.')
+}
+
+export async function apagarData(id: string) {
+  const { error } = await supabase.from('calendario_datas').delete().eq('id', id)
+  falhou(error, 'Não foi possível apagar a data.')
+}
+
+export async function reservarData(data: string, empresa: string, acao: TipoAcao) {
+  const { error } = await supabase.rpc('reservar_data', { data_id: data, empresa, acao })
+  falhou(error, 'Não foi possível reservar a data.')
+}
+
+export async function liberarData(data: string, motivo?: string) {
+  const { error } = await supabase.rpc('liberar_data', { data_id: data, motivo: motivo || null })
+  falhou(error, 'Não foi possível liberar a data.')
+}
+
+export async function trocarData(antiga: string, nova: string, pedido: string) {
+  const { error } = await supabase.rpc('trocar_data', { data_antiga: antiga, data_nova: nova, pedido })
+  falhou(error, 'Não foi possível trocar a data.')
+}
+
+export async function listarEmpresasParaReserva(): Promise<Empresa[]> {
+  const { data, error } = await supabase.from('empresas').select('*').in('etapa', ['reuniao', 'proposta', 'direcao', 'contrato', 'ativa', 'renovacao']).order('marca')
+  falhou(error, 'Não foi possível carregar as empresas.')
   return (data ?? []) as Empresa[]
 }

@@ -165,3 +165,11 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .legenda { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
 .legenda b { color: var(--danger); font-weight: 500; }
 .isca { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Calendário (REQ-012) */
+.ano { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.mes { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; text-align: left; display: flex; flex-direction: column; gap: 4px; cursor: pointer; color: inherit; }
+.mes b { color: var(--ink); font-weight: 500; }
+.mes.atual { border-color: var(--gold); }
+.mes .barra { height: 3px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.mes .barra span { display: block; height: 100%; background: var(--gold); }
