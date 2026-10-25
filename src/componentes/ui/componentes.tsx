@@ -171,3 +171,8 @@ export function PainelLateral({ titulo, aoFechar, children }: { titulo: string; 
     </>
   )
 }
+
+// ── Data com ícone (REQ-024) ────────────────────────────────────
+export function DataComIcone({ texto, erro }: { texto: string; erro?: boolean }) {
+  return <span className={`linha num pequeno${erro ? ' erro' : ''}`} style={{ gap: 4, flexWrap: 'nowrap' }}><Icone nome="calendario" tamanho={13} />{texto}</span>
+}

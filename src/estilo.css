@@ -261,8 +261,8 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .botao-icone { position: relative; background: transparent; border: 0; border-radius: 8px; width: 30px; height: 30px; display: inline-grid; place-items: center; color: var(--muted); cursor: pointer; }
 .botao-icone:hover, .botao-icone:focus-visible { background: var(--surface-2); color: var(--ink); }
 .botao-icone.perigo:hover { color: var(--danger); }
-.botao-icone::after { content: attr(data-dica); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); background: var(--primary); color: var(--primary-ink); font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.12s; z-index: 5; }
-.botao-icone:hover::after, .botao-icone:focus-visible::after { opacity: 1; }
+.botao-icone::after { content: attr(data-dica); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); background: var(--primary); color: var(--primary-ink); font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 5; display: none; }
+.botao-icone:hover::after, .botao-icone:focus-visible::after { display: block; }
 .tabela-rolagem { background: var(--surface); }
 .tabela th { background: transparent; border-bottom: 1px solid var(--line); }
 .tabela td.acoes, .tabela th.acoes { width: 1%; white-space: nowrap; text-align: right; }

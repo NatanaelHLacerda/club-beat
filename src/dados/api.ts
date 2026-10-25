@@ -649,3 +649,10 @@ export async function listarAvisosRecentes(): Promise<Aviso[]> {
   falhou(error, 'Não foi possível carregar os avisos.')
   return (data ?? []) as Aviso[]
 }
+
+// ── Listas (REQ-024) ──────────────────────────────────────────────
+
+export async function marcarTodosAvisosLidos() {
+  const { error } = await supabase.from('avisos').update({ lido_em: new Date().toISOString() }).is('lido_em', null)
+  falhou(error, 'Não foi possível marcar os avisos.')
+}

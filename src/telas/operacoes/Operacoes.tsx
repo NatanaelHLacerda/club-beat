@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { SemAcesso, Topo } from '../../componentes/Casca'
-import { PadraoTag } from '../../componentes/Rotulos'
+import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { Avatar, Carregando, CartaoNumero, DataComIcone, PainelLateral, Pill, Tabela } from '../../componentes/ui'
 import { confirmarOperacoes, listarCardapio, listarParaOperacoes } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
-import { formatarDataHora } from '../../regras/formato'
+import { formatarData, formatarDinheiro } from '../../regras/formato'
 import { itensDoPadrao, rotuloFormato, type ConfirmacaoOperacoes, type ItemCardapio } from '../../regras/proposta'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
@@ -12,18 +13,46 @@ import { useSessao } from '../../sessao'
 
 export function Operacoes() {
   const { perfil } = useSessao()
+  const navegar = useNavigate()
   const lista = useConsulta(listarParaOperacoes)
   const cardapio = useConsulta(listarCardapio)
+  const [aberta, setAberta] = useState<Empresa | null>(null)
   if (!pode(perfil, 'ver_operacoes')) return (<><Topo titulo="Operações" /><SemAcesso /></>)
-  const pendentes = (lista.dado ?? []).filter((e) => (e.proposta?.itens ?? []).length > 0)
+  const propostas = (lista.dado ?? []).filter((e) => (e.proposta?.itens ?? []).length > 0)
+  const aguardando = propostas.filter((e) => !e.operacoes?.confirmada_em)
+  const rotulo = (e: Empresa, item: string) => itensDoPadrao(cardapio.dado ?? [], e.padrao_final).find((i) => i.item === item)?.rotulo ?? item
+
   return (
     <>
-      <Topo eyebrow="Viabilidade" titulo="Operações"><span className="muted num">{pendentes.filter((e) => !e.operacoes?.confirmada_em).length} aguardando</span></Topo>
-      <p className="muted">Nenhuma entrega é prometida sem a confirmação de Operações: capacidade, equipe, espaço e horário, e custo interno.</p>
+      <Topo eyebrow="Viabilidade" titulo="Operações" />
+      <div className="numeros">
+        <CartaoNumero rotulo="Aguardando confirmação" icone="operacoes" valor={lista.dado ? aguardando.length : '—'} />
+        <CartaoNumero rotulo="Confirmadas" icone="check" valor={lista.dado ? propostas.length - aguardando.length : '—'} />
+      </div>
+      <p className="muted pequeno">Nenhuma entrega é prometida sem a confirmação de Operações: capacidade, equipe, espaço e horário, e custo interno.</p>
       {lista.erro && <div className="aviso perigo">{lista.erro}</div>}
-      {pendentes.length === 0 ? <div className="vazio">Nenhuma proposta em montagem.</div> : pendentes.map((e) => (
-        <Confirmacao key={e.id} e={e} cardapio={cardapio.dado ?? []} podeConfirmar={pode(perfil, 'operacoes')} aoSalvar={lista.recarregar} />
-      ))}
+      {lista.carregando && !lista.dado ? <Carregando /> : (
+        <Tabela<Empresa> itens={propostas} chave={(e) => e.id} vazio="Nenhuma proposta em montagem."
+          aoAbrir={(e) => setAberta(e)} destaque={(e) => (!e.operacoes?.confirmada_em ? 'alerta' : null)}
+          colunas={[
+            { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
+            { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
+            { titulo: 'Contrapartidas', render: (e) => <span className="pequeno">{(e.proposta?.itens ?? []).map((i) => `${rotulo(e, i.item)}${i.quantidade > 1 ? ` × ${i.quantidade}` : ''}`).join(', ')}</span> },
+            { titulo: 'Formato', render: (e) => (e.formato ? rotuloFormato[e.formato] : <span className="muted">—</span>) },
+            { titulo: 'Situação', render: (e) => (e.operacoes?.confirmada_em ? <Pill tom="ok">Confirmada</Pill> : <Pill tom="alerta">Aguardando</Pill>) },
+            { titulo: 'Desde', render: (e) => <DataComIcone texto={formatarData(e.etapa_desde)} /> },
+          ]}
+          acoes={[
+            { rotulo: 'Confirmar viabilidade', icone: 'check', mostrar: (e) => !e.operacoes?.confirmada_em && pode(perfil, 'operacoes'), aoClicar: (e) => setAberta(e) },
+            { rotulo: 'Abrir empresa', icone: 'ver', aoClicar: (e) => navegar(`/empresas/${e.id}`) },
+          ]} />
+      )}
+      {aberta && (
+        <PainelLateral titulo={`Viabilidade · ${aberta.marca}`} aoFechar={() => setAberta(null)}>
+          <Confirmacao e={aberta} cardapio={cardapio.dado ?? []} podeConfirmar={pode(perfil, 'operacoes')}
+            aoSalvar={async () => { setAberta(null); await lista.recarregar() }} />
+        </PainelLateral>
+      )}
     </>
   )
 }
@@ -41,28 +70,22 @@ function Confirmacao({ e, cardapio, podeConfirmar, aoSalvar }: { e: Empresa; car
   }
 
   return (
-    <section className="cartao">
-      <div className="linha entre">
-        <h3><Link to={`/empresas/${e.id}`}>{e.marca}</Link> <PadraoTag padrao={e.padrao_final} /></h3>
-        {e.operacoes?.confirmada_em ? <span className="pill ok">Confirmada em {formatarDataHora(e.operacoes.confirmada_em)}</span> : <span className="pill alerta">Aguardando</span>}
-      </div>
-      <p className="muted pequeno">{e.formato ? rotuloFormato[e.formato] : 'Formato a definir'} · {(e.proposta?.itens ?? []).map((i) => `${rotulo(i.item)}${i.quantidade > 1 ? ` × ${i.quantidade}` : ''}`).join(', ')}</p>
+    <div className="pilha">
+      <p className="pequeno">{e.formato ? rotuloFormato[e.formato] : 'Formato a definir'} · {(e.proposta?.itens ?? []).map((i) => `${rotulo(i.item)}${i.quantidade > 1 ? ` × ${i.quantidade}` : ''}`).join(', ')}</p>
       {e.proposta?.fora_do_cardapio && <p className="pequeno">Fora do cardápio: {e.proposta.fora_do_cardapio}</p>}
-      {podeConfirmar && !e.operacoes?.confirmada_em && (
+      {e.operacoes?.confirmada_em ? (
+        <p className="ok">Confirmada{e.operacoes.custo_centavos ? ` · custo interno ${formatarDinheiro(e.operacoes.custo_centavos)}` : ''}.</p>
+      ) : podeConfirmar ? (
         <>
-          <div className="linha">
-            {([['capacidade', 'Capacidade e número de participantes'], ['equipe', 'Equipe'], ['espaco_horario', 'Espaço e horário']] as const).map(([k, r]) => (
-              <label key={k} className="marcar"><input type="checkbox" checked={Boolean(c[k])} onChange={(ev) => setC({ ...c, [k]: ev.target.checked })} /><span>{r}</span></label>
-            ))}
-          </div>
-          <div className="grade-2">
-            <label className="campo"><span>Custo interno estimado (R$)</span><input inputMode="decimal" value={custo} onChange={(ev) => setCusto(ev.target.value)} placeholder="água, toalhas, limpeza, equipe, espaço" /></label>
-            <label className="campo"><span>Observação</span><input value={c.observacao ?? ''} onChange={(ev) => setC({ ...c, observacao: ev.target.value })} /></label>
-          </div>
+          {([['capacidade', 'Capacidade e número de participantes'], ['equipe', 'Equipe'], ['espaco_horario', 'Espaço e horário']] as const).map(([k, r]) => (
+            <label key={k} className="marcar"><input type="checkbox" checked={Boolean(c[k])} onChange={(ev) => setC({ ...c, [k]: ev.target.checked })} /><span>{r}</span></label>
+          ))}
+          <label className="campo"><span>Custo interno estimado (R$)</span><input inputMode="decimal" value={custo} onChange={(ev) => setCusto(ev.target.value)} placeholder="água, toalhas, limpeza, equipe, espaço" /></label>
+          <label className="campo"><span>Observação</span><input value={c.observacao ?? ''} onChange={(ev) => setC({ ...c, observacao: ev.target.value })} /></label>
           {erro && <p className="erro" role="alert">{erro}</p>}
           <div><button className="botao primario" onClick={() => void confirmar()}>Confirmar viabilidade</button></div>
         </>
-      )}
-    </section>
+      ) : <p className="muted">Aguardando a confirmação de Operações.</p>}
+    </div>
   )
 }

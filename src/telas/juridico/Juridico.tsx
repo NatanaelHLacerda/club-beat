@@ -1,17 +1,19 @@
 import { useNavigate } from 'react-router-dom'
 import { SemAcesso, Topo } from '../../componentes/Casca'
 import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarParaJuridico } from '../../dados/api'
+import type { Empresa } from '../../dados/tipos'
 import { formatarData, hojeISO } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
 
-function situacao(c: { enviado_juridico_em?: string; pronto_em?: string | null; divergencia?: string | null }) {
-  if (c.pronto_em) return <span className="pill ok">Pronto para assinar</span>
-  if (c.divergencia) return <span className="pill perigo">Divergência com a Gerente</span>
-  if (c.enviado_juridico_em) return <span className="pill alerta">Minuta em preparo</span>
-  return <span className="pill">Aguardando pacote</span>
+function situacao(c: Empresa['contrato']) {
+  if (c?.pronto_em) return <Pill tom="ok">Pronto para assinar</Pill>
+  if (c?.divergencia) return <Pill tom="perigo">Divergência com a Gerente</Pill>
+  if (c?.enviado_juridico_em) return <Pill tom="alerta">Minuta em preparo</Pill>
+  return <Pill>Aguardando pacote</Pill>
 }
 
 export function Juridico() {
@@ -21,30 +23,28 @@ export function Juridico() {
   if (!pode(perfil, 'ver_juridico')) return (<><Topo titulo="Jurídico" /><SemAcesso /></>)
   const hoje = hojeISO()
   const casos = lista.dado ?? []
+  const vencido = (e: Empresa) => Boolean(!e.contrato?.pronto_em && e.contrato?.prazo_juridico && hoje > e.contrato.prazo_juridico)
   return (
     <>
-      <Topo eyebrow="Contratos" titulo="Jurídico"><span className="muted num">{casos.length} em andamento</span></Topo>
-      <p className="muted">Minuta em até 5 dias úteis depois do pacote. A minuta tem exatamente o que foi aceito na proposta.</p>
+      <Topo eyebrow="Contratos" titulo="Jurídico" />
+      <div className="numeros">
+        <CartaoNumero rotulo="Em andamento" icone="juridico" valor={lista.dado ? casos.length : '—'} />
+        <CartaoNumero rotulo="Minuta em preparo" icone="regras" valor={lista.dado ? casos.filter((e) => e.contrato?.enviado_juridico_em && !e.contrato?.pronto_em).length : '—'} />
+        <CartaoNumero rotulo="Prontos para assinar" icone="check" valor={lista.dado ? casos.filter((e) => e.contrato?.pronto_em).length : '—'} />
+        <CartaoNumero rotulo="Prazo vencido" icone="alerta" valor={lista.dado ? casos.filter(vencido).length : '—'} />
+      </div>
+      <p className="muted pequeno">Minuta em até 5 dias úteis depois do pacote. A minuta tem exatamente o que foi aceito na proposta.</p>
       {lista.erro && <div className="aviso perigo">{lista.erro}</div>}
-      {casos.length === 0 ? <div className="vazio">Nenhum contrato em andamento.</div> : (
-        <div className="tabela-rolagem">
-          <table>
-            <thead><tr><th>Empresa</th><th>Padrão</th><th>Situação</th><th>Prazo da minuta</th></tr></thead>
-            <tbody>
-              {casos.map((e) => {
-                const vencido = !e.contrato?.pronto_em && e.contrato?.prazo_juridico && hoje > e.contrato.prazo_juridico
-                return (
-                  <tr key={e.id} className="clicavel" onClick={() => navegar(`/empresas/${e.id}`)}>
-                    <td>{e.marca} <Exemplo mostrar={e.exemplo} /></td>
-                    <td><PadraoTag padrao={e.padrao_final} /></td>
-                    <td>{situacao(e.contrato ?? {})}</td>
-                    <td className={`num ${vencido ? 'erro' : ''}`}>{formatarData(e.contrato?.prazo_juridico)}{vencido ? ' · vencido' : ''}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
+      {lista.carregando && !lista.dado ? <Carregando /> : (
+        <Tabela<Empresa> itens={casos} chave={(e) => e.id} vazio="Nenhum contrato em andamento."
+          aoAbrir={(e) => navegar(`/empresas/${e.id}`)} destaque={(e) => (vencido(e) ? 'atrasado' : null)}
+          colunas={[
+            { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
+            { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
+            { titulo: 'Situação', render: (e) => situacao(e.contrato) },
+            { titulo: 'Prazo da minuta', render: (e) => e.contrato?.prazo_juridico ? <DataComIcone texto={formatarData(e.contrato.prazo_juridico)} erro={vencido(e)} /> : <span className="muted">—</span> },
+          ]}
+          acoes={[{ rotulo: 'Abrir contrato', icone: 'juridico', aoClicar: (e) => navegar(`/empresas/${e.id}`) }]} />
       )}
     </>
   )
