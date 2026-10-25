@@ -6,9 +6,8 @@ import { RedefinirSenha } from './telas/acesso/RedefinirSenha'
 import { Regras } from './telas/config/Regras'
 import { Usuarios } from './telas/config/Usuarios'
 import { Ficha } from './telas/empresa/Ficha'
-import { Empresas } from './telas/empresas/Empresas'
 import { NovaEmpresa } from './telas/empresas/NovaEmpresa'
-import { Funil } from './telas/funil/Funil'
+import { TelaEmpresas } from './telas/empresas/TelaEmpresas'
 import { MinhaFila } from './telas/fila/MinhaFila'
 import { Calendario } from './telas/calendario/Calendario'
 import { Operacoes } from './telas/operacoes/Operacoes'
@@ -35,9 +34,9 @@ export function App() {
       <Route element={<Casca />}>
         <Route path="/" element={<Navigate to="/inicio" replace />} />
         <Route path="/inicio" element={<Inicio />} />
-        <Route path="/funil" element={<Funil />} />
+        <Route path="/funil" element={<TelaEmpresas key="funil" />} />
         <Route path="/fila" element={<MinhaFila />} />
-        <Route path="/empresas" element={<Empresas />} />
+        <Route path="/empresas" element={<TelaEmpresas key="empresas" forcarLista />} />
         <Route path="/empresas/nova" element={<NovaEmpresa />} />
         <Route path="/empresas/:id" element={<Ficha />} />
         <Route path="/parcerias" element={<Parcerias />} />

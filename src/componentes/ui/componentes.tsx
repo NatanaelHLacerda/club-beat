@@ -1,5 +1,5 @@
 // REQ-018 — peças visuais do CRM (estilo do kit de referência, identidade do Club). Sem chamada de dados.
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { calcularVariacao, textoVariacao } from '../../regras/variacao'
 import { Icone, type NomeIcone } from './Icone'
@@ -151,5 +151,23 @@ export function Progresso({ feito, total, rotulo }: { feito: number; total: numb
       <span className="trilho"><span style={{ width: `${pct}%` }} /></span>
       <span className="num pequeno">{feito}{total !== null ? `/${total}` : ''}</span>
     </span>
+  )
+}
+
+// ── Painel lateral (REQ-021) ────────────────────────────────────
+export function PainelLateral({ titulo, aoFechar, children }: { titulo: string; aoFechar: () => void; children: ReactNode }) {
+  useEffect(() => {
+    const tecla = (e: KeyboardEvent) => { if (e.key === 'Escape') aoFechar() }
+    document.addEventListener('keydown', tecla)
+    return () => document.removeEventListener('keydown', tecla)
+  }, [aoFechar])
+  return (
+    <>
+      <div className="fundo-gaveta" onClick={aoFechar} aria-hidden="true" />
+      <aside className="painel-lateral" role="dialog" aria-modal="true" aria-label={titulo}>
+        <div className="linha entre"><h2>{titulo}</h2><BotaoIcone icone="fechar" rotulo="Fechar" aoClicar={aoFechar} /></div>
+        {children}
+      </aside>
+    </>
   )
 }

@@ -1,12 +1,12 @@
 import { segmentos } from '../dados/campos'
 import { rotuloOrigem, rotuloPadrao, rotuloPorte, type FiltrosEmpresas, type Origem, type Padrao, type Perfil, type Porte } from '../dados/tipos'
 
-type Props = { filtros: FiltrosEmpresas; mudar: (f: FiltrosEmpresas) => void; usuarios: Perfil[]; busca?: boolean }
+type Props = { filtros: FiltrosEmpresas; mudar: (f: FiltrosEmpresas) => void; usuarios: Perfil[]; busca?: boolean; total?: number }
 
-export function Filtros({ filtros, mudar, usuarios, busca }: Props) {
+export function Filtros({ filtros, mudar, usuarios, busca, total }: Props) {
   const gerentes = usuarios.filter((u) => u.papel === 'gerente')
   return (
-    <div className="linha" role="group" aria-label="Filtros">
+    <div className="filtros-linha" role="group" aria-label="Filtros">
       {busca && (
         <input className="entrada" style={{ maxWidth: 260 }} id="filtro-busca" placeholder="Buscar por marca, razão social ou CNPJ"
           value={filtros.busca ?? ''} onChange={(e) => mudar({ ...filtros, busca: e.target.value })} />
@@ -31,6 +31,8 @@ export function Filtros({ filtros, mudar, usuarios, busca }: Props) {
         <option value="">Todas as origens</option>
         {(Object.keys(rotuloOrigem) as Origem[]).map((o) => <option key={o} value={o}>{rotuloOrigem[o]}</option>)}
       </select>
+      {Object.values(filtros).some(Boolean) && <button className="botao leve" onClick={() => mudar({})}>Limpar filtros</button>}
+      {total !== undefined && <span className="muted pequeno num">{total} {total === 1 ? 'resultado' : 'resultados'}</span>}
     </div>
   )
 }

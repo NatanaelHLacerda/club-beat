@@ -121,7 +121,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Peças */
 .cartao { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .cartao.destaque { border-color: var(--gold); }
-.botao { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; white-space: nowrap; }
+.botao { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 500; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
 .botao:hover { border-color: var(--gold); }
 .botao.primario { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
 .botao.primario:hover { background: #1E3358; border-color: #1E3358; }
@@ -304,3 +304,22 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .icone-redondo.alerta { background: #F8EFD9; color: var(--warn); }
 .data-bloco { display: flex; flex-direction: column; align-items: center; width: 44px; padding: 4px 0; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); }
 .data-bloco b { font-size: 1.1rem; line-height: 1.1; }
+
+/* ── REQ-021: funil e empresas ── */
+.painel-lateral { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100vw); background: var(--bg-2); z-index: 60; box-shadow: var(--sombra); padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+.alternar { display: inline-flex; background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.alternar button { border: 0; background: none; border-radius: 999px; padding: 6px 14px; cursor: pointer; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.alternar button.ativo { background: var(--primary); color: var(--primary-ink); }
+.filtros-linha { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filtros-linha select, .filtros-linha .entrada { width: auto; border-radius: 999px; padding: 6px 12px; }
+.coluna { background: var(--surface-2); border: 0; border-radius: var(--radius); }
+.coluna > header { border-bottom: 0; padding: 12px 12px 4px; }
+.coluna > header .contagem { background: var(--bg-2); border-radius: 999px; padding: 0 8px; font-size: 0.75rem; color: var(--muted); }
+.cartao-empresa { background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: inherit; cursor: grab; }
+.cartao-empresa:hover { border-color: var(--gold-soft); box-shadow: 0 4px 12px rgba(20, 37, 64, 0.06); }
+.cartao-empresa.atrasado { box-shadow: inset 3px 0 0 var(--danger); }
+.cartao-empresa.vence { box-shadow: inset 3px 0 0 var(--warn); }
+.cartao-empresa b { color: var(--ink); font-weight: 500; }
+.cartao-empresa .rodape { display: flex; justify-content: space-between; align-items: center; gap: 6px; border-top: 1px dashed var(--line); padding-top: 8px; }
+.tabela td.num, .tabela td .pill { white-space: nowrap; }
+.filtros-linha #filtro-busca { min-width: 260px; }
