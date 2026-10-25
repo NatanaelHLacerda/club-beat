@@ -1,0 +1,197 @@
+<title>CRM de Parcerias Club Beat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap">
+<style>
+/* Layout: coluna única de leitura; o pipeline é a única faixa larga, com rolagem lateral própria. Paleta do manual do Club. */
+:root{
+  --bg:#0F1D33; --surface:#16294A; --ink:#F4EEE2; --text:#CBD0DC; --muted:#8E97AB;
+  --line:#2C4570; --gold:#D2AE6A; --gold-soft:#D2AE6A; --chip:#D2AE6A; --chip-fg:#142540;
+  --warn:#E2A27A; color-scheme:dark;
+  --display:"Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body:"Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;margin:0}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:48px 72px;display:flex;flex-direction:column;gap:56px}
+h1,h2{font-family:var(--display);color:var(--ink);font-weight:600;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.08}
+h2{font-size:1.7rem;line-height:1.2}
+h3{font-family:var(--body);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0;font-weight:600}
+p{margin:0;max-width:65ch}
+section{display:flex;flex-direction:column;gap:20px}
+.lede{font-size:1.15rem;color:var(--text)}
+.meta{font-size:.85rem;color:var(--muted)}
+.head{display:flex;flex-direction:column;gap:18px;border-bottom:1px solid var(--line);padding-bottom:36px}
+.head h1 em{font-style:normal;color:var(--gold)}
+
+/* Hoje x CRM */
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.versus > div{padding:20px 22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.versus > div + div{border-left:1px solid var(--line);background:var(--surface)}
+.versus ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+@media (max-width:640px){.versus{grid-template-columns:1fr}.versus > div + div{border-left:0;border-top:1px solid var(--line)}}
+
+/* Pipeline */
+.pipe-scroll{overflow-x:auto;margin-inline:-20px;padding-inline:20px;padding-bottom:6px}
+.pipe{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);gap:8px;min-width:max-content}
+.stage{border-top:3px solid var(--ink);background:var(--surface);padding:12px 12px 14px;display:flex;flex-direction:column;gap:4px;border-radius:0 0 10px 10px}
+.stage b{color:var(--ink);font-weight:600;font-size:.95rem}
+.stage span{font-size:.8rem;color:var(--muted)}
+.stage .sla{font-variant-numeric:tabular-nums;color:var(--gold);font-weight:500}
+.stage.gate{border-top-color:var(--gold-soft)}
+.exits{font-size:.88rem;color:var(--muted)}
+.exits strong{color:var(--ink);font-weight:500}
+
+/* Automações */
+.auto{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px;margin:0;padding:0;list-style:none}
+.auto li{display:flex;flex-direction:column;gap:2px;padding-top:12px;border-top:1px solid var(--line)}
+.auto li b{color:var(--ink);font-weight:600}
+.auto li span{font-size:.93rem}
+@media (max-width:640px){.auto{grid-template-columns:1fr}}
+
+/* Cenário */
+.case-card{background:var(--surface);border-radius:14px;padding:18px 22px;display:flex;flex-wrap:wrap;gap:8px 28px;font-size:.92rem}
+.case-card div{display:flex;flex-direction:column}
+.case-card small{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.case-card strong{color:var(--ink);font-weight:500}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tl li{display:grid;grid-template-columns:72px 1fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tl li:last-child{border-bottom:0}
+.tl .d{font-family:var(--display);font-size:1.25rem;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1.3}
+.tl .t{min-width:0;display:flex;flex-direction:column;gap:3px}
+.tl .t b{color:var(--ink);font-weight:600}
+.pill{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.04em;padding:2px 9px;border-radius:999px;background:var(--chip);color:var(--chip-fg);vertical-align:2px;margin-left:6px}
+.pill.alert{background:transparent;color:var(--warn);border:1px solid var(--warn)}
+
+/* Campos */
+.tbl-scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td:first-child{color:var(--ink);font-weight:500;white-space:nowrap}
+
+/* Ferramenta + implantação */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.two > div{display:flex;flex-direction:column;gap:10px;min-width:0}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:28px 1fr;gap:10px;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--display);font-size:1.3rem;color:var(--gold);line-height:1.2}
+.steps b{color:var(--ink);font-weight:600}
+.block{border-left:2px solid var(--gold-soft);padding-left:16px;display:flex;flex-direction:column;gap:8px}
+.block ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.foot{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
+</style>
+
+<div class="wrap">
+
+  <header class="head">
+    <h3>Club Beat · Fluxo de parcerias</h3>
+    <h1>O funil de parcerias dentro de um <em>CRM</em></h1>
+    <p class="lede">A análise já definiu o caminho: 13 passos, 4 padrões e quem decide cada coisa. O CRM coloca esse caminho numa ferramenta só. A ficha chega sozinha, as regras ficam escritas nos campos e os prazos passam a ser cobrados pela ferramenta, e não pela memória da Isabela.</p>
+    <p class="meta">Cenário enxuto · baseado no documento-base v1.0 (22/10/2026) · empresa do exemplo é inventada</p>
+  </header>
+
+  <section>
+    <h2>O que muda</h2>
+    <div class="versus">
+      <div>
+        <h3>Hoje</h3>
+        <ul>
+          <li>Formulário só abre o WhatsApp e não guarda nada</li>
+          <li>Pedidos chegam soltos num e-mail interno</li>
+          <li>Planilha preenchida à mão, com avisos de renovação lembrados de cabeça</li>
+          <li>Passagem entre Gerentes depende de conversa</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Com o CRM</h3>
+        <ul>
+          <li>Cada envio do formulário vira um card no funil, com anexo</li>
+          <li>Porte, pontos e padrão calculados nos campos</li>
+          <li>Prazos, renovação e empresas paradas geram aviso automático</li>
+          <li>Ficha de passagem obrigatória antes de trocar de Gerente</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>O funil no CRM</h2>
+    <p>Cada etapa do CRM é um status da planilha. O card só avança com os campos da etapa preenchidos.</p>
+    <div class="pipe-scroll">
+      <div class="pipe">
+        <div class="stage"><b>Recebida</b><span>Formulário ou indicação</span><span class="sla">na hora</span></div>
+        <div class="stage"><b>Triagem 1</b><span>Isabela · dados e CNPJ</span><span class="sla">1 dia útil</span></div>
+        <div class="stage"><b>Triagem 2</b><span>Isabela · porte, pontos, padrão</span><span class="sla">2 dias úteis</span></div>
+        <div class="stage"><b>Reunião marcada</b><span>Gerente 1</span><span class="sla">contato em 2 d.u.</span></div>
+        <div class="stage"><b>Em proposta</b><span>Gerente · aceite por escrito</span><span class="sla">2 d.u. + 7 dias</span></div>
+        <div class="stage gate"><b>Com a Direção</b><span>Ouro, Master ou exceção</span><span class="sla">3 dias úteis</span></div>
+        <div class="stage"><b>Em contrato</b><span>Jurídico + Gerente 2</span><span class="sla">5 d.u. + ajustes</span></div>
+        <div class="stage"><b>Ativa</b><span>Entregas e relatórios</span><span class="sla">início em 30 dias</span></div>
+        <div class="stage"><b>Em renovação</b><span>Gerente · Direção no Ouro/Master</span><span class="sla">aviso a 90 dias</span></div>
+      </div>
+    </div>
+    <p class="exits">Saídas em qualquer etapa: <strong>Em espera</strong> ou <strong>Recusada</strong>, sempre com motivo obrigatório e data para retomar. A etapa "Com a Direção" só aparece quando a regra pede.</p>
+  </section>
+
+  <section>
+    <h2>O que o CRM faz sozinho</h2>
+    <ul class="auto">
+      <li><b>Entrada sem digitação</b><span>Formulário (Cognito Forms ou site) cria o card, responde com a mensagem A1 e avisa a Isabela.</span></li>
+      <li><b>Conferência de duplicidade</b><span>Busca o CNPJ na base: já é parceira, já conversou ou está perto de renovar.</span></li>
+      <li><b>Padrão calculado</b><span>Soma os 5 critérios (5 a 15 pontos) e aplica a regra: vale o menor entre pontos e investimento.</span></li>
+      <li><b>Conflito de categoria</b><span>Alerta se já existe parceiro com exclusividade no mesmo segmento.</span></li>
+      <li><b>Revezamento de Gerentes</b><span>Distribui a primeira empresa do dia para uma Gerente, a seguinte para a outra.</span></li>
+      <li><b>Porta da Direção</b><span>Ouro, Master, exclusividade, Club pagando ou fora do cardápio: o card não segue sem aprovação.</span></li>
+      <li><b>Cobrança de prazos</b><span>Gerente sem retorno em 2 dias úteis avisa a outra Gerente. Direção parada em 3 dias gera novo aviso.</span></li>
+      <li><b>Renovação e resumo</b><span>Lembretes a 90, 60 e 30 dias do fim. Resumo mensal de fechamentos para a Direção.</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Uma empresa atravessando o CRM</h2>
+    <div class="case-card">
+      <div><small>Empresa</small><strong>Rede regional de alimentação saudável</strong></div>
+      <div><small>Porte</small><strong>Média I · R$ 40 mi/ano</strong></div>
+      <div><small>Pontos</small><strong>2+2+2+2+2 = 10</strong></div>
+      <div><small>Padrão</small><strong>Prata</strong></div>
+    </div>
+    <ol class="tl">
+      <li><span class="d">D0</span><div class="t"><b>Ficha enviada pelo site</b><span>Card criado em "Recebida", resposta automática enviada, Isabela avisada no WhatsApp.</span></div></li>
+      <li><span class="d">D1</span><div class="t"><b>Triagem 1</b><span>CNPJ ativo, sem histórico na base, portfólio abre. Categoria aceita.</span></div></li>
+      <li><span class="d">D3</span><div class="t"><b>Triagem 2 · Prata</b><span>10 pontos e investimento na faixa Prata. Estudo da empresa anexado. Revezamento indica Fernanda como Gerente 1.</span></div></li>
+      <li><span class="d">D5</span><div class="t"><b>Contato e reunião marcada</b><span>Fernanda propõe horários. Reunião presencial no D12, com datas B reservadas por 7 dias.</span></div></li>
+      <li><span class="d">D12</span><div class="t"><b>Reunião de alinhamento <span class="pill alert">pede exclusividade</span></b><span>A empresa quer ser a única de alimentação no Club. Prata dentro do cardápio fecha com a Gerente, mas exclusividade não.</span></div></li>
+      <li><span class="d">D14</span><div class="t"><b>Card vai para "Com a Direção"</b><span>Resumo de 1 página gerado a partir dos campos. Direção aprova exclusividade local com valor próprio (R$ …).</span></div></li>
+      <li><span class="d">D21</span><div class="t"><b>Aceite por escrito</b><span>Fernanda preenche a ficha de passagem. Card segue para Marcela (Gerente 2) e Jurídico.</span></div></li>
+      <li><span class="d">D28</span><div class="t"><b>Assinada · Ativa <span class="pill">Prata</span></b><span>Datas viram "Confirmada" no calendário. Financeiro e Operações recebem a lista de entregas. Alertas de renovação ligados.</span></div></li>
+      <li><span class="d">−90</span><div class="t"><b>Renovação</b><span>Marcela recebe o aviso com entregas, pagamentos e opinião dos membros. A renovação é um novo acordo, nunca automática.</span></div></li>
+    </ol>
+    <p class="meta">Do contato à assinatura: cerca de 4 semanas, dentro da estimativa de 4 a 6 semanas da análise.</p>
+  </section>
+
+  <section>
+    <h2>Campos que sustentam as regras</h2>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Campo</th><th>Para que serve</th></tr></thead>
+        <tbody>
+          <tr><td>CNPJ · porte</td><td>Pequena, Média I, Média II, Grande. Vale o maior porte quando os critérios divergem.</td></tr>
+          <tr><td>Aderência</td><td>5 critérios em sim / em parte / não. Dois "não" ou "não" em "o membro primeiro" encerram.</td></tr>
+          <tr><td>Pontos · padrão</td><td>Padrão por pontos, padrão por investimento e padrão final (o menor dos dois).</td></tr>
+          <tr><td>Segmento · exclusividade</td><td>Detecta conflito de categoria e libera quando o contrato atual não vai renovar.</td></tr>
+          <tr><td>Gerente 1 · Gerente 2</td><td>Quem conduz, quem finaliza e um responsável final por parceria.</td></tr>
+          <tr><td>Início · fim do contrato</td><td>Gera os avisos de 90, 60 e 30 dias.</td></tr>
+          <tr><td>Promessa de revisão</td><td>Registra o "revemos ao fim do contrato" dito na contraproposta, para ser cumprido.</td></tr>
+          <tr><td>Motivo de saída</td><td>Obrigatório em "Em espera" e "Recusada". Mantém a porta aberta com contexto.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+
+
+  <p class="foot">Club Beat · Cenário de CRM para o fluxo de parcerias · uso interno</p>
+</div>
