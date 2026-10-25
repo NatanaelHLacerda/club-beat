@@ -4,6 +4,9 @@ import { EmBreve } from './componentes/EmBreve'
 import { Entrar } from './telas/acesso/Entrar'
 import { RedefinirSenha } from './telas/acesso/RedefinirSenha'
 import { Usuarios } from './telas/config/Usuarios'
+import { Ficha } from './telas/empresa/Ficha'
+import { Empresas } from './telas/empresas/Empresas'
+import { Funil } from './telas/funil/Funil'
 
 export function App() {
   return (
@@ -12,8 +15,9 @@ export function App() {
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       <Route element={<Casca />}>
         <Route path="/" element={<Navigate to="/funil" replace />} />
-        <Route path="/funil" element={<EmBreve titulo="Funil" />} />
-        <Route path="/empresas" element={<EmBreve titulo="Empresas" />} />
+        <Route path="/funil" element={<Funil />} />
+        <Route path="/empresas" element={<Empresas />} />
+        <Route path="/empresas/:id" element={<Ficha />} />
         <Route path="/parcerias" element={<EmBreve titulo="Parcerias ativas" />} />
         <Route path="/calendario" element={<EmBreve titulo="Calendário" />} />
         <Route path="/renovacoes" element={<EmBreve titulo="Renovações" />} />

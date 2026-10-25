@@ -34,3 +34,53 @@ begin
     insert into public.perfis (id, nome, email, papel, admin) values (u.id, u.nome, u.email, u.papel, u.admin);
   end loop;
 end $$;
+
+-- REQ-004 — empresas de EXEMPLO espalhadas pelo funil (todas inventadas)
+insert into public.empresas (cnpj, razao_social, marca, cidade, uf, segmento, site, instagram, tempo_atuacao,
+  faixa_faturamento, faixa_funcionarios, contato_nome, contato_cargo, contato_whatsapp, contato_email, busca,
+  motivo_parceria, objetivo, publico, origem, indicado_por, consentimento_em, etapa, etapa_desde,
+  gerente1_id, responsavel_id, porte, padrao_final, exemplo, criado_em)
+values
+  ('11222333000181', 'Verde Vivo Alimentos Ltda (exemplo)', 'Rede Verde (exemplo)', 'Belo Horizonte', 'MG', 'nutrição e alimentação',
+   'https://exemplo.invalid/verde', '@redeverde.exemplo', '3 a 10', 'R$ 4,8 mi a R$ 90 mi', '100 a 499', 'Paula Exemplo', 'Gerente de marketing',
+   '(31) 90000-0001', 'paula@exemplo.invalid', '{ativações dentro do Club,eventos}', 'Queremos aproximar a marca de um público que cuida da saúde.',
+   'criar relacionamento com público de alto padrão', 'Adultos ativos de alta renda', 'site', null, now() - interval '20 days',
+   'proposta', now() - interval '3 days', '00000000-0000-4000-a000-000000000002', '00000000-0000-4000-a000-000000000002', 'media1', 'prata', true, now() - interval '20 days'),
+  ('22333444000181', 'Estética Bairro Ltda (exemplo)', 'Clínica Brisa (exemplo)', 'Belo Horizonte', 'MG', 'beleza e estética',
+   null, '@clinicabrisa.exemplo', '1 a 3', 'R$ 360 mil a R$ 4,8 mi', '10 a 49', 'Rita Exemplo', 'Sócia',
+   '(31) 90000-0002', 'rita@exemplo.invalid', '{telas do Club}', 'Ser vista pelos membros do Club.',
+   'dar a conhecer a marca', 'Mulheres de 30 a 55 anos', 'indicacao_membro', 'Membro Exemplo', now() - interval '2 days',
+   'triagem2', now() - interval '1 day', null, null, 'pequena', 'bronze', true, now() - interval '2 days'),
+  ('33444555000181', 'Bebidas Nacionais SA (exemplo)', 'Fonte Clara (exemplo)', 'São Paulo', 'SP', 'nutrição e alimentação',
+   'https://exemplo.invalid/fonte', '@fonteclara.exemplo', 'mais de 10', 'acima de R$ 300 mi', '500 ou mais', 'Marcos Exemplo', 'Diretor de marca',
+   '(11) 90000-0003', 'marcos@exemplo.invalid', '{patrocínio,presença de marca}', 'Presença de marca em espaço premium.',
+   'dar a conhecer a marca', 'Público A e B', 'site', null, now() - interval '9 days',
+   'reuniao', now() - interval '5 days', '00000000-0000-4000-a000-000000000003', '00000000-0000-4000-a000-000000000003', 'grande', 'ouro', true, now() - interval '9 days'),
+  ('44555666000181', 'Studio Movimento ME (exemplo)', 'Studio Movimento (exemplo)', 'Nova Lima', 'MG', 'saúde e bem-estar',
+   null, '@studiomov.exemplo', 'menos de 1', 'até R$ 360 mil', 'até 9', 'Júlia Exemplo', 'Proprietária',
+   '(31) 90000-0004', 'julia@exemplo.invalid', '{troca de serviços}', 'Trocar aulas por divulgação.',
+   'oferecer uma experiência', 'Praticantes de pilates', 'whatsapp', null, now() - interval '1 day',
+   'recebida', now() - interval '1 day', null, null, null, null, true, now() - interval '1 day'),
+  ('55666777000181', 'Moda Serra Ltda (exemplo)', 'Serra Moda (exemplo)', 'Belo Horizonte', 'MG', 'moda e acessórios',
+   'https://exemplo.invalid/serra', '@serramoda.exemplo', '3 a 10', 'R$ 4,8 mi a R$ 90 mi', '50 a 99', 'Caio Exemplo', 'Coordenador comercial',
+   '(31) 90000-0005', 'caio@exemplo.invalid', '{eventos,conteúdo e redes sociais}', 'Lançar a coleção esportiva.',
+   'lançar um produto', 'Adultos ativos', 'site', null, now() - interval '3 days',
+   'triagem1', now() - interval '2 days', null, null, null, null, true, now() - interval '3 days'),
+  ('66777888000181', 'Tech Saúde Ltda (exemplo)', 'Pulso App (exemplo)', 'Belo Horizonte', 'MG', 'tecnologia',
+   'https://exemplo.invalid/pulso', '@pulsoapp.exemplo', '1 a 3', 'R$ 360 mil a R$ 4,8 mi', '10 a 49', 'Bruno Exemplo', 'CEO',
+   '(31) 90000-0006', 'bruno@exemplo.invalid', '{telas do Club,ativações dentro do Club}', 'Apresentar o app de treino.',
+   'gerar vendas ou contatos', 'Praticantes de esporte', 'site', null, now() - interval '40 days',
+   'contrato', now() - interval '4 days', '00000000-0000-4000-a000-000000000003', '00000000-0000-4000-a000-000000000002', 'pequena', 'prata', true, now() - interval '40 days'),
+  ('77888999000181', 'Cafés Especiais Ltda (exemplo)', 'Grão Nobre (exemplo)', 'Belo Horizonte', 'MG', 'nutrição e alimentação',
+   null, '@graonobre.exemplo', '3 a 10', 'R$ 360 mil a R$ 4,8 mi', '10 a 49', 'Lia Exemplo', 'Sócia',
+   '(31) 90000-0007', 'lia@exemplo.invalid', '{troca de serviços}', 'Servir café nos eventos.',
+   'oferecer uma experiência', 'Membros do Club', 'indicacao_direcao', 'Direção', now() - interval '60 days',
+   'espera', now() - interval '10 days', '00000000-0000-4000-a000-000000000002', '00000000-0000-4000-a000-000000000002', 'pequena', 'bronze', true, now() - interval '60 days'),
+  ('88999000000198', 'Apostas Online Ltda (exemplo)', 'Sorte Já (exemplo)', 'Rio de Janeiro', 'RJ', 'outro',
+   null, '@sorteja.exemplo', '1 a 3', 'R$ 4,8 mi a R$ 90 mi', '50 a 99', 'Ivo Exemplo', 'Marketing',
+   '(21) 90000-0008', 'ivo@exemplo.invalid', '{patrocínio}', 'Patrocinar o Club.',
+   'dar a conhecer a marca', 'Adultos', 'site', null, now() - interval '15 days',
+   'recusada', now() - interval '14 days', null, null, null, null, true, now() - interval '15 days');
+
+update public.empresas set motivo_saida = 'Categoria não aceita: apostas' where cnpj = '88999000000198';
+update public.empresas set motivo_saida = 'Sem acordo de datas neste semestre', retomar_em = current_date + 170 where cnpj = '77888999000181';

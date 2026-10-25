@@ -150,3 +150,7 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .tela-solta .cartao { width: min(420px, 100%); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Ficha da empresa */
+.grade-ficha { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+@media (max-width: 1000px) { .grade-ficha { grid-template-columns: 1fr; } }
