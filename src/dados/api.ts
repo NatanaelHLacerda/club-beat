@@ -3,18 +3,18 @@ import { supabase } from './supabase'
 import type { Conferencia } from '../regras/entrada'
 import type { Ficha } from '../regras/formulario'
 import type { MarcasTriagem1 } from '../regras/triagem1'
-import type { Anexo, Aviso, CamposEditaveis, Categoria, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
+import type { Anexo, Aviso, CamposEditaveis, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
 
-function falhou(error: { message: string } | null, padrao: string): never | void {
-  if (error) throw new ErroApi(traduzir(error.message) ?? padrao)
+function falhou(error: { message: string; code?: string } | null, padrao: string): never | void {
+  if (error) throw new ErroApi(traduzir(error) ?? padrao)
 }
 
-function traduzir(mensagem: string): string | null {
-  // Mensagens de regra do banco já vêm em português (raise exception).
-  if (/[áéíóúãõç]/i.test(mensagem) && !/permission denied/i.test(mensagem)) return mensagem
-  if (/permission denied|42501/i.test(mensagem)) return 'Você não tem acesso a esta área.'
+function traduzir({ message, code }: { message: string; code?: string }): string | null {
+  // Regras do banco (raise exception) chegam com o código P0001 e o texto já em português.
+  if (code === 'P0001') return message
+  if (code === '42501' || /permission denied/i.test(message)) return 'Você não tem acesso a esta área.'
   return null
 }
 
@@ -257,4 +257,24 @@ export async function salvarTriagem1(empresa: string, itens: MarcasTriagem1, cat
 export async function encerrarComA5(empresa: string, textoA5: string, motivo: string) {
   await registrarMensagem(empresa, 'A5', 'email', textoA5)
   await moverEtapa(empresa, 'recusada', motivo)
+}
+
+// ── Classificação (REQ-006) ───────────────────────────────────────
+
+export async function conferirConflito(categoria: string, empresa: string): Promise<Conflito | null> {
+  const { data, error } = await supabase.rpc('conflito_categoria', { categoria_pedida: categoria, empresa })
+  falhou(error, 'Não foi possível conferir conflitos.')
+  return ((data as Conflito[] | null) ?? [])[0] ?? null
+}
+
+export async function salvarClassificacao(empresa: string, ficha: FichaClassificacao, porte: Porte | null, padrao: Padrao | null, estudo: string, master: boolean) {
+  const { error } = await supabase.rpc('salvar_classificacao', {
+    empresa, ficha, porte_calc: porte, padrao_calc: padrao, texto_estudo: estudo, master,
+  })
+  falhou(error, 'Não foi possível salvar a classificação.')
+}
+
+export async function concluirTriagem2(empresa: string) {
+  const { error } = await supabase.rpc('concluir_triagem2', { empresa })
+  falhou(error, 'Não foi possível concluir a Triagem 2.')
 }

@@ -84,3 +84,23 @@ values
 
 update public.empresas set motivo_saida = 'Categoria não aceita: apostas' where cnpj = '88999000000198';
 update public.empresas set motivo_saida = 'Sem acordo de datas neste semestre', retomar_em = current_date + 170 where cnpj = '77888999000181';
+
+-- REQ-006 — parceira ativa de EXEMPLO com exclusividade em nutrição e alimentação
+insert into public.empresas (cnpj, razao_social, marca, cidade, uf, segmento, categoria, instagram, contato_nome, contato_email,
+  origem, etapa, etapa_desde, gerente1_id, responsavel_id, porte, padrao_final, exemplo, criado_em)
+values ('12345678000195', 'Sabor Leve Alimentos Ltda (exemplo)', 'Sabor Leve (exemplo)', 'Belo Horizonte', 'MG', 'nutrição e alimentação',
+  'nutrição e alimentação', '@saborleve.exemplo', 'Tina Exemplo', 'tina@exemplo.invalid', 'site', 'ativa', now() - interval '120 days',
+  '00000000-0000-4000-a000-000000000002', '00000000-0000-4000-a000-000000000002', 'media1', 'ouro', true, now() - interval '200 days');
+
+insert into public.parcerias (empresa_id, inicio, fim, exclusividade_categoria, exclusividade_inicio, exclusividade_fim)
+select id, current_date - 120, current_date + 245, 'nutrição e alimentação', current_date - 120, current_date + 245
+from public.empresas where cnpj = '12345678000195';
+
+-- Empresas de exemplo que já passaram das triagens têm as triagens concluídas.
+update public.empresas set
+  triagem1 = '{"formulario":true,"cnpj":true,"nome_cidade":true,"site_instagram":true,"portfolio":true,"motivo":true,"consentimento":true,"categoria":true}',
+  receita_situacao = 'ativa',
+  categoria = coalesce(categoria, segmento),
+  estudo = coalesce(estudo, 'Estudo de exemplo: marca com público parecido com o do Club, busca relacionamento de longo prazo e ações dentro do Club.'),
+  triagem2_concluida_em = coalesce(triagem2_concluida_em, etapa_desde - interval '2 days')
+where exemplo and etapa in ('reuniao', 'proposta', 'direcao', 'contrato', 'ativa', 'renovacao');

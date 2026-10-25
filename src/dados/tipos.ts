@@ -1,5 +1,6 @@
 import type { Etapa } from '../regras/etapas'
 import type { MarcasTriagem1, SituacaoCategoria, SituacaoReceita } from '../regras/triagem1'
+import type { Aderencia, FaixaInvestimento, Pontos } from '../regras/classificacao'
 
 export type Papel = 'primeira_pessoa' | 'gerente' | 'direcao' | 'juridico' | 'financeiro' | 'operacoes'
 
@@ -88,6 +89,10 @@ export type Empresa = {
   receita_situacao: SituacaoReceita | null
   receita_porte: 'ME' | 'EPP' | 'demais' | null
   pedido_info_em: string | null
+  classificacao: FichaClassificacao
+  estudo: string | null
+  candidata_master: boolean
+  triagem2_concluida_em: string | null
   exemplo: boolean
   criado_em: string
 }
@@ -95,7 +100,8 @@ export type Empresa = {
 export type CamposEditaveis = Omit<Empresa,
   'id' | 'etapa' | 'etapa_desde' | 'motivo_saida' | 'retomar_em' | 'gerente1_id' | 'gerente2_id' | 'responsavel_id' |
   'porte' | 'padrao_final' | 'exemplo' | 'criado_em' | 'consentimento_em' |
-  'categoria' | 'triagem1' | 'receita_situacao' | 'receita_porte' | 'pedido_info_em'>
+  'categoria' | 'triagem1' | 'receita_situacao' | 'receita_porte' | 'pedido_info_em' |
+  'classificacao' | 'estudo' | 'candidata_master' | 'triagem2_concluida_em'>
 
 export type ItemHistorico = {
   id: number
@@ -149,3 +155,17 @@ export type Aviso = { id: number; usuario_id: string; empresa_id: string | null;
 
 // ── Primeira triagem (REQ-005) ────────────────────────────────────
 export type Categoria = { nome: string; situacao: SituacaoCategoria; ordem: number }
+
+// ── Classificação (REQ-006) ───────────────────────────────────────
+export type FichaClassificacao = {
+  industria?: boolean
+  grupo?: boolean
+  grupo_faixa?: string | null
+  nota_porte?: string | null
+  provisorio?: boolean
+  aderencia?: Aderencia
+  pontos?: Pontos
+  faixa_investimento?: FaixaInvestimento | null
+  padrao_pontos?: Padrao | null
+}
+export type Conflito = { marca: string; fim: string }
