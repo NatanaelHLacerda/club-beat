@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
-import { Filtros, nomeDe } from '../../componentes/Filtros'
+import { Filtros, FiltrosAtivos, nomeDe } from '../../componentes/Filtros'
 import { EtapaTag, Exemplo, PadraoTag } from '../../componentes/Rotulos'
 import { TrocaEtapa } from '../../componentes/TrocaEtapa'
-import { Avatar, Carregando, Icone, PainelLateral, Pill, Tabela, Vazio } from '../../componentes/ui'
+import { Avatar, BarraBusca, Carregando, Icone, PainelLateral, Pill, Tabela, Vazio } from '../../componentes/ui'
 import { listarEmpresas, listarPrazos, listarUsuarios, moverEtapa } from '../../dados/api'
 import type { Empresa, FiltrosEmpresas } from '../../dados/tipos'
 import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
@@ -57,14 +57,17 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
 
   return (
     <>
-      <Topo eyebrow="Funil de parcerias" titulo={modo === 'quadro' ? 'Funil' : 'Empresas'}>
+      <Topo eyebrow="Funil de parcerias" titulo={modo === 'quadro' ? 'Funil' : 'Empresas'}
+        secao={empresas.dado ? <>{lista.length} {lista.length === 1 ? 'empresa' : 'empresas'}</> : 'Empresas'}>
+        <BarraBusca id="filtro-busca" valor={filtros.busca ?? ''} mudar={(v) => setFiltros({ ...filtros, busca: v })} placeholder="Buscar por marca, razão social ou CNPJ" />
+        <Filtros filtros={filtros} mudar={setFiltros} usuarios={usuarios.dado ?? []} />
         <div className="alternar" role="group" aria-label="Modo de exibição">
           <button className={modo === 'quadro' ? 'ativo' : ''} aria-pressed={modo === 'quadro'} onClick={() => trocarModo('quadro')}><Icone nome="funil" tamanho={14} />Quadro</button>
           <button className={modo === 'lista' ? 'ativo' : ''} aria-pressed={modo === 'lista'} onClick={() => trocarModo('lista')}><Icone nome="fila" tamanho={14} />Lista</button>
         </div>
         {pode(perfil, 'editar_empresa') && <Link className="botao primario" to="/empresas/nova"><Icone nome="mais" tamanho={14} /> Nova empresa</Link>}
       </Topo>
-      <Filtros filtros={filtros} mudar={setFiltros} usuarios={usuarios.dado ?? []} busca={modo === 'lista'} total={empresas.dado ? lista.length : undefined} />
+      <FiltrosAtivos filtros={filtros} mudar={setFiltros} usuarios={usuarios.dado ?? []} />
       {aviso && <div className="aviso alerta" role="alert">{aviso}</div>}
       {empresas.erro && <div className="aviso perigo" role="alert">{empresas.erro}</div>}
 

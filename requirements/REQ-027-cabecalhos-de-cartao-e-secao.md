@@ -22,7 +22,7 @@ Todos os usuários.
 
 ## Escopo
 ### Incluído
-- `SecaoCabecalho`, `Filtros`, Empresas, Parcerias ativas, Prazos, Renovações.
+- `SecaoCabecalho` (todas as telas que o usam), `Filtros`, `Topo` (barra de ações) e Empresas (Funil e Lista). As demais telas com ações no `Topo` herdam a barra; Parcerias ativas e Renovações não têm ações no topo.
 ### Fora do escopo
 - Regras de filtragem (não mudam).
 
@@ -33,7 +33,7 @@ Todos os usuários.
 4. Dado 375 px, então nada transborda na horizontal.
 
 ## Restrições
-Filtros continuam guardados na URL como hoje.
+A busca continua vindo da URL (`?busca=`), como hoje.
 
 ## Dependências
 REQ-026, REQ-021.

@@ -107,7 +107,8 @@ export function Casca() {
   )
 }
 
-export function Topo({ eyebrow, titulo, children }: { eyebrow?: string; titulo: string; children?: ReactNode }) {
+// REQ-027 — `secao` abre a barra de ações à esquerda (nome da seção com contagem); ações à direita, numa linha.
+export function Topo({ eyebrow, titulo, secao, children }: { eyebrow?: string; titulo: string; secao?: ReactNode; children?: ReactNode }) {
   const slot = useContext(SlotTitulo)
   const cabeca = (
     <div className="topo-titulo">
@@ -118,7 +119,12 @@ export function Topo({ eyebrow, titulo, children }: { eyebrow?: string; titulo: 
   return (
     <>
       {slot ? createPortal(cabeca, slot) : cabeca}
-      {children && <div className="faixa-acoes">{children}</div>}
+      {(children || secao) && (
+        <div className={`faixa-acoes${secao ? ' com-secao' : ''}`}>
+          {secao && <h2 className="secao-titulo">{secao}</h2>}
+          {children && <div className="faixa-acoes-itens">{children}</div>}
+        </div>
+      )}
     </>
   )
 }

@@ -36,6 +36,8 @@ const caminhos = {
   mensagem: 'M4 5h16v11H8l-4 4z',
   anexo: 'M16 7l-7 7a2 2 0 0 0 3 3l7-7a4 4 0 0 0-6-6l-7 7a6 6 0 0 0 8 8l6-6',
   ativacao: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
+  filtros: 'M4 7h10M18 7h2M4 17h4M12 17h8M16 5v4M10 15v4',
+  opcoes: 'M6 12h.01M12 12h.01M18 12h.01',
 } as const
 
 export type NomeIcone = keyof typeof caminhos

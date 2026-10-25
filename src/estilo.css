@@ -568,3 +568,32 @@ h3 { font-size: 16px; }
   .cartao { padding: 16px; }
 }
 .cartao .vazio, .cartao .tabela-rolagem, .painel-lateral .vazio { box-shadow: none; background: transparent; padding: 20px; }
+
+/* ── REQ-027: cabeçalho de cartão em faixa e barra de ações numa linha ── */
+.secao-cabecalho { background: var(--surface-2); border-radius: 10px; padding: 10px 14px; margin: -4px -4px 0; min-height: 48px; }
+.secao-cabecalho h2 { font-size: 18px; gap: 10px; }
+.secao-cabecalho .marcador { width: 3px; height: 18px; background: var(--gold); }
+.secao-cabecalho select, .secao-cabecalho .alternar { background: var(--bg-2); }
+.faixa-acoes.com-secao { justify-content: space-between; flex-wrap: nowrap; gap: 16px; }
+.faixa-acoes-itens { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
+.secao-titulo { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; white-space: nowrap; }
+.secao-titulo::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-soft); box-shadow: 0 0 0 3px rgba(210, 174, 106, 0.25); }
+.faixa-acoes .busca { width: min(320px, 28vw); background: var(--bg-2); }
+.filtros-botao { position: relative; }
+.filtros-botao > .botao { background: var(--bg-2); }
+.filtros-botao > .botao.com-filtro { border-color: var(--ink); color: var(--ink); }
+.filtros-botao .contador { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--ink); color: var(--primary-ink); font-size: 12px; font-weight: 600; display: inline-grid; place-items: center; }
+.filtros-painel { width: 300px; padding: 16px; gap: 12px; left: auto; right: 0; overflow: visible; }
+.filtros-ativos { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: -8px; }
+.pill.removivel { cursor: pointer; background: var(--bg-2); border-color: var(--ink); color: var(--ink); padding: 4px 8px 4px 12px; gap: 6px; font-size: 13px; }
+.pill.removivel:hover { background: var(--surface-2); }
+.ver-todos.limpar { background: none; border: 0; cursor: pointer; padding: 4px; }
+@media (max-width: 1200px) {
+  .faixa-acoes.com-secao { flex-wrap: wrap; }
+  .faixa-acoes-itens { justify-content: flex-start; }
+}
+@media (max-width: 860px) {
+  .faixa-acoes-itens { width: 100%; }
+  .faixa-acoes .busca { width: 100%; order: -1; }
+  .filtros-painel { left: 0; right: auto; width: min(300px, calc(100vw - 32px)); }
+}
