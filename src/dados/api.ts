@@ -9,6 +9,7 @@ import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../r
 import type { Decisao } from '../regras/direcao'
 import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../regras/contrato'
 import type { Caminho, Renovacao } from '../regras/renovacao'
+import type { Indicadores } from '../regras/indicadores'
 import type { Entrega, Material, Parceria, ParceriaComEmpresa, PrazoAberto, Relatorio } from './tipos'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
@@ -584,4 +585,44 @@ export async function cadastrarFeriado(data: string, nome: string) {
 export async function apagarFeriado(data: string) {
   const { error } = await supabase.from('feriados').delete().eq('data', data)
   falhou(error, 'Não foi possível apagar o feriado.')
+}
+
+// ── Painel (REQ-016) ──────────────────────────────────────────────
+
+export async function obterIndicadores(mes: string): Promise<Indicadores> {
+  const { data, error } = await supabase.rpc('indicadores', { mes: `${mes}-01` })
+  falhou(error, 'Não foi possível calcular os indicadores.')
+  return data as Indicadores
+}
+
+export async function listarMetas(): Promise<Record<string, number>> {
+  const { data, error } = await supabase.from('metas').select('indicador, valor')
+  falhou(error, 'Não foi possível carregar as metas.')
+  return Object.fromEntries(((data ?? []) as { indicador: string; valor: number }[]).map((m) => [m.indicador, Number(m.valor)]))
+}
+
+export async function salvarMeta(indicador: string, valor: number | null) {
+  const { error } = valor === null
+    ? await supabase.from('metas').delete().eq('indicador', indicador)
+    : await supabase.from('metas').upsert({ indicador, valor })
+  falhou(error, 'Não foi possível salvar a meta.')
+}
+
+export async function listarReclamacoes(parceria: string): Promise<{ id: string; data: string; texto: string }[]> {
+  const { data, error } = await supabase.from('reclamacoes').select('id, data, texto').eq('parceria_id', parceria).order('data', { ascending: false })
+  falhou(error, 'Não foi possível carregar as reclamações.')
+  return (data ?? []) as { id: string; data: string; texto: string }[]
+}
+
+export async function registrarReclamacao(parceria: string, texto: string) {
+  const { data: sessao } = await supabase.auth.getSession()
+  const { error } = await supabase.from('reclamacoes').insert({ parceria_id: parceria, texto, autor_id: sessao.session?.user.id })
+  falhou(error, 'Não foi possível registrar a reclamação.')
+}
+
+export async function registrarBalanco(parceria: string, referencia: string, resumo: string, notaParceiro: number | null) {
+  const { data: sessao } = await supabase.auth.getSession()
+  const { error } = await supabase.from('relatorios').insert({ parceria_id: parceria, tipo: 'balanco', referencia, resumo, nota_parceiro: notaParceiro, autor_id: sessao.session?.user.id })
+  if (error?.code === '23505') throw new ErroApi('Este período já tem registro.')
+  falhou(error, 'Não foi possível registrar o balanço.')
 }

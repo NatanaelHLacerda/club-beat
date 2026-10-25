@@ -3,7 +3,7 @@ import { nomeDe } from '../../componentes/Filtros'
 import { PadraoTag } from '../../componentes/Rotulos'
 import {
   decidirMaterial, informarMedidas, listarCardapio, listarEntregas, listarMateriais, listarRelatorios, obterParceriaDaEmpresa,
-  registrarEntrega, registrarMaterial, registrarRelatorio,
+  listarReclamacoes, registrarBalanco, registrarEntrega, registrarMaterial, registrarReclamacao, registrarRelatorio,
 } from '../../dados/api'
 import {
   avisoLimiteMes, contratadoFeito, exigePrivacidade, notaMedia, proximoBalanco, proximoRelatorio, textosAcompanhamento,
@@ -25,6 +25,9 @@ export function AbaParceria({ empresa, usuarios }: PropsAba) {
   const doMes = useConsulta(() => listarEntregas(undefined, hoje.slice(0, 7)), [hoje])
   const materiais = useConsulta(() => (p ? listarMateriais(p.id) : Promise.resolve([])), [p?.id])
   const relatorios = useConsulta(() => (p ? listarRelatorios(p.id) : Promise.resolve([])), [p?.id])
+  const reclamacoes = useConsulta(() => (p ? listarReclamacoes(p.id) : Promise.resolve([])), [p?.id])
+  const [reclamacao, setReclamacao] = useState('')
+  const [notaParceiro, setNotaParceiro] = useState('')
   const [nova, setNova] = useState({ item: '', data: hoje, descricao: '', privacidade_ok: false, nota: '' })
   const [material, setMaterial] = useState('')
   const [relatorio, setRelatorio] = useState({ tipo: 'relatorio' as 'relatorio' | 'balanco', resumo: '' })
@@ -144,16 +147,31 @@ export function AbaParceria({ empresa, usuarios }: PropsAba) {
               </select>
             </div>
             <label className="campo"><span>Resumo enviado à empresa (fotos, ações, conteúdos e resultados combinados)</span><textarea value={relatorio.resumo} onChange={(e) => setRelatorio({ ...relatorio, resumo: e.target.value })} /></label>
+            {relatorio.tipo === 'balanco' && <label className="campo" style={{ maxWidth: 260 }}><span>Satisfação do parceiro (1 a 5)</span><input inputMode="decimal" value={notaParceiro} onChange={(e) => setNotaParceiro(e.target.value)} /></label>}
             <div><button className="botao primario" disabled={!relatorio.resumo.trim()} onClick={() => {
               const ref = relatorio.tipo === 'relatorio' ? rel?.referencia : bal?.referencia
               if (!ref) return
-              void agir(() => registrarRelatorio(p.id, relatorio.tipo, ref, relatorio.resumo.trim()), 'Registrado.', async () => { setRelatorio({ tipo: 'relatorio', resumo: '' }); await relatorios.recarregar() })
+              const nota = notaParceiro.trim() ? Number(notaParceiro.replace(',', '.')) : null
+              void agir(() => (relatorio.tipo === 'balanco' ? registrarBalanco(p.id, ref, relatorio.resumo.trim(), nota) : registrarRelatorio(p.id, relatorio.tipo, ref, relatorio.resumo.trim())),
+                'Registrado.', async () => { setRelatorio({ tipo: 'relatorio', resumo: '' }); setNotaParceiro(''); await relatorios.recarregar() })
             }}>Registrar envio</button></div>
           </div>
         )}
         {(relatorios.dado ?? []).map((r) => (
           <p key={r.id} className="pequeno"><span className="pill">{r.tipo === 'relatorio' ? 'Relatório' : 'Balanço'}</span> {formatarData(r.referencia)} · enviado em {formatarDataHora(r.enviado_em)} · {r.resumo}</p>
         ))}
+      </section>
+
+      <section className="cartao">
+        <h3>Reclamações de membros</h3>
+        <p className="muted pequeno">Registro simples, sem identificar o membro.</p>
+        {(reclamacoes.dado ?? []).map((r) => <p key={r.id} className="pequeno"><span className="muted">{formatarData(r.data)}</span> · {r.texto}</p>)}
+        {podeEntregar && (
+          <div className="linha">
+            <input className="entrada" style={{ maxWidth: 420 }} aria-label="Nova reclamação" placeholder="O que foi reclamado" value={reclamacao} onChange={(e) => setReclamacao(e.target.value)} />
+            <button className="botao" disabled={!reclamacao.trim()} onClick={() => void agir(() => registrarReclamacao(p.id, reclamacao.trim()), 'Reclamação registrada.', async () => { setReclamacao(''); await reclamacoes.recarregar() })}>Registrar</button>
+          </div>
+        )}
       </section>
 
       {erro && <div className="aviso perigo" role="alert">{erro}</div>}
