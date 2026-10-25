@@ -193,3 +193,16 @@ export type DataDoCalendario = {
   media_alunos: number | null; tema: string | null; situacao: SituacaoData; empresa_id: string | null; tipo_acao: TipoAcao | null
   reservada_em: string | null; reservada_ate: string | null; reservada_por: string | null; exemplo: boolean
 }
+
+// ── Parcerias ativas (REQ-011) ────────────────────────────────────
+export type Parceria = {
+  id: string; empresa_id: string; situacao: 'vigente' | 'encerrada'; inicio: string; fim: string
+  exclusividade_categoria: string | null; exclusividade_inicio: string | null; exclusividade_fim: string | null; nao_renovar: boolean
+  padrao: Padrao | null; tipo_parceria: string | null; valor_mensal_centavos: number | null; troca: boolean
+  contrapartidas: { item: string; quantidade: number | null }[]; promessa_revisao: string | null; responsavel_id: string | null
+  medidas_informadas_em: string | null; criado_em: string
+}
+export type ParceriaComEmpresa = Parceria & { empresas: Pick<Empresa, 'id' | 'marca' | 'etapa' | 'exemplo' | 'categoria'> }
+export type Entrega = { id: string; parceria_id: string; item: string; data: string; descricao: string | null; privacidade_ok: boolean; nota_membros: number | null; autor_id: string | null; criado_em: string }
+export type Material = { id: string; parceria_id: string; descricao: string; situacao: 'aguardando' | 'aprovado' | 'recusado'; motivo: string | null; decidido_por: string | null; decidido_em: string | null; criado_em: string }
+export type Relatorio = { id: string; parceria_id: string; tipo: 'relatorio' | 'balanco'; referencia: string; resumo: string; enviado_em: string; autor_id: string | null }

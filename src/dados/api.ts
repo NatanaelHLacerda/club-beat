@@ -8,6 +8,7 @@ import type { Janela, TipoAcao } from '../regras/calendario'
 import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../regras/proposta'
 import type { Decisao } from '../regras/direcao'
 import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../regras/contrato'
+import type { Entrega, Material, Parceria, ParceriaComEmpresa, Relatorio } from './tipos'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
@@ -476,4 +477,70 @@ export async function listarParaJuridico(): Promise<Empresa[]> {
   const { data, error } = await supabase.from('empresas').select('*').eq('etapa', 'contrato').order('etapa_desde')
   falhou(error, 'Não foi possível carregar os contratos.')
   return (data ?? []) as Empresa[]
+}
+
+// ── Parcerias ativas (REQ-011) ────────────────────────────────────
+
+export async function listarParcerias(situacao: 'vigente' | 'encerrada' = 'vigente'): Promise<ParceriaComEmpresa[]> {
+  const { data, error } = await supabase.from('parcerias').select('*, empresas(id, marca, etapa, exemplo, categoria)').eq('situacao', situacao).order('fim')
+  falhou(error, 'Não foi possível carregar as parcerias.')
+  return (data ?? []) as ParceriaComEmpresa[]
+}
+
+export async function obterParceriaDaEmpresa(empresa: string): Promise<Parceria | null> {
+  const { data, error } = await supabase.from('parcerias').select('*').eq('empresa_id', empresa).order('inicio', { ascending: false }).limit(1).maybeSingle()
+  falhou(error, 'Não foi possível carregar a parceria.')
+  return (data as Parceria | null) ?? null
+}
+
+export async function listarEntregas(parceria?: string, mes?: string): Promise<Entrega[]> {
+  let q = supabase.from('entregas').select('*').order('data', { ascending: false })
+  if (parceria) q = q.eq('parceria_id', parceria)
+  if (mes) q = q.gte('data', `${mes}-01`).lte('data', `${mes}-31`)
+  const { data, error } = await q
+  falhou(error, 'Não foi possível carregar as entregas.')
+  return (data ?? []) as Entrega[]
+}
+
+export async function registrarEntrega(e: Pick<Entrega, 'parceria_id' | 'item' | 'data' | 'descricao' | 'privacidade_ok' | 'nota_membros'>) {
+  const { data: sessao } = await supabase.auth.getSession()
+  const { error } = await supabase.from('entregas').insert({ ...e, autor_id: sessao.session?.user.id })
+  if (error?.message.includes('privacidade_nas_acoes')) throw new ErroApi('Confirme que a equipe do parceiro foi orientada sobre privacidade.')
+  falhou(error, 'Não foi possível registrar a entrega.')
+}
+
+export async function listarMateriais(parceria: string): Promise<Material[]> {
+  const { data, error } = await supabase.from('materiais').select('*').eq('parceria_id', parceria).order('criado_em', { ascending: false })
+  falhou(error, 'Não foi possível carregar os materiais.')
+  return (data ?? []) as Material[]
+}
+
+export async function registrarMaterial(parceria: string, descricao: string) {
+  const { error } = await supabase.from('materiais').insert({ parceria_id: parceria, descricao })
+  falhou(error, 'Não foi possível registrar o material.')
+}
+
+export async function decidirMaterial(material: string, aprovar: boolean, motivo?: string) {
+  const { error } = await supabase.rpc('decidir_material', { material, aprovar, motivo: motivo || null })
+  falhou(error, 'Não foi possível registrar a decisão sobre o material.')
+}
+
+export async function listarRelatorios(parceria?: string): Promise<Relatorio[]> {
+  let q = supabase.from('relatorios').select('*').order('referencia', { ascending: false })
+  if (parceria) q = q.eq('parceria_id', parceria)
+  const { data, error } = await q
+  falhou(error, 'Não foi possível carregar os relatórios.')
+  return (data ?? []) as Relatorio[]
+}
+
+export async function registrarRelatorio(parceria: string, tipo: 'relatorio' | 'balanco', referencia: string, resumo: string) {
+  const { data: sessao } = await supabase.auth.getSession()
+  const { error } = await supabase.from('relatorios').insert({ parceria_id: parceria, tipo, referencia, resumo, autor_id: sessao.session?.user.id })
+  if (error?.code === '23505') throw new ErroApi('Este período já tem registro.')
+  falhou(error, 'Não foi possível registrar.')
+}
+
+export async function informarMedidas(parceria: string) {
+  const { error } = await supabase.rpc('informar_medidas', { parceria })
+  falhou(error, 'Não foi possível registrar.')
 }

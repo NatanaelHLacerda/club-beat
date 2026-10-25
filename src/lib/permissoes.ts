@@ -16,6 +16,7 @@ export type Acao =
   | 'manter_parcerias'
   | 'ver_operacoes'
   | 'ver_juridico'
+  | 'registrar_entregas'
 
 const matriz: Record<Acao, Papel[]> = {
   ver_crm: ['primeira_pessoa', 'gerente', 'direcao', 'juridico', 'financeiro', 'operacoes'],
@@ -32,6 +33,7 @@ const matriz: Record<Acao, Papel[]> = {
   manter_parcerias: ['primeira_pessoa', 'gerente'],
   ver_operacoes: ['operacoes', 'gerente', 'direcao'],
   ver_juridico: ['juridico', 'gerente', 'direcao'],
+  registrar_entregas: ['primeira_pessoa', 'gerente', 'operacoes'],
 }
 
 export function pode(perfil: Pick<Perfil, 'papel' | 'admin' | 'ativo'> | null, acao: Acao): boolean {

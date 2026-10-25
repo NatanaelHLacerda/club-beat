@@ -159,3 +159,19 @@ update public.parcerias set padrao = 'ouro', tipo_parceria = 'patrocinio', valor
   contrapartidas = '[{"item":"telas","quantidade":1},{"item":"ativacao_1d","quantidade":8},{"item":"marca_site","quantidade":1}]',
   promessa_revisao = 'Rever tempo de tela na renovação', responsavel_id = '00000000-0000-4000-a000-000000000002'
 where empresa_id = (select id from public.empresas where cnpj = '12345678000195');
+
+-- REQ-011 — entregas, material e relatório de EXEMPLO da Sabor Leve (Ouro, ativa há 120 dias).
+insert into public.entregas (parceria_id, item, data, descricao, privacidade_ok, nota_membros, autor_id)
+select p.id, x.item, current_date - x.dias, x.descricao, true, x.nota, '00000000-0000-4000-a000-000000000002'
+from public.parcerias p join public.empresas e on e.id = p.empresa_id,
+  (values ('ativacao_1d', 90, 'Degustação de lanches no sábado (exemplo)', 4.6),
+          ('ativacao_1d', 45, 'Café da manhã depois do funcional (exemplo)', 4.8),
+          ('telas', 118, 'Vídeo de 30 s nas telas (exemplo)', null)) x(item, dias, descricao, nota)
+where e.cnpj = '12345678000195';
+update public.parcerias set medidas_informadas_em = inicio + 5 where empresa_id = (select id from public.empresas where cnpj = '12345678000195');
+insert into public.materiais (parceria_id, descricao, situacao, decidido_por, decidido_em)
+select p.id, 'Vídeo institucional de 30 s (exemplo)', 'aprovado', '00000000-0000-4000-a000-000000000002', now() - interval '115 days'
+from public.parcerias p join public.empresas e on e.id = p.empresa_id where e.cnpj = '12345678000195';
+insert into public.relatorios (parceria_id, tipo, referencia, resumo, autor_id)
+select p.id, 'relatorio', (date_trunc('month', current_date) - interval '2 months')::date, 'Relatório de exemplo: 2 ativações, nota média 4,7.', '00000000-0000-4000-a000-000000000002'
+from public.parcerias p join public.empresas e on e.id = p.empresa_id where e.cnpj = '12345678000195';
