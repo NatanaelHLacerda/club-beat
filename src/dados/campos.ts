@@ -44,6 +44,7 @@ export const rotuloCampo: Partial<Record<keyof Empresa | string, string>> = {
   categoria: 'Categoria', triagem1: 'Lista da Triagem 1', receita_situacao: 'Situação na Receita', receita_porte: 'Porte na Receita', pedido_info_em: 'Pedido de informação',
   classificacao: 'Ficha de classificação', estudo: 'Estudo da empresa', candidata_master: 'Candidata a Master', triagem2_concluida_em: 'Triagem 2 concluída',
   passada_em: 'Passada à Gerente', distribuicao: 'Distribuição', passagem: 'Ficha de passagem',
+  reuniao: 'Reunião', formato: 'Formato', tipo_parceria: 'Tipo de parceria', proposta: 'Proposta', operacoes: 'Confirmação de Operações',
 }
 
 export const blocosFicha: { titulo: string; campos: (keyof Empresa)[] }[] = [

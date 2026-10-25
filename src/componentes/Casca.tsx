@@ -16,6 +16,7 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Parcerias', itens: [
     { para: '/parcerias', rotulo: 'Parcerias ativas' },
     { para: '/calendario', rotulo: 'Calendário' },
+    { para: '/operacoes', rotulo: 'Operações', acao: 'ver_operacoes' },
     { para: '/renovacoes', rotulo: 'Renovações' },
   ] },
   { titulo: 'Acompanhamento', itens: [

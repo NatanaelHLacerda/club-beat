@@ -5,6 +5,7 @@ import type { Ficha } from '../regras/formulario'
 import type { MarcasTriagem1 } from '../regras/triagem1'
 import type { FichaPassagem } from '../regras/passagem'
 import type { Janela, TipoAcao } from '../regras/calendario'
+import type { ConfirmacaoOperacoes, ItemCardapio, Proposta, Reuniao } from '../regras/proposta'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
@@ -359,5 +360,50 @@ export async function trocarData(antiga: string, nova: string, pedido: string) {
 export async function listarEmpresasParaReserva(): Promise<Empresa[]> {
   const { data, error } = await supabase.from('empresas').select('*').in('etapa', ['reuniao', 'proposta', 'direcao', 'contrato', 'ativa', 'renovacao']).order('marca')
   falhou(error, 'Não foi possível carregar as empresas.')
+  return (data ?? []) as Empresa[]
+}
+
+// ── Reunião e proposta (REQ-008) ──────────────────────────────────
+
+export async function listarCardapio(): Promise<ItemCardapio[]> {
+  const { data, error } = await supabase.from('cardapio').select('*').order('ordem')
+  falhou(error, 'Não foi possível carregar o cardápio.')
+  return (data ?? []) as ItemCardapio[]
+}
+
+export async function salvarItemCardapio(padrao: string, item: string, descricao: string, maximo: number | null) {
+  const { error } = await supabase.from('cardapio').update({ descricao, maximo }).eq('padrao', padrao).eq('item', item)
+  falhou(error, 'Não foi possível salvar o item do cardápio.')
+}
+
+export async function salvarReuniao(empresa: string, dados: Reuniao) {
+  const { error } = await supabase.rpc('salvar_reuniao', { empresa, dados })
+  falhou(error, 'Não foi possível salvar a reunião.')
+}
+
+export async function salvarProposta(empresa: string, dados: Proposta, formato: string, tipo: string) {
+  const { error } = await supabase.rpc('salvar_proposta', { empresa, dados, formato_novo: formato, tipo_novo: tipo })
+  falhou(error, 'Não foi possível salvar a proposta.')
+}
+
+export async function confirmarOperacoes(empresa: string, dados: ConfirmacaoOperacoes) {
+  const { error } = await supabase.rpc('confirmar_operacoes', { empresa, dados })
+  falhou(error, 'Não foi possível confirmar.')
+}
+
+export async function enviarProposta(empresa: string) {
+  const { error } = await supabase.rpc('enviar_proposta', { empresa })
+  falhou(error, 'Não foi possível registrar o envio.')
+}
+
+export async function registrarAceite(empresa: string): Promise<Etapa> {
+  const { data, error } = await supabase.rpc('registrar_aceite', { empresa })
+  falhou(error, 'Não foi possível registrar o aceite.')
+  return data as Etapa
+}
+
+export async function listarParaOperacoes(): Promise<Empresa[]> {
+  const { data, error } = await supabase.from('empresas').select('*').in('etapa', ['proposta', 'direcao']).order('etapa_desde')
+  falhou(error, 'Não foi possível carregar as propostas.')
   return (data ?? []) as Empresa[]
 }

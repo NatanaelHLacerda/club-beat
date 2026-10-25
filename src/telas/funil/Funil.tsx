@@ -9,6 +9,7 @@ import type { Empresa, FiltrosEmpresas } from '../../dados/tipos'
 import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
 import { diasDesde, hojeISO } from '../../regras/formato'
 import { diasDesdePedido, semRetorno } from '../../regras/triagem1'
+import { respostaVencida } from '../../regras/proposta'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
@@ -75,8 +76,9 @@ export function Funil() {
                   <div className="cards">
                     {cards.map((e) => {
                       const parado = e.etapa === 'triagem1' && semRetorno(e.pedido_info_em, hojeISO())
+                      const semResposta = e.etapa === 'proposta' && respostaVencida(e.proposta?.prazo_resposta, e.proposta?.aceite_em, hojeISO())
                       return (
-                      <Link key={e.id} to={`/empresas/${e.id}`} className={`card${parado ? ' atrasado' : ''}`} draggable={podeMover}
+                      <Link key={e.id} to={`/empresas/${e.id}`} className={`card${parado || semResposta ? ' atrasado' : ''}`} draggable={podeMover}
                         onDragStart={() => setArrastando(e)} onDragEnd={() => { setArrastando(null); setSobre(null) }}>
                         <div className="linha entre"><b>{e.marca}</b><Exemplo mostrar={e.exemplo} /></div>
                         <span className="muted pequeno">{e.segmento}</span>
@@ -86,6 +88,7 @@ export function Funil() {
                         </div>
                         <span className="muted pequeno num">{diasDesde(e.etapa_desde)} dias na etapa</span>
                         {parado && <span className="erro pequeno">Sem retorno há {diasDesdePedido(e.pedido_info_em, hojeISO())} dias</span>}
+                        {semResposta && <span className="erro pequeno">Prazo de resposta vencido</span>}
                       </Link>
                       )
                     })}

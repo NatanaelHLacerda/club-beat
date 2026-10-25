@@ -3,6 +3,7 @@ import type { MarcasTriagem1, SituacaoCategoria, SituacaoReceita } from '../regr
 import type { Aderencia, FaixaInvestimento, Pontos } from '../regras/classificacao'
 import type { FichaPassagem } from '../regras/passagem'
 import type { SituacaoData, TipoAcao, TipoData } from '../regras/calendario'
+import type { ConfirmacaoOperacoes, Formato, Proposta, Reuniao, TipoParceria } from '../regras/proposta'
 
 export type Papel = 'primeira_pessoa' | 'gerente' | 'direcao' | 'juridico' | 'financeiro' | 'operacoes'
 
@@ -98,6 +99,11 @@ export type Empresa = {
   passada_em: string | null
   distribuicao: 'revezamento' | 'manual' | null
   passagem: FichaPassagem
+  reuniao: Reuniao
+  formato: Formato | null
+  tipo_parceria: TipoParceria | null
+  proposta: Proposta
+  operacoes: ConfirmacaoOperacoes
   exemplo: boolean
   criado_em: string
 }
@@ -106,7 +112,8 @@ export type CamposEditaveis = Omit<Empresa,
   'id' | 'etapa' | 'etapa_desde' | 'motivo_saida' | 'retomar_em' | 'gerente1_id' | 'gerente2_id' | 'responsavel_id' |
   'porte' | 'padrao_final' | 'exemplo' | 'criado_em' | 'consentimento_em' |
   'categoria' | 'triagem1' | 'receita_situacao' | 'receita_porte' | 'pedido_info_em' |
-  'classificacao' | 'estudo' | 'candidata_master' | 'triagem2_concluida_em' | 'passada_em' | 'distribuicao' | 'passagem'>
+  'classificacao' | 'estudo' | 'candidata_master' | 'triagem2_concluida_em' | 'passada_em' | 'distribuicao' | 'passagem' |
+  'reuniao' | 'formato' | 'tipo_parceria' | 'proposta' | 'operacoes'>
 
 export type ItemHistorico = {
   id: number

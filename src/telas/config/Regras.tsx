@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Topo } from '../../componentes/Casca'
-import { listarCategorias, listarModelos, salvarCategoria, salvarModelo } from '../../dados/api'
+import { listarCardapio, listarCategorias, listarModelos, salvarCategoria, salvarItemCardapio, salvarModelo } from '../../dados/api'
 import type { Categoria, ModeloMensagem } from '../../dados/tipos'
 import { formatarDataHora } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
@@ -14,6 +14,7 @@ export function Regras() {
       <Topo eyebrow="Configuração" titulo="Regras e modelos" />
       <Modelos />
       <Categorias />
+      <Cardapio />
     </>
   )
 }
@@ -104,6 +105,41 @@ function Categorias() {
                     </select>
                   ) : <span className={`pill ${c.situacao === 'nao_aceita' ? 'perigo' : c.situacao === 'sensivel' ? 'alerta' : 'ok'}`}>{rotuloSituacaoCategoria[c.situacao]}</span>}
                 </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
+const nomesPadrao = { bronze: 'Bronze', prata: 'Prata', ouro: 'Ouro', master: 'Master' } as const
+
+function Cardapio() {
+  const { perfil } = useSessao()
+  const cardapio = useConsulta(listarCardapio)
+  const [erro, setErro] = useState('')
+  const podeEditar = pode(perfil, 'configurar')
+  async function salvar(padrao: string, item: string, descricao: string, maximo: string) {
+    setErro('')
+    try { await salvarItemCardapio(padrao, item, descricao, maximo.trim() === '' ? null : Number(maximo)); await cardapio.recarregar() } catch (e) { setErro((e as Error).message) }
+  }
+  return (
+    <section className="pilha">
+      <h2>Cardápio por padrão (cap. 8)</h2>
+      <p className="muted">É o limite de autonomia da Gerente: o que está aqui ela fecha sem consultar ninguém (Bronze e Prata). Quantidades dos contratos atuais; a Direção confirma. {podeEditar ? '' : 'Só a Direção edita.'}</p>
+      {erro && <div className="aviso perigo">{erro}</div>}
+      <div className="tabela-rolagem">
+        <table>
+          <thead><tr><th>Padrão</th><th>Contrapartida</th><th>Descrição</th><th>Máximo</th></tr></thead>
+          <tbody>
+            {(cardapio.dado ?? []).sort((a, b) => ['bronze', 'prata', 'ouro', 'master'].indexOf(a.padrao) - ['bronze', 'prata', 'ouro', 'master'].indexOf(b.padrao) || a.ordem - b.ordem).map((c) => (
+              <tr key={`${c.padrao}-${c.item}`}>
+                <td><span className={`padrao ${c.padrao}`}>{nomesPadrao[c.padrao]}</span></td>
+                <td>{c.rotulo}</td>
+                <td>{podeEditar ? <input className="entrada" defaultValue={c.descricao} onBlur={(e) => { if (e.target.value !== c.descricao) void salvar(c.padrao, c.item, e.target.value, c.maximo === null ? '' : String(c.maximo)) }} /> : c.descricao}</td>
+                <td className="num">{podeEditar ? <input className="entrada num" style={{ width: 80 }} type="number" min={0} defaultValue={c.maximo ?? ''} onBlur={(e) => { if (e.target.value !== String(c.maximo ?? '')) void salvar(c.padrao, c.item, c.descricao, e.target.value) }} /> : c.maximo ?? 'a combinar'}</td>
               </tr>
             ))}
           </tbody>

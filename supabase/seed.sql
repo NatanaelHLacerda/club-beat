@@ -136,3 +136,14 @@ where data = (select min(data) from public.calendario_datas where tipo = 'C' and
 update public.calendario_datas set situacao = 'confirmada', tipo_acao = 'ativacao',
   empresa_id = (select id from public.empresas where cnpj = '12345678000195')
 where data = (select min(data) from public.calendario_datas where tipo = 'A' and data > current_date + 6);
+
+-- REQ-008 — reunião realizada e proposta de EXEMPLO da Rede Verde (Prata, Em proposta), aguardando Operações.
+update public.empresas set
+  reuniao = jsonb_build_object('quando', to_char(now() - interval '6 days', 'YYYY-MM-DD"T"10:00'), 'local', 'Club (presencial)', 'presencial', true,
+    'realizada', true, 'objetivo', 'Relacionamento com público de alta renda', 'sucesso', 'Vendas do novo lanche saudável no Club',
+    'pedidos_extra', 'Exclusividade em alimentação'),
+  formato = 'continua', tipo_parceria = 'patrocinio',
+  proposta = '{"itens":[{"item":"telas","quantidade":1},{"item":"ativacao_1d","quantidade":4},{"item":"eventos","quantidade":1}],"prazo_meses":12,"promessa_revisao":"Rever exclusividade ao fim do contrato, com a aceitação dos membros"}'
+where cnpj = '11222333000181';
+update public.empresas set reuniao = jsonb_build_object('quando', to_char(now() + interval '2 days', 'YYYY-MM-DD"T"15:00'), 'local', 'Club (presencial)', 'presencial', true)
+where cnpj like '33444555%';
