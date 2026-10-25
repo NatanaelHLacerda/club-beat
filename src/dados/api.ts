@@ -3,6 +3,7 @@ import { supabase } from './supabase'
 import type { Conferencia } from '../regras/entrada'
 import type { Ficha } from '../regras/formulario'
 import type { MarcasTriagem1 } from '../regras/triagem1'
+import type { FichaPassagem } from '../regras/passagem'
 import type { Anexo, Aviso, CamposEditaveis, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
@@ -277,4 +278,33 @@ export async function salvarClassificacao(empresa: string, ficha: FichaClassific
 export async function concluirTriagem2(empresa: string) {
   const { error } = await supabase.rpc('concluir_triagem2', { empresa })
   falhou(error, 'Não foi possível concluir a Triagem 2.')
+}
+
+// ── Distribuição e passagem (REQ-007) ─────────────────────────────
+
+export async function sugerirGerente(): Promise<string | null> {
+  const { data, error } = await supabase.rpc('sugerir_gerente')
+  falhou(error, 'Não foi possível sugerir a Gerente.')
+  return (data as string | null) ?? null
+}
+
+export async function passarAGerente(empresa: string, gerente: string | null, motivo: string) {
+  const { error } = await supabase.rpc('passar_a_gerente', { empresa, gerente, motivo: motivo || null })
+  falhou(error, 'Não foi possível passar à Gerente.')
+}
+
+export async function definirGerente2(empresa: string, gerente: string, ficha: FichaPassagem, responsavel: string) {
+  const { error } = await supabase.rpc('definir_gerente2', { empresa, gerente, ficha, responsavel })
+  falhou(error, 'Não foi possível definir a Gerente 2.')
+}
+
+const etapasDaFila: Etapa[] = ['triagem2', 'reuniao', 'proposta', 'direcao', 'contrato', 'ativa', 'renovacao']
+
+export async function listarMinhaFila(usuario: string): Promise<Empresa[]> {
+  const { data, error } = await supabase.from('empresas').select('*')
+    .or(`gerente1_id.eq.${usuario},gerente2_id.eq.${usuario},responsavel_id.eq.${usuario}`)
+    .in('etapa', etapasDaFila)
+    .order('passada_em', { ascending: true })
+  falhou(error, 'Não foi possível carregar a sua fila.')
+  return (data ?? []) as Empresa[]
 }

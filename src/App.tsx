@@ -9,6 +9,7 @@ import { Ficha } from './telas/empresa/Ficha'
 import { Empresas } from './telas/empresas/Empresas'
 import { NovaEmpresa } from './telas/empresas/NovaEmpresa'
 import { Funil } from './telas/funil/Funil'
+import { MinhaFila } from './telas/fila/MinhaFila'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -23,6 +24,7 @@ export function App() {
       <Route element={<Casca />}>
         <Route path="/" element={<Navigate to="/funil" replace />} />
         <Route path="/funil" element={<Funil />} />
+        <Route path="/fila" element={<MinhaFila />} />
         <Route path="/empresas" element={<Empresas />} />
         <Route path="/empresas/nova" element={<NovaEmpresa />} />
         <Route path="/empresas/:id" element={<Ficha />} />

@@ -104,3 +104,7 @@ update public.empresas set
   estudo = coalesce(estudo, 'Estudo de exemplo: marca com público parecido com o do Club, busca relacionamento de longo prazo e ações dentro do Club.'),
   triagem2_concluida_em = coalesce(triagem2_concluida_em, etapa_desde - interval '2 days')
 where exemplo and etapa in ('reuniao', 'proposta', 'direcao', 'contrato', 'ativa', 'renovacao');
+
+-- Empresas de exemplo já passadas à Gerente (revezamento coerente com o histórico).
+update public.empresas set passada_em = triagem2_concluida_em + interval '1 hour', distribuicao = 'revezamento'
+where exemplo and gerente1_id is not null and triagem2_concluida_em is not null;
