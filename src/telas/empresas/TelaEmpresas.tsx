@@ -7,7 +7,7 @@ import { TrocaEtapa } from '../../componentes/TrocaEtapa'
 import { Avatar, BarraBusca, Carregando, Icone, PainelLateral, Pill, Tabela, Vazio } from '../../componentes/ui'
 import { listarEmpresas, listarPrazos, listarUsuarios, moverEtapa } from '../../dados/api'
 import type { Empresa, FiltrosEmpresas } from '../../dados/tipos'
-import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
+import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, grupoDaEtapa, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
 import { formatarCnpj, formatarData } from '../../regras/formato'
 import { rotuloSituacaoPrazo } from '../../regras/prazos'
 import { pode } from '../../lib/permissoes'
@@ -79,7 +79,7 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
               {colunas.map((etapa) => {
                 const cards = lista.filter((e) => e.etapa === etapa)
                 return (
-                  <section key={etapa} className={`coluna${sobre === etapa ? ' sobre' : ''}`} aria-label={rotuloEtapa[etapa]}
+                  <section key={etapa} className={`coluna grupo-${grupoDaEtapa(etapa)}${sobre === etapa ? ' sobre' : ''}`} aria-label={rotuloEtapa[etapa]}
                     onDragOver={(ev) => { if (podeMover) { ev.preventDefault(); setSobre(etapa) } }}
                     onDragLeave={() => setSobre((s) => (s === etapa ? null : s))}
                     onDrop={(ev) => { ev.preventDefault(); void soltar(etapa) }}>
@@ -87,7 +87,8 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
                     <div className="cards">
                       {cards.map((e) => (
                         <CartaoEmpresa key={e.id} empresa={e} usuarios={usuarios.dado ?? []} prazo={prazoDe(e.id)} arrastavel={podeMover}
-                          aoArrastar={() => setArrastando(e)} aoSoltar={() => { setArrastando(null); setSobre(null) }} />
+                          aoArrastar={() => setArrastando(e)} aoSoltar={() => { setArrastando(null); setSobre(null) }}
+                          aoMover={podeMover ? () => setMover({ empresa: e }) : undefined} />
                       ))}
                     </div>
                   </section>

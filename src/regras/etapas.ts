@@ -53,3 +53,13 @@ export function validarSaida(para: Etapa, motivo: string, retomar: string): stri
 export function destinosPossiveis(de: Etapa): Etapa[] {
   return todasEtapas.filter((e) => e !== de && bloqueioDeMudanca(de, e) === null)
 }
+
+// REQ-029 — grupo visual da coluna no quadro: dá cor à faixa sem mudar regra de etapa.
+export type GrupoEtapa = 'entrada' | 'andamento' | 'decisao' | 'fechado' | 'saida'
+export function grupoDaEtapa(e: Etapa): GrupoEtapa {
+  if (e === 'reuniao' || e === 'proposta') return 'andamento'
+  if (e === 'direcao' || e === 'contrato') return 'decisao'
+  if (e === 'ativa' || e === 'renovacao') return 'fechado'
+  if (e === 'espera' || e === 'recusada') return 'saida'
+  return 'entrada'
+}

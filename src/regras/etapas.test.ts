@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bloqueioDeMudanca, destinosPossiveis, mensagensEtapa, validarSaida } from './etapas'
+import { bloqueioDeMudanca, destinosPossiveis, grupoDaEtapa, mensagensEtapa, todasEtapas, validarSaida } from './etapas'
 
 describe('etapas do funil (REQ-004)', () => {
   it('Recusada exige motivo', () => {
@@ -22,5 +22,20 @@ describe('etapas do funil (REQ-004)', () => {
   it('card pode voltar de etapa (DP-0401)', () => {
     expect(destinosPossiveis('reuniao')).toContain('triagem2')
     expect(destinosPossiveis('reuniao')).not.toContain('ativa')
+  })
+})
+
+describe('grupoDaEtapa (REQ-029)', () => {
+  it('agrupa as etapas pelas cores do quadro', () => {
+    expect(grupoDaEtapa('recebida')).toBe('entrada')
+    expect(grupoDaEtapa('triagem2')).toBe('entrada')
+    expect(grupoDaEtapa('proposta')).toBe('andamento')
+    expect(grupoDaEtapa('contrato')).toBe('decisao')
+    expect(grupoDaEtapa('ativa')).toBe('fechado')
+    expect(grupoDaEtapa('recusada')).toBe('saida')
+    expect(grupoDaEtapa('encerrada')).toBe('entrada')
+  })
+  it('cobre todas as etapas', () => {
+    for (const e of todasEtapas) expect(['entrada', 'andamento', 'decisao', 'fechado', 'saida']).toContain(grupoDaEtapa(e))
   })
 })

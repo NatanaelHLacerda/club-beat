@@ -616,3 +616,31 @@ h3 { font-size: 16px; }
 .exemplo { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; background: #F3E6C8; color: #6B4E14; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: lowercase; white-space: nowrap; }
 .tabela-rolagem { container-type: inline-size; }
 @container (max-width: 1400px) { .tabela .so-largo { display: none; } }
+
+/* ── REQ-029: quadro do funil (faixa da coluna por grupo de etapa, cartão em grade chave–valor) ── */
+.funil { grid-auto-columns: 300px; gap: 16px; }
+.coluna { background: var(--surface); box-shadow: var(--sombra-cartao); padding: 8px; gap: 8px; }
+.coluna > header { border-radius: 10px; padding: 10px 12px; min-height: 44px; background: var(--surface-2); }
+.coluna > header b { font-size: 14px; }
+.coluna > header .contagem { background: var(--bg-2); color: var(--ink); font-weight: 600; font-size: 12px; min-width: 26px; height: 22px; display: inline-grid; place-items: center; }
+.coluna.grupo-andamento > header { background: #F3E6C8; }
+.coluna.grupo-andamento > header b { color: #5A4210; }
+.coluna.grupo-decisao > header { background: #DCE2EE; }
+.coluna.grupo-fechado > header { background: #DCEDE2; }
+.coluna.grupo-fechado > header b { color: #1F5A40; }
+.coluna.grupo-saida > header { background: #F5DFD8; }
+.coluna.grupo-saida > header b { color: #7A2A1D; }
+.coluna .cards { padding: 0; gap: 10px; }
+.coluna.sobre { box-shadow: 0 0 0 2px var(--gold-soft), var(--sombra-cartao); }
+.cartao-empresa { padding: 14px; gap: 12px; border-radius: 12px; cursor: default; }
+.cartao-empresa[draggable="true"] { cursor: grab; }
+.cartao-empresa:hover { border-color: var(--gold-soft); box-shadow: var(--sombra-cartao); }
+.cartao-empresa-topo { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+.cartao-link { color: var(--ink); font-weight: 600; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cartao-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.cartao-empresa-dados { margin: 0; display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 6px 10px; border-top: 1px solid var(--line); padding-top: 10px; font-size: 13px; }
+.cartao-empresa-dados dt { color: var(--muted); }
+.cartao-empresa-dados dd { margin: 0; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu-cartao { position: relative; margin: -4px -6px 0 0; }
+.menu-cartao-lista { width: 180px; padding: 4px; }
+.menu-cartao-lista .resultado { border-radius: 8px; }
