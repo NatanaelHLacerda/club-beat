@@ -1,5 +1,5 @@
 # REQ-019 — Casca e navegação no estilo do kit
-**Status:** RASCUNHO
+**Status:** APROVADO — Natanael, 2026-10-25, segue a cadeia (*"aprovo todas. Siga do inicio ao fim da implementação do SPDD"*): decisões pendentes na recomendação.
 **Origem:** conversa de 2026-10-25 (kit de referência: barra lateral clara com ícones, barra superior com busca, avisos e usuário)
 
 ## Contexto

@@ -1,5 +1,5 @@
 # REQ-021 — Funil e Empresas no novo visual
-**Status:** RASCUNHO
+**Status:** APROVADO — Natanael, 2026-10-25, segue a cadeia (*"aprovo todas. Siga do inicio ao fim da implementação do SPDD"*): decisões pendentes na recomendação.
 **Origem:** conversa de 2026-10-25 (kit: "Lead Management", "Client Management" com cartões de contato e tabela com ações)
 
 ## Contexto

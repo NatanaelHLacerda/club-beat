@@ -1,5 +1,5 @@
 # REQ-018 — Identidade visual e biblioteca de componentes
-**Status:** RASCUNHO
+**Status:** APROVADO — Natanael, 2026-10-25, segue a cadeia (*"aprovo todas. Siga do inicio ao fim da implementação do SPDD"*): decisões pendentes na recomendação.
 **Origem:** conversa de 2026-10-25 (*"alterar o UI das telas seguindo a ideia desse kit de template"*; kit `CRM Dashboard UI Kit.zip`; `Elementos_de_Marca_para_o_Designer.pdf`)
 
 ## Contexto

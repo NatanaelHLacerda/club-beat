@@ -1,5 +1,5 @@
 # REQ-025 — Entrada e formulário público na identidade do Club
-**Status:** RASCUNHO
+**Status:** APROVADO — Natanael, 2026-10-25, segue a cadeia (*"aprovo todas. Siga do inicio ao fim da implementação do SPDD"*): decisões pendentes na recomendação.
 **Origem:** conversa de 2026-10-25 (guia da marca: tom premium, muito espaço em branco, Oceano e Areia)
 
 ## Contexto

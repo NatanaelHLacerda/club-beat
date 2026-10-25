@@ -1,5 +1,5 @@
 # REQ-023 — Calendário em visão de semana e de mês
-**Status:** RASCUNHO
+**Status:** APROVADO — Natanael, 2026-10-25, segue a cadeia (*"aprovo todas. Siga do inicio ao fim da implementação do SPDD"*): decisões pendentes na recomendação.
 **Origem:** conversa de 2026-10-25 (kit: calendário com dias da semana no topo, horários na lateral e blocos de tarefa)
 
 ## Contexto

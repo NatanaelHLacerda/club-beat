@@ -19,6 +19,7 @@ import { Renovacoes } from './telas/renovacoes/Renovacoes'
 import { Prazos } from './telas/prazos/Prazos'
 import { Painel } from './telas/painel/Painel'
 import { Importar } from './telas/config/Importar'
+import { Componentes } from './telas/config/Componentes'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -49,6 +50,7 @@ export function App() {
         <Route path="/config/usuarios" element={<Usuarios />} />
         <Route path="/config/regras" element={<Regras />} />
         <Route path="/config/importar" element={<Importar />} />
+        <Route path="/config/componentes" element={<Componentes />} />
         <Route path="*" element={<NaoEncontrada />} />
       </Route>
     </Routes>

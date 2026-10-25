@@ -1,3 +1,4 @@
+import { Pill } from './ui'
 import { rotuloPadrao, type Padrao } from '../dados/tipos'
 import { rotuloEtapa, type Etapa } from '../regras/etapas'
 
@@ -7,8 +8,8 @@ export function PadraoTag({ padrao }: { padrao: Padrao | null }) {
 }
 
 export function EtapaTag({ etapa }: { etapa: Etapa }) {
-  const tom = etapa === 'recusada' ? 'perigo' : etapa === 'espera' ? 'alerta' : etapa === 'ativa' ? 'ok' : etapa === 'direcao' ? 'ouro' : ''
-  return <span className={`pill ${tom}`}>{rotuloEtapa[etapa]}</span>
+  const tom = etapa === 'recusada' ? 'perigo' : etapa === 'espera' ? 'alerta' : etapa === 'ativa' ? 'ok' : etapa === 'direcao' ? 'ouro' : 'neutro'
+  return <Pill tom={tom}>{rotuloEtapa[etapa]}</Pill>
 }
 
 export function Exemplo({ mostrar }: { mostrar: boolean }) {

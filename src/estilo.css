@@ -1,4 +1,4 @@
-/* CRM de Parcerias Club Beat — tema claro com a paleta da marca (Elementos de marca, v1.0):
+/* CRM de Parcerias Club Beat — Libre Bodoni nos títulos, Space Grotesk no resto; tema claro com a paleta da marca (Elementos de marca, v1.0):
    Areia e Areia clara no fundo, Oceano nos títulos e ações, Dourado escuro em rótulos, Dourado só como detalhe. */
 :root {
   --bg: #F4EEE2;          /* Areia: fundo da página */
@@ -19,8 +19,12 @@
   --bronze: #8C5A2B;
   --prata: #6B7280;
   --ouro: #7F6024;
-  --font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --radius: 10px;
+  --font: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-titulo: "Libre Bodoni", Georgia, "Times New Roman", serif;
+  --radius: 14px;
+  --radius-p: 10px;
+  --sombra: 0 8px 24px rgba(20, 37, 64, 0.10);
+  --marcador: #D2AE6A;
   color-scheme: light;
 }
 
@@ -28,7 +32,8 @@
 html, body, #root { height: 100%; }
 body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; }
 h1, h2, h3 { color: var(--ink); margin: 0; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
-h1 { font-size: 1.5rem; }
+h1 { font-size: 1.75rem; font-family: var(--font-titulo); font-weight: 600; letter-spacing: 0; }
+.destaque-numero { font-family: var(--font-titulo); font-weight: 600; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; }
 h2 { font-size: 1.1rem; }
 h3 { font-size: 0.95rem; }
 p { margin: 0; }
@@ -51,7 +56,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .casca { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100%; }
 .lateral { background: var(--bg-2); border-right: 1px solid var(--line); padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
 .marca { display: flex; flex-direction: column; gap: 2px; padding: 0 8px; }
-.marca b { color: var(--ink); font-size: 1rem; letter-spacing: 0.02em; }
+.marca b { color: var(--ink); font-size: 1.15rem; letter-spacing: 0.01em; font-family: var(--font-titulo); font-weight: 600; }
 .marca span { color: var(--gold); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
 .grupo { display: flex; flex-direction: column; gap: 2px; }
 .grupo > small { color: var(--muted); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 0 8px 4px; }
@@ -179,3 +184,51 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .mes .barra span { display: block; height: 100%; background: var(--gold-soft); }
 
 .codigo { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow-x: auto; font-size: 0.75rem; white-space: pre; margin: 0; }
+
+/* ── REQ-018: componentes (estilo do kit, identidade do Club) ── */
+.icone { flex: none; display: inline-block; vertical-align: -0.2em; }
+.cartao { border-radius: var(--radius); }
+.cartao-numero { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cartao-numero .valor { font-size: 2rem; line-height: 1.1; }
+.rotulo-marcado { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.85rem; }
+.rotulo-marcado::before { content: ""; width: 3px; height: 14px; border-radius: 2px; background: var(--marcador); }
+.icone-redondo { width: 30px; height: 30px; border-radius: 50%; background: var(--surface-2); color: var(--ink); display: grid; place-items: center; }
+.variacao { display: flex; align-items: center; gap: 6px; }
+.numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.pill { gap: 4px; background: var(--bg-2); }
+.pill.oceano { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+.pill.ok { background: #E8F3EC; }
+.pill.alerta { background: #F8EFD9; }
+.pill.perigo { background: #F8E4DF; }
+.padrao { display: inline-flex; align-items: center; gap: 6px; }
+.padrao:not(.master)::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.padrao.master { padding: 1px 8px; border-radius: 999px; font-size: 0.78rem; }
+.avatar { display: inline-grid; place-items: center; border-radius: 50%; color: #F4EEE2; font-weight: 600; letter-spacing: 0.02em; flex: none; }
+.secao-cabecalho { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.secao-cabecalho h2 { display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+.secao-cabecalho .marcador { width: 3px; height: 16px; border-radius: 2px; background: var(--marcador); }
+.ver-todos { font-size: 0.82rem; color: var(--gold); text-decoration: none; font-weight: 500; }
+.ver-todos:hover { text-decoration: underline; }
+.vazio { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); }
+.vazio .icone { color: var(--gold-soft); }
+.carregando { display: flex; flex-direction: column; gap: 8px; }
+.carregando span { height: 14px; border-radius: 6px; background: linear-gradient(90deg, var(--surface-2), var(--surface), var(--surface-2)); background-size: 200% 100%; animation: brilho 1.4s infinite; }
+.carregando span:nth-child(2) { width: 80%; } .carregando span:nth-child(3) { width: 60%; }
+@keyframes brilho { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.busca { display: flex; align-items: center; gap: 8px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; color: var(--muted); min-width: 0; }
+.busca input { border: 0; background: transparent; outline: none; width: 100%; color: var(--text); }
+.busca:focus-within { border-color: var(--primary); }
+.botao-icone { position: relative; background: transparent; border: 0; border-radius: 8px; width: 30px; height: 30px; display: inline-grid; place-items: center; color: var(--muted); cursor: pointer; }
+.botao-icone:hover, .botao-icone:focus-visible { background: var(--surface-2); color: var(--ink); }
+.botao-icone.perigo:hover { color: var(--danger); }
+.botao-icone::after { content: attr(data-dica); position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); background: var(--primary); color: var(--primary-ink); font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.12s; z-index: 5; }
+.botao-icone:hover::after, .botao-icone:focus-visible::after { opacity: 1; }
+.tabela-rolagem { background: var(--surface); }
+.tabela th { background: transparent; border-bottom: 1px solid var(--line); }
+.tabela td.acoes, .tabela th.acoes { width: 1%; white-space: nowrap; text-align: right; }
+.tabela tr.linha-atrasado td:first-child { box-shadow: inset 3px 0 0 var(--danger); }
+.tabela tr.linha-alerta td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+.progresso-linha { display: inline-flex; align-items: center; gap: 8px; min-width: 120px; }
+.progresso-linha .trilho { flex: 1; height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.progresso-linha .trilho span { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
+@media (prefers-reduced-motion: reduce) { .carregando span { animation: none; } }

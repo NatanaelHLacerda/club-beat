@@ -1,5 +1,5 @@
 # REQ-020 — Painel inicial no estilo do kit
-**Status:** RASCUNHO
+**Status:** APROVADO — Natanael, 2026-10-25, segue a cadeia (*"aprovo todas. Siga do inicio ao fim da implementação do SPDD"*): decisões pendentes na recomendação.
 **Origem:** conversa de 2026-10-25 (kit: tela "Dashboard" com cartões de número, gráfico de barras em pontos, rosca de resumo e lista de tarefas)
 
 ## Contexto
