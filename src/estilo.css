@@ -121,7 +121,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* Peças */
 .cartao { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .cartao.destaque { border-color: var(--gold); }
-.botao { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 500; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.botao { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 500; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .botao:hover { border-color: var(--gold); }
 .botao.primario { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
 .botao.primario:hover { background: #1E3358; border-color: #1E3358; }
@@ -393,3 +393,47 @@ tbody tr.clicavel:hover { background: var(--surface); }
   .mes-dia .bloco-data b { font-size: 0.65rem; }
   .legenda-calendario { display: none; }
 }
+
+/* ── REQ-025: entrada e páginas públicas ── */
+.moldura-entrada { min-height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.painel-marca { background: var(--primary); color: var(--primary-ink); padding: 56px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+.painel-marca::after { content: ""; position: absolute; right: -120px; bottom: -120px; width: 360px; height: 360px; border-radius: 50%; border: 1px solid rgba(210, 174, 106, 0.35); }
+.marca-grande { display: flex; flex-direction: column; gap: 2px; }
+.marca-grande b { font-family: var(--font-titulo); font-size: 2rem; font-weight: 600; color: inherit; }
+.marca-grande span { color: var(--gold-soft); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.filete { display: block; width: 48px; height: 2px; background: var(--gold-soft); }
+.frase { font-family: var(--font-titulo); font-size: 2.1rem; line-height: 1.2; max-width: 16ch; color: var(--primary-ink); }
+.frase-apoio { color: rgba(244, 238, 226, 0.75); max-width: 36ch; }
+.area-entrada { display: grid; place-items: center; padding: 32px 16px; background: var(--surface); }
+.form-entrada { width: min(380px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.form-entrada input { padding: 11px 12px; }
+.marca-movel { display: none; }
+@media (max-width: 860px) {
+  .moldura-entrada { grid-template-columns: 1fr; }
+  .painel-marca { display: none; }
+  .area-entrada { align-content: start; gap: 28px; padding-top: 48px; }
+  .marca-movel { display: flex; flex-direction: column; align-items: center; }
+  .marca-movel b { font-family: var(--font-titulo); font-size: 1.6rem; color: var(--ink); }
+  .marca-movel span { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; }
+}
+.pagina-publica { min-height: 100%; background: var(--surface); }
+.cabecalho-publico { background: var(--primary); color: var(--primary-ink); padding: 40px 16px 56px; }
+.cabecalho-publico .interno { width: min(640px, 100%); margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.cabecalho-publico .frase { font-size: 1.35rem; max-width: 32ch; }
+.pagina-publica .publico { margin-top: -28px; }
+.pagina-publica .publico > .cartao, .pagina-publica .publico > div > .cartao { box-shadow: var(--sombra); }
+.indicador-etapas { list-style: none; margin: 0; padding: 14px 10px; display: flex; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--sombra); }
+.indicador-etapas li { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; color: var(--muted); min-width: 0; text-align: center; }
+.indicador-etapas li:not(:last-child)::after { content: ""; position: absolute; top: 13px; left: calc(50% + 16px); right: calc(-50% + 16px); height: 2px; background: var(--line); }
+.indicador-etapas li.feito:not(:last-child)::after { background: var(--primary); }
+.indicador-etapas .bola { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-weight: 600; font-size: 0.8rem; background: var(--bg-2); color: var(--muted); }
+.indicador-etapas li.feito .bola { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+.indicador-etapas li.atual .bola { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 0 4px rgba(20, 37, 64, 0.12); }
+.indicador-etapas li.atual { color: var(--ink); font-weight: 600; }
+@media (max-width: 520px) { .indicador-etapas .nome-etapa { display: none; } }
+.confirmacao { align-items: center; text-align: center; padding: 36px 24px; }
+.selo-ok { width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: var(--gold-soft); display: grid; place-items: center; font-size: 1.4rem; }
+.campo input[type="checkbox"], .campo input[type="radio"], .marcar input { width: auto; padding: 0; flex: none; }
+.marcar { text-align: left; }
+fieldset.campo { min-inline-size: 0; }
+.legenda { display: block; }

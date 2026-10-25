@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { enviarFicha, whatsappDoClub, type ArquivoFicha } from '../../dados/api'
 import { duracoes, faixasFaturamento, faixasFuncionarios, objetivos, opcoesBusca, quemDecideOpcoes, segmentos, temposAtuacao, ufs } from '../../dados/campos'
 import type { TipoAnexo } from '../../dados/tipos'
+import { CabecalhoPublico, IndicadorEtapas } from '../../componentes/Moldura'
 import { fichaVazia, limiteArquivo, textosFormulario, tiposAceitos, titulosEtapas, validarEtapa, type Erros, type Ficha } from '../../regras/formulario'
 
 type CampoTexto = { [K in keyof Ficha]: Ficha[K] extends string ? K : never }[keyof Ficha]
@@ -78,7 +79,8 @@ export function Formulario() {
   if (enviado) {
     return (
       <Pagina>
-        <div className="cartao destaque">
+        <div className="cartao destaque confirmacao">
+          <span className="selo-ok" aria-hidden="true">✓</span>
           <h1>Ficha enviada</h1>
           <p role="status">{textosFormulario.enviado}</p>
           {whatsapp && <a className="botao primario" style={{ textAlign: 'center', textDecoration: 'none' }} href={`https://wa.me/55${whatsapp}`} target="_blank" rel="noreferrer">Falar com o Club no WhatsApp</a>}
@@ -89,10 +91,12 @@ export function Formulario() {
 
   return (
     <Pagina>
-      <div ref={topo} className="pilha" style={{ gap: 6 }}>
-        <span className="eyebrow-publico">Etapa {etapa} de 5</span>
-        <h1>{titulosEtapas[etapa - 1]}</h1>
-        <div className="progresso" aria-hidden="true"><span style={{ width: `${etapa * 20}%` }} /></div>
+      <div ref={topo} className="pilha" style={{ gap: 14 }}>
+        <IndicadorEtapas etapas={titulosEtapas} atual={etapa} />
+        <div className="pilha" style={{ gap: 2 }}>
+          <span className="eyebrow-publico">Etapa {etapa} de 5</span>
+          <h1>{titulosEtapas[etapa - 1]}</h1>
+        </div>
       </div>
 
       <div className="cartao">
@@ -189,9 +193,9 @@ export function Formulario() {
 
 function Pagina({ children }: { children: ReactNode }) {
   return (
-    <div className="publico">
-      <header className="marca" style={{ padding: 0 }}><b>Club Beat</b><span>Parcerias</span></header>
-      {children}
+    <div className="pagina-publica">
+      <CabecalhoPublico subtitulo="Conte quem é a sua empresa. A nossa equipe responde em até 1 dia útil." />
+      <div className="publico">{children}</div>
     </div>
   )
 }

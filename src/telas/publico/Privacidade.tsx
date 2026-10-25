@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
+import { CabecalhoPublico } from '../../componentes/Moldura'
 
 export function Privacidade() {
   return (
-    <div className="publico">
-      <header className="marca" style={{ padding: 0 }}><b>Club Beat</b><span>Parcerias</span></header>
-      <h1>Como usamos os dados da ficha de parceria</h1>
+    <div className="pagina-publica">
+      <CabecalhoPublico subtitulo="Como usamos os dados da ficha de parceria." />
+      <div className="publico">
+      <h1>Política de privacidade</h1>
       <p className="aviso alerta">Versão provisória, até a revisão do advogado que apoia o Club.</p>
       <div className="cartao">
         <p>Usamos as informações da ficha só para avaliar a parceria e entrar em contato com a pessoa responsável.</p>
@@ -14,6 +16,7 @@ export function Privacidade() {
         <p>Para pedir a correção ou a exclusão dos dados enviados, fale com a equipe de parcerias do Club.</p>
       </div>
       <Link to="/seja-parceiro">← Voltar ao formulário</Link>
+      </div>
     </div>
   )
 }

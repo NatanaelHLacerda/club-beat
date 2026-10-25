@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { definirNovaSenha } from '../../dados/api'
+import { MolduraEntrada } from '../../componentes/Moldura'
 
 export function RedefinirSenha() {
   const navegar = useNavigate()
@@ -22,9 +23,9 @@ export function RedefinirSenha() {
   }
 
   return (
-    <div className="tela-solta">
-      <form className="cartao" onSubmit={aoEnviar}>
-        <h2>Criar nova senha</h2>
+    <MolduraEntrada>
+      <form className="form-entrada" onSubmit={aoEnviar}>
+        <div className="pilha" style={{ gap: 4 }}><h1>Criar nova senha</h1><p className="muted">Pelo menos 8 caracteres.</p></div>
         <label className="campo"><span>Nova senha</span>
           <input id="nova-senha" type="password" autoComplete="new-password" value={senha} onChange={(e) => setSenha(e.target.value)} />
         </label>
@@ -34,6 +35,6 @@ export function RedefinirSenha() {
         {erro && <p className="erro" role="alert">{erro}</p>}
         <button className="botao primario">Salvar senha</button>
       </form>
-    </div>
+    </MolduraEntrada>
   )
 }

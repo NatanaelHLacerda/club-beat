@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { entrar, pedirNovaSenha } from '../../dados/api'
 import { useSessao } from '../../sessao'
+import { MolduraEntrada } from '../../componentes/Moldura'
 
 export function Entrar() {
   const { perfil, carregando } = useSessao()
@@ -41,9 +42,9 @@ export function Entrar() {
   }
 
   return (
-    <div className="tela-solta">
-      <form className="cartao" onSubmit={aoEnviar}>
-        <div className="marca" style={{ padding: 0 }}><b>Club Beat</b><span>CRM de Parcerias</span></div>
+    <MolduraEntrada>
+      <form className="form-entrada" onSubmit={aoEnviar}>
+        <div className="pilha" style={{ gap: 4 }}><h1>Entrar</h1><p className="muted">Use o e-mail e a senha do CRM de Parcerias.</p></div>
         <label className="campo"><span>E-mail</span>
           <input id="email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
@@ -55,6 +56,6 @@ export function Entrar() {
         <button className="botao primario" disabled={enviando}>{enviando ? 'Entrando…' : 'Entrar'}</button>
         <button type="button" className="botao leve" onClick={() => void esqueci()}>Esqueci a senha</button>
       </form>
-    </div>
+    </MolduraEntrada>
   )
 }
