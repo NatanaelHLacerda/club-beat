@@ -323,3 +323,26 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .cartao-empresa .rodape { display: flex; justify-content: space-between; align-items: center; gap: 6px; border-top: 1px dashed var(--line); padding-top: 8px; }
 .tabela td.num, .tabela td .pill { white-space: nowrap; }
 .filtros-linha #filtro-busca { min-width: 260px; }
+
+/* ── REQ-022: ficha da empresa ── */
+.caminho { list-style: none; margin: 0; padding: 14px 18px; display: flex; gap: 0; overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.caminho li { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 78px; position: relative; color: var(--muted); }
+.caminho li:not(:last-child):not(.saida)::after { content: ""; position: absolute; top: 11px; left: calc(50% + 14px); right: calc(-50% + 14px); height: 2px; background: var(--line); }
+.caminho li.feito:not(:last-child)::after { background: var(--primary); }
+.caminho .bola { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg-2); display: grid; place-items: center; color: var(--primary-ink); }
+.caminho li.feito .bola { background: var(--primary); border-color: var(--primary); }
+.caminho li.atual .bola { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(20, 37, 64, 0.12); }
+.caminho li.atual { color: var(--ink); font-weight: 600; }
+.caminho li.feito { color: var(--text); }
+.caminho li.saida { justify-content: center; }
+.perfil-nome { color: var(--ink); font-family: var(--font-titulo); font-size: 1.25rem; font-weight: 600; }
+.perfil-contato { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; border-top: 1px solid var(--line); padding-top: 12px; }
+.perfil-contato dt { color: var(--muted); font-size: 0.75rem; display: flex; gap: 6px; align-items: center; }
+.perfil-contato dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .perfil-contato { grid-template-columns: 1fr; } }
+.grupos-abas { display: inline-flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 12px; align-self: flex-start; flex-wrap: wrap; }
+.grupos-abas button { border: 0; background: none; padding: 7px 14px; border-radius: 9px; cursor: pointer; color: var(--muted); font-weight: 500; }
+.grupos-abas button.ativo { background: var(--bg-2); color: var(--ink); box-shadow: 0 1px 2px rgba(20, 37, 64, 0.08); }
+.proximo-passo { border-color: var(--gold-soft); background: var(--bg-2); }
+.destaque-texto { color: var(--ink); font-size: 1.05rem; font-weight: 600; }
+.ok { color: var(--ok); }
