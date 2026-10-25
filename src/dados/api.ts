@@ -637,3 +637,15 @@ export async function importarParceiros(linhas: LinhaImportacao[]): Promise<Resu
   falhou(error, 'Não foi possível importar.')
   return (data ?? []) as ResultadoImportacao[]
 }
+
+// ── Casca: busca global e sino (REQ-019) ──────────────────────────
+
+export async function buscarEmpresas(termo: string): Promise<Empresa[]> {
+  return (await listarEmpresas({ busca: termo })).slice(0, 8)
+}
+
+export async function listarAvisosRecentes(): Promise<Aviso[]> {
+  const { data, error } = await supabase.from('avisos').select('*').order('em', { ascending: false }).limit(5)
+  falhou(error, 'Não foi possível carregar os avisos.')
+  return (data ?? []) as Aviso[]
+}

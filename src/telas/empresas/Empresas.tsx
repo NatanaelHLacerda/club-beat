@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { Filtros, nomeDe } from '../../componentes/Filtros'
 import { EtapaTag, Exemplo, PadraoTag } from '../../componentes/Rotulos'
@@ -13,7 +13,8 @@ import { useSessao } from '../../sessao'
 export function Empresas() {
   const navegar = useNavigate()
   const { perfil } = useSessao()
-  const [filtros, setFiltros] = useState<FiltrosEmpresas>({})
+  const [parametros] = useSearchParams()
+  const [filtros, setFiltros] = useState<FiltrosEmpresas>(() => ({ busca: parametros.get('busca') ?? '' }))
   const empresas = useConsulta(() => listarEmpresas(filtros), [JSON.stringify(filtros)])
   const usuarios = useConsulta(listarUsuarios)
   const lista = empresas.dado ?? []
