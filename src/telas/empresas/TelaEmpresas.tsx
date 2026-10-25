@@ -100,13 +100,14 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
         <Tabela<Empresa> itens={lista} chave={(e) => e.id} aoAbrir={(e) => navegar(`/empresas/${e.id}`)} vazio="Nenhuma empresa encontrada."
           destaque={(e) => { const s = prazoDe(e.id)?.situacao; return s === 'atrasado' ? 'atrasado' : s === 'vence_hoje' ? 'alerta' : null }}
           colunas={[
-            { titulo: 'Marca', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={30} /><span className="pilha" style={{ gap: 0, minWidth: 160 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><span className="muted pequeno">chegou em {formatarData(e.criado_em)} <Exemplo mostrar={e.exemplo} /></span></span></span> },
+            { titulo: 'Marca', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><b style={{ color: 'var(--ink)', fontWeight: 500 }} title={e.marca}>{e.exemplo ? e.marca.replace(/\s*\(exemplo\)$/i, '') : e.marca}</b><Exemplo mostrar={e.exemplo} /></span> },
             { titulo: 'CNPJ', classe: 'num muted', render: (e) => formatarCnpj(e.cnpj) },
-            { titulo: 'Segmento', render: (e) => e.segmento },
+            { titulo: 'Segmento', classe: 'estreita', render: (e) => e.segmento },
             { titulo: 'Etapa', render: (e) => <EtapaTag etapa={e.etapa} /> },
             { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
             { titulo: 'Responsável', render: (e) => { const r = e.responsavel_id ?? e.gerente1_id; return r ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, r)} tamanho={22} />{nomeDe(usuarios.dado, r).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">—</span> } },
-            { titulo: 'Prazo', render: (e) => { const p = prazoDe(e.id); return p ? <span className="pilha" style={{ gap: 2 }}><Pill tom={p.situacao === 'atrasado' ? 'perigo' : p.situacao === 'vence_hoje' ? 'alerta' : 'neutro'}>{rotuloSituacaoPrazo[p.situacao]}</Pill><span className="muted pequeno">{p.descricao} · {formatarData(p.prazo)}</span></span> : <span className="muted">—</span> } },
+            { titulo: 'Prazo', render: (e) => { const p = prazoDe(e.id); return p ? <span title={`${p.descricao} · ${formatarData(p.prazo)}`}><Pill tom={p.situacao === 'atrasado' ? 'perigo' : p.situacao === 'vence_hoje' ? 'alerta' : 'neutro'}>{rotuloSituacaoPrazo[p.situacao]}</Pill></span> : <span className="muted">—</span> } },
+            { titulo: 'Chegada', classe: 'num muted', largo: true, render: (e) => formatarData(e.criado_em) },
           ]}
           acoes={[
             { rotulo: 'Ver', icone: 'ver', aoClicar: (e) => navegar(`/empresas/${e.id}`) },

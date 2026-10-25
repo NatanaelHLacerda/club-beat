@@ -1,5 +1,5 @@
 // REQ-018 — peças visuais do CRM (estilo do kit de referência, identidade do Club). Sem chamada de dados.
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, type MouseEvent as EventoMouse, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { calcularVariacao, textoVariacao } from '../../regras/variacao'
 import { Icone, type NomeIcone } from './Icone'
@@ -102,7 +102,8 @@ export function BotaoIcone({ icone, rotulo, aoClicar, perigo }: { icone: NomeIco
 }
 
 // ── Tabela ──────────────────────────────────────────────────────
-export type ColunaTabela<T> = { titulo: string; render: (item: T) => ReactNode; classe?: string }
+// REQ-028 — célula em uma linha com reticências; `quebra` deixa o texto quebrar (listas longas); `largo` só no computador.
+export type ColunaTabela<T> = { titulo: string; render: (item: T) => ReactNode; classe?: string; quebra?: boolean; largo?: boolean }
 export type AcaoTabela<T> = { rotulo: string; icone: NomeIcone; aoClicar: (item: T) => void; mostrar?: (item: T) => boolean; perigo?: boolean }
 
 type PropsTabela<T> = {
@@ -120,13 +121,13 @@ export function Tabela<T>({ itens, colunas, chave, acoes, aoAbrir, destaque, vaz
   return (
     <div className="tabela-rolagem">
       <table className="tabela">
-        <thead><tr>{colunas.map((c) => <th key={c.titulo} className={c.classe}>{c.titulo}</th>)}{acoes?.length ? <th className="acoes">Ações</th> : null}</tr></thead>
+        <thead><tr>{colunas.map((c) => <th key={c.titulo} className={classeColuna(c)}>{c.titulo}</th>)}{acoes?.length ? <th className="acoes">Ações</th> : null}</tr></thead>
         <tbody>
           {itens.map((item) => {
             const d = destaque?.(item)
             return (
               <tr key={chave(item)} className={`${aoAbrir ? 'clicavel' : ''}${d ? ` linha-${d}` : ''}`} onClick={aoAbrir ? () => aoAbrir(item) : undefined}>
-                {colunas.map((c) => <td key={c.titulo} className={c.classe}>{c.render(item)}</td>)}
+                {colunas.map((c) => <td key={c.titulo} className={classeColuna(c)}>{c.quebra ? c.render(item) : <div className="celula" onMouseEnter={dicaSeCortado}>{c.render(item)}</div>}</td>)}
                 {acoes?.length ? (
                   <td className="acoes"><span className="linha" style={{ gap: 2, flexWrap: 'nowrap' }}>
                     {acoes.filter((a) => !a.mostrar || a.mostrar(item)).map((a) => (
@@ -141,6 +142,16 @@ export function Tabela<T>({ itens, colunas, chave, acoes, aoAbrir, destaque, vaz
       </table>
     </div>
   )
+}
+
+function classeColuna<T>(c: ColunaTabela<T>): string | undefined {
+  return [c.classe, c.largo ? 'so-largo' : ''].filter(Boolean).join(' ') || undefined
+}
+
+// Mostra o texto inteiro na dica só quando a célula foi cortada.
+function dicaSeCortado(e: EventoMouse<HTMLDivElement>) {
+  const d = e.currentTarget
+  d.title = d.scrollWidth > d.clientWidth ? (d.textContent ?? '') : ''
 }
 
 // ── Barra de progresso ──────────────────────────────────────────

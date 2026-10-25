@@ -43,4 +43,4 @@ REQ-026, REQ-024.
 ## Decisões pendentes
 | # | Pergunta | Recomendação |
 |---|---|---|
-| `DP-2801` | "Chegou em" sai da coluna Marca? | Vira coluna "Chegada" só no computador |
+| `DP-2801` | "Chegou em" sai da coluna Marca? | Vira coluna "Chegada", mostrada quando a tabela tem mais de 1400 px de largura |

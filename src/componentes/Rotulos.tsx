@@ -13,5 +13,5 @@ export function EtapaTag({ etapa }: { etapa: Etapa }) {
 }
 
 export function Exemplo({ mostrar }: { mostrar: boolean }) {
-  return mostrar ? <span className="exemplo">exemplo</span> : null
+  return mostrar ? <span className="exemplo" title="Dado de exemplo">exemplo</span> : null
 }

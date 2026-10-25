@@ -37,7 +37,7 @@ export function Operacoes() {
           colunas={[
             { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
             { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
-            { titulo: 'Contrapartidas', render: (e) => <span className="pequeno">{(e.proposta?.itens ?? []).map((i) => `${rotulo(e, i.item)}${i.quantidade > 1 ? ` × ${i.quantidade}` : ''}`).join(', ')}</span> },
+            { titulo: 'Contrapartidas', quebra: true, render: (e) => <span className="pequeno">{(e.proposta?.itens ?? []).map((i) => `${rotulo(e, i.item)}${i.quantidade > 1 ? ` × ${i.quantidade}` : ''}`).join(', ')}</span> },
             { titulo: 'Formato', render: (e) => (e.formato ? rotuloFormato[e.formato] : <span className="muted">—</span>) },
             { titulo: 'Situação', render: (e) => (e.operacoes?.confirmada_em ? <Pill tom="ok">Confirmada</Pill> : <Pill tom="alerta">Aguardando</Pill>) },
             { titulo: 'Desde', render: (e) => <DataComIcone texto={formatarData(e.etapa_desde)} /> },

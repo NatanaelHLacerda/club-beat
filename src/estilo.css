@@ -597,3 +597,22 @@ h3 { font-size: 16px; }
   .faixa-acoes .busca { width: 100%; order: -1; }
   .filtros-painel { left: 0; right: auto; width: min(300px, calc(100vw - 32px)); }
 }
+
+/* ── REQ-028: tabelas no padrão do kit (cabeçalho em faixa, linhas de 48 px, texto em uma linha) ── */
+.tabela-rolagem { padding: 8px 12px 4px; }
+.tabela { border-collapse: separate; border-spacing: 0; }
+.tabela th { background: var(--surface-2); color: var(--ink); font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; padding: 12px 14px; border-bottom: 0; vertical-align: middle; }
+.tabela th:first-child { border-radius: 10px 0 0 10px; }
+.tabela th:last-child { border-radius: 0 10px 10px 0; }
+.tabela td { padding: 0 14px; height: 48px; vertical-align: middle; border-bottom: 1px solid var(--line); }
+.tabela tbody tr:last-child td { border-bottom: 0; }
+.tabela .celula { max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tabela td.estreita .celula { max-width: 180px; }
+.tabela td .linha { flex-wrap: nowrap; }
+.tabela td.acoes .botao-icone { width: 32px; height: 32px; }
+.tabela tbody tr.clicavel:hover td { background: #EFE6D4; }
+.tabela tr.linha-atrasado td:first-child, .tabela tr.linha-alerta td:first-child { border-radius: 8px 0 0 8px; }
+.tabela tr.linha-atrasado td:last-child, .tabela tr.linha-alerta td:last-child { border-radius: 0 8px 8px 0; }
+.exemplo { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 999px; background: #F3E6C8; color: #6B4E14; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: lowercase; white-space: nowrap; }
+.tabela-rolagem { container-type: inline-size; }
+@container (max-width: 1400px) { .tabela .so-largo { display: none; } }
