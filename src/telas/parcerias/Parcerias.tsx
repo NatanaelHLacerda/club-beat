@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { nomeDe } from '../../componentes/Filtros'
-import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Progresso, Tabela } from '../../componentes/ui'
 import { listarEntregas, listarParcerias, listarRelatorios, listarUsuarios } from '../../dados/api'
 import type { ParceriaComEmpresa } from '../../dados/tipos'
@@ -41,7 +41,7 @@ export function Parcerias() {
           aoAbrir={(p) => navegar(`/empresas/${p.empresa_id}`)}
           destaque={(p) => (relDe(p)?.atrasado ? 'atrasado' : balDe(p)?.atrasado ? 'alerta' : null)}
           colunas={[
-            { titulo: 'Parceira', render: (p) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={p.empresas.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{p.empresas.marca}</b><Exemplo mostrar={p.empresas.exemplo} /></span></span> },
+            { titulo: 'Parceira', render: (p) => <NomeEmpresa marca={p.empresas.marca} exemplo={p.empresas.exemplo} /> },
             { titulo: 'Padrão', render: (p) => <PadraoTag padrao={p.padrao} /> },
             { titulo: 'Ativações', render: (p) => { const a = ativacoes(p); return <Progresso feito={a.feito} total={a.total} rotulo="Ativações feitas / contratadas" /> } },
             { titulo: 'Próximo relatório', render: (p) => { const r = relDe(p); return r ? <span className="pilha" style={{ gap: 2 }}><DataComIcone texto={formatarData(r.prazo)} erro={r.atrasado} />{r.atrasado && <Pill tom="perigo">{textosAcompanhamento.atrasado}</Pill>}</span> : <Pill tom="ok">em dia</Pill> } },

@@ -1,4 +1,4 @@
-import { Pill } from './ui'
+import { Avatar, Pill } from './ui'
 import { rotuloPadrao, type Padrao } from '../dados/tipos'
 import { rotuloEtapa, type Etapa } from '../regras/etapas'
 
@@ -14,4 +14,15 @@ export function EtapaTag({ etapa }: { etapa: Etapa }) {
 
 export function Exemplo({ mostrar }: { mostrar: boolean }) {
   return mostrar ? <span className="exemplo" title="Dado de exemplo">exemplo</span> : null
+}
+
+// REQ-028 — célula de empresa nas tabelas: avatar, nome sem "(exemplo)" e a pill ao lado, numa linha.
+export function NomeEmpresa({ marca, exemplo, tamanho = 28 }: { marca: string; exemplo: boolean; tamanho?: number }) {
+  return (
+    <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}>
+      <Avatar nome={marca} tamanho={tamanho} />
+      <b style={{ color: 'var(--ink)', fontWeight: 500 }} title={marca}>{exemplo ? marca.replace(/\s*\(exemplo\)$/i, '') : marca}</b>
+      <Exemplo mostrar={exemplo} />
+    </span>
+  )
 }

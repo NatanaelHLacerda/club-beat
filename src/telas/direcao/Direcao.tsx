@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { nomeDe } from '../../componentes/Filtros'
-import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarParaDirecao, listarUsuarios } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
@@ -31,7 +31,7 @@ export function Direcao() {
           aoAbrir={(e) => navegar(`/empresas/${e.id}`)}
           destaque={(e) => (prazoVencido(e.direcao?.prazo, hoje) ? 'atrasado' : null)}
           colunas={[
-            { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
+            { titulo: 'Empresa', render: (e) => <NomeEmpresa marca={e.marca} exemplo={e.exemplo} /> },
             { titulo: 'Padrão', render: (e) => <span className="linha" style={{ gap: 6 }}><PadraoTag padrao={e.padrao_final} />{e.candidata_master && <Pill tom="ouro">Master?</Pill>}</span> },
             { titulo: 'Motivos', render: (e) => <span className="pequeno">{(e.direcao?.motivos ?? []).join(', ')}</span> },
             { titulo: 'Levada por', render: (e) => e.direcao?.levada_por ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, e.direcao.levada_por)} tamanho={22} />{nomeDe(usuarios.dado, e.direcao.levada_por).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },

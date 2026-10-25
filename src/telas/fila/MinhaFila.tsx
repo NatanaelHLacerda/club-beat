@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
-import { EtapaTag, Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { EtapaTag, NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarMinhaFila, listarPrazos } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
@@ -37,7 +37,7 @@ export function MinhaFila() {
           aoAbrir={(e) => navegar(`/empresas/${e.id}`)}
           destaque={(e) => { const s = prazoDe(e.id)?.situacao; return s === 'atrasado' ? 'atrasado' : s === 'vence_hoje' ? 'alerta' : null }}
           colunas={[
-            { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
+            { titulo: 'Empresa', render: (e) => <NomeEmpresa marca={e.marca} exemplo={e.exemplo} /> },
             { titulo: 'Padrão', render: (e) => <span className="linha" style={{ gap: 6 }}><PadraoTag padrao={e.padrao_final} />{e.candidata_master && <Pill tom="ouro">Master?</Pill>}</span> },
             { titulo: 'Etapa', render: (e) => <EtapaTag etapa={e.etapa} /> },
             { titulo: 'Próximo prazo', render: (e) => { const p = prazoDe(e.id); return p ? <span className="pilha" style={{ gap: 2 }}><span className="pequeno">{p.descricao}</span><span className="linha" style={{ gap: 6 }}><DataComIcone texto={formatarData(p.prazo)} erro={p.situacao === 'atrasado'} />{p.situacao !== 'no_prazo' && <Pill tom={p.situacao === 'atrasado' ? 'perigo' : 'alerta'}>{rotuloSituacaoPrazo[p.situacao]}</Pill>}</span></span> : <span className="muted">—</span> } },

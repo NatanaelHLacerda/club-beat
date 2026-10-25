@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SemAcesso, Topo } from '../../componentes/Casca'
-import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Avatar, Carregando, CartaoNumero, DataComIcone, PainelLateral, Pill, Tabela } from '../../componentes/ui'
 import { confirmarOperacoes, listarCardapio, listarParaOperacoes } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
@@ -35,7 +35,7 @@ export function Operacoes() {
         <Tabela<Empresa> itens={propostas} chave={(e) => e.id} vazio="Nenhuma proposta em montagem."
           aoAbrir={(e) => setAberta(e)} destaque={(e) => (!e.operacoes?.confirmada_em ? 'alerta' : null)}
           colunas={[
-            { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
+            { titulo: 'Empresa', render: (e) => <NomeEmpresa marca={e.marca} exemplo={e.exemplo} /> },
             { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
             { titulo: 'Contrapartidas', quebra: true, render: (e) => <span className="pequeno">{(e.proposta?.itens ?? []).map((i) => `${rotulo(e, i.item)}${i.quantidade > 1 ? ` × ${i.quantidade}` : ''}`).join(', ')}</span> },
             { titulo: 'Formato', render: (e) => (e.formato ? rotuloFormato[e.formato] : <span className="muted">—</span>) },

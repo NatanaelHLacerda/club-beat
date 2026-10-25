@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { nomeDe } from '../../componentes/Filtros'
-import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarRenovacoes, listarUsuarios } from '../../dados/api'
 import type { ParceriaComEmpresa } from '../../dados/tipos'
@@ -34,7 +34,7 @@ export function Renovacoes() {
           aoAbrir={(p) => navegar(`/empresas/${p.empresa_id}`)}
           destaque={(p) => (!p.renovacao?.decidida_em && diasParaOFim(p.fim, hoje) <= 30 ? 'atrasado' : !p.renovacao?.decidida_em ? 'alerta' : null)}
           colunas={[
-            { titulo: 'Parceira', render: (p) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={p.empresas.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{p.empresas.marca}</b><Exemplo mostrar={p.empresas.exemplo} /></span></span> },
+            { titulo: 'Parceira', render: (p) => <NomeEmpresa marca={p.empresas.marca} exemplo={p.empresas.exemplo} /> },
             { titulo: 'Padrão', render: (p) => <PadraoTag padrao={p.padrao} /> },
             { titulo: 'Fim', render: (p) => <DataComIcone texto={formatarData(p.fim)} /> },
             { titulo: 'Faltam', classe: 'num', render: (p) => { const d = diasParaOFim(p.fim, hoje); return <span className={d <= 30 ? 'erro' : ''}>{d} dias</span> } },

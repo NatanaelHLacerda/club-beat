@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { SemAcesso, Topo } from '../../componentes/Casca'
-import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
+import { NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarParaJuridico } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
@@ -39,7 +39,7 @@ export function Juridico() {
         <Tabela<Empresa> itens={casos} chave={(e) => e.id} vazio="Nenhum contrato em andamento."
           aoAbrir={(e) => navegar(`/empresas/${e.id}`)} destaque={(e) => (vencido(e) ? 'atrasado' : null)}
           colunas={[
-            { titulo: 'Empresa', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><span className="pilha" style={{ gap: 0 }}><b style={{ color: 'var(--ink)', fontWeight: 500 }}>{e.marca}</b><Exemplo mostrar={e.exemplo} /></span></span> },
+            { titulo: 'Empresa', render: (e) => <NomeEmpresa marca={e.marca} exemplo={e.exemplo} /> },
             { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
             { titulo: 'Situação', render: (e) => situacao(e.contrato) },
             { titulo: 'Prazo da minuta', render: (e) => e.contrato?.prazo_juridico ? <DataComIcone texto={formatarData(e.contrato.prazo_juridico)} erro={vencido(e)} /> : <span className="muted">—</span> },
