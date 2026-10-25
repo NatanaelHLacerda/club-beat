@@ -1,6 +1,6 @@
 // Único ponto de acesso a dados. As telas importam daqui, nunca do cliente Supabase.
 import { supabase } from './supabase'
-import type { Anexo, CamposEditaveis, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Papel, Perfil, TipoAnexo } from './tipos'
+import type { Anexo, CamposEditaveis, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
 
@@ -149,4 +149,28 @@ export async function urlAnexo(caminho: string): Promise<string> {
   const { data, error } = await supabase.storage.from('anexos').createSignedUrl(caminho, 300)
   falhou(error, 'Não foi possível abrir o arquivo.')
   return data!.signedUrl
+}
+
+// ── Mensagens (REQ-015) ───────────────────────────────────────────
+
+export async function listarModelos(): Promise<ModeloMensagem[]> {
+  const { data, error } = await supabase.from('modelos_mensagem').select('*').order('ordem')
+  falhou(error, 'Não foi possível carregar os modelos.')
+  return (data ?? []) as ModeloMensagem[]
+}
+
+export async function salvarModelo(codigo: string, titulo: string, texto: string) {
+  const { error } = await supabase.from('modelos_mensagem').update({ titulo, texto }).eq('codigo', codigo)
+  falhou(error, 'Não foi possível salvar o modelo.')
+}
+
+export async function listarMensagens(empresa: string): Promise<Mensagem[]> {
+  const { data, error } = await supabase.from('mensagens').select('*').eq('empresa_id', empresa).order('em', { ascending: false })
+  falhou(error, 'Não foi possível carregar as mensagens.')
+  return (data ?? []) as Mensagem[]
+}
+
+export async function registrarMensagem(empresa: string, modelo: string | null, canal: 'email' | 'whatsapp', texto: string) {
+  const { error } = await supabase.rpc('registrar_mensagem', { empresa, modelo, canal, texto })
+  falhou(error, 'Não foi possível registrar a mensagem.')
 }

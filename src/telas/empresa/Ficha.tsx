@@ -11,6 +11,7 @@ import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
 import { AbaAnexos } from './AbaAnexos'
+import { AbaMensagens } from './AbaMensagens'
 import { AbaResumo } from './AbaResumo'
 import { AbaTempo } from './AbaTempo'
 
@@ -22,6 +23,7 @@ type Aba = { id: string; titulo: string; mostrar?: (e: Empresa) => boolean; rend
 const abas: Aba[] = [
   { id: 'resumo', titulo: 'Resumo', render: (p) => <AbaResumo {...p} /> },
   { id: 'anexos', titulo: 'Anexos', render: (p) => <AbaAnexos {...p} /> },
+  { id: 'mensagens', titulo: 'Mensagens', render: (p) => <AbaMensagens {...p} /> },
   { id: 'tempo', titulo: 'Linha do tempo', render: (p) => <AbaTempo {...p} /> },
 ]
 

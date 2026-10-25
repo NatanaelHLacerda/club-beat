@@ -3,6 +3,7 @@ import { Casca } from './componentes/Casca'
 import { EmBreve } from './componentes/EmBreve'
 import { Entrar } from './telas/acesso/Entrar'
 import { RedefinirSenha } from './telas/acesso/RedefinirSenha'
+import { Regras } from './telas/config/Regras'
 import { Usuarios } from './telas/config/Usuarios'
 import { Ficha } from './telas/empresa/Ficha'
 import { Empresas } from './telas/empresas/Empresas'
@@ -24,7 +25,7 @@ export function App() {
         <Route path="/painel" element={<EmBreve titulo="Painel" />} />
         <Route path="/avisos" element={<EmBreve titulo="Avisos" />} />
         <Route path="/config/usuarios" element={<Usuarios />} />
-        <Route path="/config/regras" element={<EmBreve titulo="Regras e modelos" />} />
+        <Route path="/config/regras" element={<Regras />} />
         <Route path="*" element={<EmBreve titulo="Página não encontrada" />} />
       </Route>
     </Routes>

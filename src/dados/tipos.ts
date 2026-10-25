@@ -127,3 +127,12 @@ export type FiltrosEmpresas = {
   origem?: Origem | ''
   busca?: string
 }
+
+// ── Mensagens (REQ-015) ───────────────────────────────────────────
+export type ModeloMensagem = { codigo: string; titulo: string; texto: string; automatico: boolean; interno: boolean; ordem: number; atualizado_em: string }
+export type Canal = 'email' | 'whatsapp' | 'interno'
+export type Mensagem = {
+  id: number; empresa_id: string; modelo: string | null; canal: Canal; destinatario: string | null; texto: string
+  situacao: 'aguardando_envio' | 'copiada' | 'registrada'; autor_id: string | null; em: string
+}
+export const rotuloSituacaoMensagem: Record<Mensagem['situacao'], string> = { aguardando_envio: 'Aguardando envio', copiada: 'Copiada', registrada: 'Registrada' }
