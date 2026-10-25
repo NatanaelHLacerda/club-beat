@@ -8,12 +8,17 @@ import { Usuarios } from './telas/config/Usuarios'
 import { Ficha } from './telas/empresa/Ficha'
 import { Empresas } from './telas/empresas/Empresas'
 import { Funil } from './telas/funil/Funil'
+import { Avisos } from './telas/avisos/Avisos'
+import { Formulario } from './telas/publico/Formulario'
+import { Privacidade } from './telas/publico/Privacidade'
 
 export function App() {
   return (
     <Routes>
       <Route path="/entrar" element={<Entrar />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+      <Route path="/seja-parceiro" element={<Formulario />} />
+      <Route path="/seja-parceiro/privacidade" element={<Privacidade />} />
       <Route element={<Casca />}>
         <Route path="/" element={<Navigate to="/funil" replace />} />
         <Route path="/funil" element={<Funil />} />
@@ -23,7 +28,7 @@ export function App() {
         <Route path="/calendario" element={<EmBreve titulo="Calendário" />} />
         <Route path="/renovacoes" element={<EmBreve titulo="Renovações" />} />
         <Route path="/painel" element={<EmBreve titulo="Painel" />} />
-        <Route path="/avisos" element={<EmBreve titulo="Avisos" />} />
+        <Route path="/avisos" element={<Avisos />} />
         <Route path="/config/usuarios" element={<Usuarios />} />
         <Route path="/config/regras" element={<Regras />} />
         <Route path="*" element={<EmBreve titulo="Página não encontrada" />} />

@@ -136,3 +136,6 @@ export type Mensagem = {
   situacao: 'aguardando_envio' | 'copiada' | 'registrada'; autor_id: string | null; em: string
 }
 export const rotuloSituacaoMensagem: Record<Mensagem['situacao'], string> = { aguardando_envio: 'Aguardando envio', copiada: 'Copiada', registrada: 'Registrada' }
+
+// ── Avisos (REQ-002, completados no REQ-014) ──────────────────────
+export type Aviso = { id: number; usuario_id: string; empresa_id: string | null; tipo: string; texto: string; lido_em: string | null; em: string }

@@ -1,6 +1,7 @@
 // Único ponto de acesso a dados. As telas importam daqui, nunca do cliente Supabase.
 import { supabase } from './supabase'
-import type { Anexo, CamposEditaveis, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
+import type { Ficha } from '../regras/formulario'
+import type { Anexo, Aviso, CamposEditaveis, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
 
@@ -173,4 +174,45 @@ export async function listarMensagens(empresa: string): Promise<Mensagem[]> {
 export async function registrarMensagem(empresa: string, modelo: string | null, canal: 'email' | 'whatsapp', texto: string) {
   const { error } = await supabase.rpc('registrar_mensagem', { empresa, modelo, canal, texto })
   falhou(error, 'Não foi possível registrar a mensagem.')
+}
+
+// ── Formulário público e avisos (REQ-002) ─────────────────────────
+
+export type ArquivoFicha = { arquivo: File; tipo: TipoAnexo }
+
+export async function enviarFicha(ficha: Ficha, arquivos: ArquivoFicha[], segundos: number, isca: string) {
+  const envio = crypto.randomUUID()
+  const enviados: { caminho: string; nome: string; tamanho: number; tipo: TipoAnexo }[] = []
+  for (const { arquivo, tipo } of arquivos) {
+    if (arquivo.size > limiteAnexo) throw new ErroApi('Arquivo acima de 20 MB')
+    const caminho = `formulario/${envio}/${crypto.randomUUID()}-${arquivo.name.replace(/[^\w.-]+/g, '_')}`
+    const { error } = await supabase.storage.from('anexos').upload(caminho, arquivo)
+    if (error) throw new ErroApi(/mime|type/i.test(error.message) ? 'Tipo de arquivo não aceito. Use PDF, PPT, PPTX, PNG, JPG ou SVG.' : 'Não foi possível enviar o arquivo. Tente de novo.')
+    enviados.push({ caminho, nome: arquivo.name, tamanho: arquivo.size, tipo })
+  }
+  const dados = { ...ficha, cnpj: ficha.cnpj.replace(/\D/g, ''), segundos, site_empresa_confirmacao: isca }
+  const { error } = await supabase.rpc('enviar_ficha', { dados, arquivos: enviados })
+  falhou(error, 'Não foi possível enviar a ficha agora. Tente de novo em instantes.')
+}
+
+export async function whatsappDoClub(): Promise<string | null> {
+  const { data } = await supabase.rpc('parametro_publico', { chave_pedida: 'whatsapp_club' })
+  return typeof data === 'string' && data ? data : null
+}
+
+export async function listarAvisos(): Promise<Aviso[]> {
+  const { data, error } = await supabase.from('avisos').select('*').order('lido_em', { ascending: true, nullsFirst: true }).order('em', { ascending: false }).limit(200)
+  falhou(error, 'Não foi possível carregar os avisos.')
+  return (data ?? []) as Aviso[]
+}
+
+export async function contarAvisosNaoLidos(): Promise<number> {
+  const { count, error } = await supabase.from('avisos').select('id', { count: 'exact', head: true }).is('lido_em', null)
+  falhou(error, 'Não foi possível contar os avisos.')
+  return count ?? 0
+}
+
+export async function marcarAvisoLido(id: number) {
+  const { error } = await supabase.from('avisos').update({ lido_em: new Date().toISOString() }).eq('id', id)
+  falhou(error, 'Não foi possível marcar o aviso.')
 }

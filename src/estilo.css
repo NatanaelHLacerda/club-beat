@@ -154,3 +154,14 @@ tbody tr.clicavel:hover { background: var(--surface); }
 /* Ficha da empresa */
 .grade-ficha { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
 @media (max-width: 1000px) { .grade-ficha { grid-template-columns: 1fr; } }
+
+/* Formulário público (REQ-002) */
+.publico { width: min(640px, 100%); margin: 0 auto; padding: 32px 16px 64px; display: flex; flex-direction: column; gap: 20px; }
+.publico .cartao { gap: 16px; }
+.eyebrow-publico { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.progresso { height: 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.progresso span { display: block; height: 100%; background: var(--gold); transition: width 0.3s ease; }
+.grade-cidade { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 12px; }
+.legenda { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+.legenda b { color: var(--danger); font-weight: 500; }
+.isca { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
