@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { nomeDe } from '../../componentes/Filtros'
+import { Avatar, Icone } from '../../componentes/ui'
 import { adicionarNota, listarHistorico } from '../../dados/api'
 import { rotuloCampo } from '../../dados/campos'
 import type { ItemHistorico } from '../../dados/tipos'
@@ -31,30 +32,33 @@ export function AbaTempo({ empresa, usuarios }: PropsAba) {
   }
 
   const lista = historico.dado ?? []
+  // REQ-030 — linha do tempo com avatar, autor e data; campo de anotação fixo no pé.
   return (
-    <div className="pilha">
-      <form className="cartao" onSubmit={anotar}>
-        <label className="campo"><span>Nova nota</span>
-          <textarea id="nova-nota" value={nota} onChange={(e) => setNota(e.target.value)} placeholder="O que aconteceu, o que foi combinado…" />
-        </label>
-        {erro && <p className="erro" role="alert">{erro}</p>}
-        <div><button className="botao primario" disabled={!nota.trim()}>Salvar nota</button></div>
-      </form>
+    <div className="aba-tempo">
       {historico.carregando && !historico.dado ? <p className="muted">Carregando…</p> : lista.length === 0 ? (
         <div className="vazio">Nada registrado ainda.</div>
       ) : (
         <ol className="tempo">
-          {lista.map((i) => (
-            <li key={i.id}>
-              <time dateTime={i.em}>{formatarDataHora(i.em)}</time>
-              <div className="pilha" style={{ gap: 2 }}>
-                <span><span className="pill">{rotuloTipo[i.tipo]}</span> {descrever(i)}</span>
-                <span className="muted pequeno">{i.autor_id ? nomeDe(usuarios, i.autor_id) : 'Sistema'}</span>
-              </div>
-            </li>
-          ))}
+          {lista.map((i) => {
+            const autor = i.autor_id ? nomeDe(usuarios, i.autor_id).replace(/\s*\(exemplo\)$/, '') : 'Sistema'
+            return (
+              <li key={i.id}>
+                {i.autor_id ? <Avatar nome={autor} tamanho={34} /> : <span className="icone-redondo"><Icone nome="regras" tamanho={16} /></span>}
+                <div className="pilha" style={{ gap: 4, minWidth: 0 }}>
+                  <span className="tempo-cabeca"><b>{autor}</b><span className="pill">{rotuloTipo[i.tipo]}</span><time dateTime={i.em}>{formatarDataHora(i.em)}</time></span>
+                  <p className="tempo-texto">{descrever(i)}</p>
+                </div>
+              </li>
+            )
+          })}
         </ol>
       )}
+      <form className="anotar" onSubmit={anotar}>
+        <label className="sr-only" htmlFor="nova-nota">Nova nota</label>
+        <textarea id="nova-nota" rows={2} value={nota} onChange={(e) => setNota(e.target.value)} placeholder="Escreva uma nota: o que aconteceu, o que foi combinado…" />
+        <button className="botao primario" disabled={!nota.trim()}>Salvar nota</button>
+        {erro && <p className="erro" role="alert">{erro}</p>}
+      </form>
     </div>
   )
 }

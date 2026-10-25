@@ -117,17 +117,19 @@ export function Ficha() {
       <div className="grade-ficha">
         <div className="pilha" style={{ minWidth: 0 }}>
           <PerfilEmpresa empresa={e} />
-          <nav className="grupos-abas" aria-label="Grupos de seções">
-            {grupos.map((g) => (
-              <button key={g} className={atual.grupo === g ? 'ativo' : ''} onClick={() => setAba(visiveis.find((a) => a.grupo === g)!.id)}>{rotuloGrupo[g]}</button>
-            ))}
-          </nav>
-          <nav className="abas" aria-label="Seções da empresa">
-            {visiveis.filter((a) => a.grupo === atual.grupo).map((a) => (
-              <button key={a.id} className={a.id === atual.id ? 'ativa' : ''} onClick={() => setAba(a.id)}>{a.titulo}</button>
-            ))}
-          </nav>
-          <div key={`${atual.id}-${versao}`}>{atual.render({ empresa: e, usuarios: lista, atualizar, abrirAba })}</div>
+          <section className="cartao conteudo-abas">
+            <nav className="grupos-abas" aria-label="Grupos de seções">
+              {grupos.map((g) => (
+                <button key={g} className={atual.grupo === g ? 'ativo' : ''} aria-pressed={atual.grupo === g} onClick={() => setAba(visiveis.find((a) => a.grupo === g)!.id)}>{rotuloGrupo[g]}</button>
+              ))}
+            </nav>
+            <nav className="abas" aria-label="Seções da empresa">
+              {visiveis.filter((a) => a.grupo === atual.grupo).map((a) => (
+                <button key={a.id} className={a.id === atual.id ? 'ativa' : ''} aria-current={a.id === atual.id ? 'page' : undefined} onClick={() => setAba(a.id)}>{a.titulo}</button>
+              ))}
+            </nav>
+            <div key={`${atual.id}-${versao}`} className="conteudo-aba">{atual.render({ empresa: e, usuarios: lista, atualizar, abrirAba })}</div>
+          </section>
         </div>
 
         <aside className="pilha">

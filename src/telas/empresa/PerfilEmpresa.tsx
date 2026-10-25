@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Exemplo, PadraoTag } from '../../componentes/Rotulos'
-import { Avatar, BotaoIcone, Icone } from '../../componentes/ui'
+import { Avatar, BotaoIcone } from '../../componentes/ui'
 import { rotuloPorte, type Empresa } from '../../dados/tipos'
 import { formatarCnpj } from '../../regras/formato'
 
@@ -14,25 +14,29 @@ export function PerfilEmpresa({ empresa: e }: { empresa: Empresa }) {
       if (alvo) { const r = document.createRange(); r.selectNodeContents(alvo); window.getSelection()?.removeAllRanges(); window.getSelection()?.addRange(r) }
     }
   }
+  const marca = e.exemplo ? e.marca.replace(/\s*\(exemplo\)$/i, '') : e.marca
   return (
     <section className="cartao perfil-empresa">
       <div className="linha" style={{ gap: 14, flexWrap: 'nowrap' }}>
         <Avatar nome={e.marca} tamanho={56} />
-        <div className="pilha" style={{ gap: 2, minWidth: 0 }}>
-          <b className="perfil-nome">{e.marca} <Exemplo mostrar={e.exemplo} /></b>
-          <span className="muted pequeno">{e.razao_social ?? '—'} · <span className="num">{formatarCnpj(e.cnpj)}</span></span>
+        <div className="pilha" style={{ gap: 6, minWidth: 0 }}>
+          <span className="linha" style={{ gap: 8 }}><b className="perfil-nome">{marca}</b><Exemplo mostrar={e.exemplo} /></span>
           <span className="linha" style={{ gap: 6 }}><PadraoTag padrao={e.padrao_final} />{e.porte && <span className="pill">{rotuloPorte[e.porte]}</span>}{e.categoria && <span className="pill">{e.categoria}</span>}</span>
         </div>
       </div>
-      <dl className="perfil-contato">
-        <div><dt><Icone nome="usuarios" tamanho={14} /> Contato</dt><dd>{e.contato_nome}{e.contato_cargo ? ` · ${e.contato_cargo}` : ''}</dd></div>
-        <div><dt><Icone nome="mensagem" tamanho={14} /> E-mail</dt><dd>{e.contato_email ?? '—'}</dd></div>
-        <div><dt><Icone nome="mensagem" tamanho={14} /> WhatsApp</dt><dd className="linha" style={{ gap: 4 }}>
+      {/* REQ-030 — dados em grade chave–valor dentro de um painel tingido. */}
+      <dl className="painel-dados">
+        <dt>Razão social</dt><dd>{e.razao_social ?? '—'}</dd>
+        <dt>CNPJ</dt><dd className="num">{formatarCnpj(e.cnpj)}</dd>
+        <dt>Contato</dt><dd>{e.contato_nome}{e.contato_cargo ? ` · ${e.contato_cargo}` : ''}</dd>
+        <dt>E-mail</dt><dd>{e.contato_email ?? '—'}</dd>
+        <dt>WhatsApp</dt><dd className="linha" style={{ gap: 4, flexWrap: 'nowrap' }}>
           <span id="whatsapp-empresa" className="num">{e.contato_whatsapp ?? '—'}</span>
           {e.contato_whatsapp && <BotaoIcone icone={copiado ? 'check' : 'copiar'} rotulo={copiado ? 'Copiado' : 'Copiar WhatsApp'} aoClicar={() => void copiar()} />}
           {copiado && <span className="ok pequeno" role="status">Copiado</span>}
-        </dd></div>
-        <div><dt><Icone nome="empresas" tamanho={14} /> Segmento</dt><dd>{e.segmento}{e.cidade ? ` · ${e.cidade}/${e.uf ?? ''}` : ''}</dd></div>
+        </dd>
+        <dt>Segmento</dt><dd>{e.segmento}</dd>
+        <dt>Cidade</dt><dd>{e.cidade ? `${e.cidade}/${e.uf ?? ''}` : '—'}</dd>
       </dl>
     </section>
   )
