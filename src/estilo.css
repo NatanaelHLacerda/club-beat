@@ -292,7 +292,7 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .funil-barras { display: flex; flex-direction: column; gap: 8px; }
 .funil-linha { display: grid; grid-template-columns: 120px minmax(0, 1fr) 32px; gap: 10px; align-items: center; }
 .funil-trilho { display: flex; justify-content: center; }
-.funil-trilho span { display: block; height: 22px; border-radius: 6px; min-width: 6px; }
+.funil-trilho span { display: block; height: 22px; border-radius: 6px; }
 .funil-num { color: var(--ink); text-align: right; }
 .lista-tarefas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 .lista-tarefas li > button, .lista-tarefas .item-fixo { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; padding: 10px 4px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; color: var(--text); font: inherit; }
