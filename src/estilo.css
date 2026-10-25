@@ -521,3 +521,50 @@ tbody tr.clicavel:hover { background: #EFE6D4; }
 .tabela tr.linha-atrasado td:first-child, .tabela tr.linha-alerta td:first-child { box-shadow: none; }
 .tabela tr.linha-atrasado td { background: #F8E7E1; }
 .tabela tr.linha-alerta td { background: #F7EDD6; }
+
+/* ── REQ-026: escala, ritmo e profundidade (valores do kit lidos no Figma: 13/14/16/18/24, sombra 0 2 16, cartões de 20 px) ── */
+:root {
+  --radius: 12px;
+  --sombra-cartao: 0 2px 16px rgba(15, 29, 51, 0.08);
+  --sombra-cartao-alta: 0 6px 22px rgba(15, 29, 51, 0.12);
+}
+body { font-size: 14px; line-height: 1.55; }
+.pequeno { font-size: 13px; }
+h2 { font-size: 18px; }
+h3 { font-size: 16px; }
+.topo-titulo h1, .barra-superior .topo-titulo h1 { font-size: 24px; line-height: 1.2; }
+.barra-superior .topo-titulo .contexto { font-size: 13px; }
+.conteudo { padding: 28px 32px 64px; gap: 24px; }
+.grade-inicio, .grade-ficha { gap: 24px; }
+.numeros { gap: 20px; }
+/* Elevação declarada uma vez: sombra suave, sem borda por baixo. */
+.cartao, .cartao-numero, .numero, .tabela-rolagem, .caminho, .semana, .mes-grade { border-color: transparent; box-shadow: var(--sombra-cartao); }
+.cartao { padding: 20px; gap: 16px; }
+.cartao-numero { padding: 20px; gap: 8px; }
+.rotulo-marcado { font-size: 14px; font-weight: 500; color: var(--text); }
+.cartao-numero .valor { font-size: 30px; }
+.secao-cabecalho h2 { font-size: 18px; }
+.ver-todos { font-size: 14px; }
+/* Botões: 40 px; o principal em pílula de 44 px. */
+.botao { min-height: 40px; padding: 8px 16px; border-radius: 10px; font-size: 14px; }
+.botao.primario { min-height: 44px; padding: 10px 22px; border-radius: 999px; font-weight: 600; box-shadow: 0 2px 10px rgba(15, 29, 51, 0.18); }
+.botao.primario:hover { box-shadow: 0 4px 14px rgba(15, 29, 51, 0.24); }
+/* Campos: 40 px, rótulo de 13 px. */
+.campo { gap: 6px; }
+.campo > span { font-size: 13px; color: var(--muted); font-weight: 500; }
+.campo .ajuda, .campo .msg { font-size: 12px; }
+.campo input:not([type="checkbox"]):not([type="radio"]), .campo select, .entrada { min-height: 40px; border-radius: 10px; padding: 8px 12px; }
+.campo input:focus, .campo select:focus, .campo textarea:focus, .entrada:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(20, 37, 64, 0.1); }
+.busca { padding: 9px 16px; min-height: 44px; }
+.pill { font-size: 12px; padding: 3px 10px; }
+.alternar { padding: 4px; }
+.alternar button { padding: 7px 16px; }
+.flutuante, .painel-lateral { box-shadow: var(--sombra); }
+.icone-redondo { width: 34px; height: 34px; }
+.vazio { border: 0; background: var(--surface); box-shadow: var(--sombra-cartao); border-radius: var(--radius); padding: 32px; }
+@media (max-width: 860px) {
+  .conteudo { padding: 20px 16px 48px; gap: 20px; }
+  .topo-titulo h1, .barra-superior .topo-titulo h1 { font-size: 20px; }
+  .cartao { padding: 16px; }
+}
+.cartao .vazio, .cartao .tabela-rolagem, .painel-lateral .vazio { box-shadow: none; background: transparent; padding: 20px; }

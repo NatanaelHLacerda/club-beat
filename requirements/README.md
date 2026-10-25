@@ -47,6 +47,16 @@ Tema claro com a paleta da marca já aplicado nas cores (fora da cadeia: ajuste 
 | 024 | Listas de acompanhamento no novo visual | 018, 019 |
 | 025 | Entrada e formulário público na identidade do Club | 018, 002 |
 
+Cadeia 3 — refino pelo kit do Figma (APROVADO):
+
+| REQ | Título | Depende de |
+|---|---|---|
+| 026 | Escala, ritmo e profundidade pelo kit | 018 |
+| 027 | Cabeçalho de cartão e barra de ações da tela | 026, 021 |
+| 028 | Tabelas no padrão do kit | 026, 024 |
+| 029 | Quadro do funil no padrão do kit | 026, 021 |
+| 030 | Ficha da empresa: painéis e histórico no padrão do kit | 026, 022 |
+
 ## Template
 
 ```markdown
