@@ -53,7 +53,7 @@ src/estilo.css         tokens e estilos
 
 ## Visual
 
-Tema escuro do Club: fundo Oceano `#0F1D33`, superfície `#16294A`, texto Areia `#F4EEE2`, dourado `#D2AE6A` só para destaque, linhas `#2C4570`. Fonte única Sora. Cor-sinal por padrão (bronze, prata, ouro, Master em dourado sobre Oceano) só como detalhe.
+Tema claro com a paleta de `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`: fundo Areia `#F4EEE2`, cartões Areia clara `#FBF8F1`, títulos e botão principal Oceano `#142540` (texto claro sobre Oceano), texto `#3B4256`, rótulos e links em Dourado escuro `#7F6024`, Dourado `#D2AE6A` só como detalhe, linhas `#DCCFB5`. Fonte única Sora (troca para Libre Bodoni + Space Grotesk prevista no REQ-018). Cor-sinal por padrão só como detalhe; Master em dourado sobre Oceano. Redesenho das telas pela cadeia REQ-018 a REQ-025.
 
 ## Papéis
 

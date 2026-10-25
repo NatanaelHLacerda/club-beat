@@ -1,24 +1,27 @@
-/* CRM de Parcerias Club Beat — tema escuro do Club, fonte única Sora. */
+/* CRM de Parcerias Club Beat — tema claro com a paleta da marca (Elementos de marca, v1.0):
+   Areia e Areia clara no fundo, Oceano nos títulos e ações, Dourado escuro em rótulos, Dourado só como detalhe. */
 :root {
-  --bg: #0F1D33;
-  --bg-2: #0B172A;
-  --surface: #16294A;
-  --surface-2: #1E3358;
-  --line: #2C4570;
-  --ink: #F4EEE2;
-  --text: #CBD0DC;
-  --muted: #8E97AB;
-  --gold: #D2AE6A;
-  --gold-ink: #142540;
-  --ok: #7FC8A0;
-  --warn: #E7B866;
-  --danger: #EE8B7A;
-  --bronze: #C08A5B;
-  --prata: #C9CED8;
-  --ouro: #D2AE6A;
+  --bg: #F4EEE2;          /* Areia: fundo da página */
+  --bg-2: #FFFFFF;        /* campos e barra lateral */
+  --surface: #FBF8F1;     /* Areia clara: cartões */
+  --surface-2: #EFE6D3;   /* item ativo, botão neutro */
+  --line: #DCCFB5;        /* Linha */
+  --ink: #142540;         /* Oceano: títulos e números */
+  --text: #3B4256;        /* Texto corrido */
+  --muted: #6B7183;
+  --gold: #7F6024;        /* Dourado escuro: rótulos e links sobre fundo claro */
+  --gold-soft: #D2AE6A;   /* Dourado: só detalhe (linhas, barras, marcadores) */
+  --primary: #142540;     /* Oceano: botão principal */
+  --primary-ink: #F4EEE2; /* texto claro sobre Oceano */
+  --ok: #2E7D5B;
+  --warn: #946A12;
+  --danger: #B3412F;
+  --bronze: #8C5A2B;
+  --prata: #6B7280;
+  --ouro: #7F6024;
   --font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
   --radius: 10px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -55,7 +58,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .grupo a { color: var(--text); text-decoration: none; padding: 7px 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
 .grupo a:hover { background: var(--surface); color: var(--ink); }
 .grupo a.ativo { background: var(--surface-2); color: var(--ink); }
-.contador { background: var(--gold); color: var(--gold-ink); border-radius: 999px; font-size: 0.7rem; font-weight: 600; padding: 0 7px; }
+.contador { background: var(--primary); color: var(--primary-ink); border-radius: 999px; font-size: 0.7rem; font-weight: 600; padding: 0 7px; }
 .quem { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
 .quem b { color: var(--ink); font-weight: 500; }
 .conteudo { padding: 28px 32px 64px; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
@@ -75,7 +78,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .cartao.destaque { border-color: var(--gold); }
 .botao { background: var(--surface-2); border: 1px solid var(--line); color: var(--ink); border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; white-space: nowrap; }
 .botao:hover { border-color: var(--gold); }
-.botao.primario { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); }
+.botao.primario { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+.botao.primario:hover { background: #1E3358; border-color: #1E3358; }
 .botao.perigo { color: var(--danger); }
 .botao.leve { background: transparent; }
 .botao:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -88,7 +92,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .campo .ajuda { font-size: 0.75rem; color: var(--muted); }
 .campo .msg { font-size: 0.75rem; color: var(--danger); }
 .marcar { display: flex; gap: 8px; align-items: flex-start; }
-.marcar input { margin-top: 3px; accent-color: var(--gold); }
+.marcar input { margin-top: 3px; accent-color: var(--primary); }
 .pill { display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--text); white-space: nowrap; }
 .pill.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 50%, transparent); }
 .pill.alerta { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 50%, transparent); }
@@ -98,8 +102,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .padrao.bronze { color: var(--bronze); }
 .padrao.prata { color: var(--prata); }
 .padrao.ouro { color: var(--ouro); }
-.padrao.master { color: var(--gold-ink); background: var(--gold); border-radius: 4px; padding: 0 6px; }
-.aviso { border: 1px solid var(--line); border-left: 3px solid var(--gold); background: var(--surface); padding: 10px 14px; border-radius: 8px; }
+.padrao.master { color: var(--gold-soft); background: var(--primary); border-radius: 4px; padding: 0 6px; }
+.aviso { border: 1px solid var(--line); border-left: 3px solid var(--gold-soft); background: var(--surface); padding: 10px 14px; border-radius: 8px; }
 .aviso.perigo { border-left-color: var(--danger); }
 .aviso.alerta { border-left-color: var(--warn); }
 .vazio { color: var(--muted); padding: 24px; text-align: center; border: 1px dashed var(--line); border-radius: var(--radius); }
@@ -137,7 +141,7 @@ tbody tr.clicavel:hover { background: var(--surface); }
 /* Abas */
 .abas { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
 .abas button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-.abas button.ativa { color: var(--ink); border-bottom-color: var(--gold); }
+.abas button.ativa { color: var(--ink); border-bottom-color: var(--gold-soft); }
 
 /* Números */
 .numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
@@ -160,7 +164,7 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .publico .cartao { gap: 16px; }
 .eyebrow-publico { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
 .progresso { height: 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
-.progresso span { display: block; height: 100%; background: var(--gold); transition: width 0.3s ease; }
+.progresso span { display: block; height: 100%; background: var(--primary); transition: width 0.3s ease; }
 .grade-cidade { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 12px; }
 .legenda { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
 .legenda b { color: var(--danger); font-weight: 500; }
@@ -172,6 +176,6 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .mes b { color: var(--ink); font-weight: 500; }
 .mes.atual { border-color: var(--gold); }
 .mes .barra { height: 3px; background: var(--line); border-radius: 999px; overflow: hidden; }
-.mes .barra span { display: block; height: 100%; background: var(--gold); }
+.mes .barra span { display: block; height: 100%; background: var(--gold-soft); }
 
 .codigo { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow-x: auto; font-size: 0.75rem; white-space: pre; margin: 0; }

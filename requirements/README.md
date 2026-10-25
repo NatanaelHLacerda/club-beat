@@ -32,6 +32,21 @@ spdd/prompt/REQ-XXX-slug.md       ← REASONS Canvas (fonte da verdade do códig
 | 016 | Painel e resumo mensal | 004, 011, 012, 013 |
 | 017 | Migração dos parceiros atuais | 006, 010, 011 |
 
+### Cadeia 2 — novo visual (kit de referência + guia da marca)
+
+Tema claro com a paleta da marca já aplicado nas cores (fora da cadeia: ajuste de cor). Referências: `~/Downloads/CRM Dashboard UI Kit.zip` e `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`.
+
+| REQ | Semente | Depende de |
+|---|---|---|
+| 018 | Identidade visual e biblioteca de componentes | — |
+| 019 | Casca e navegação no estilo do kit | 018 |
+| 020 | Painel inicial no estilo do kit | 018, 019, 014, 016 |
+| 021 | Funil e Empresas no novo visual | 018, 019, 004, 014 |
+| 022 | Ficha da empresa no novo visual | 018, 019, 014 |
+| 023 | Calendário em visão de semana e de mês | 018, 019, 012 |
+| 024 | Listas de acompanhamento no novo visual | 018, 019 |
+| 025 | Entrada e formulário público na identidade do Club | 018, 002 |
+
 ## Template
 
 ```markdown
