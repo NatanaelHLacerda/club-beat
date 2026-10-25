@@ -173,3 +173,5 @@ tbody tr.clicavel:hover { background: var(--surface); }
 .mes.atual { border-color: var(--gold); }
 .mes .barra { height: 3px; background: var(--line); border-radius: 999px; overflow: hidden; }
 .mes .barra span { display: block; height: 100%; background: var(--gold); }
+
+.codigo { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow-x: auto; font-size: 0.75rem; white-space: pre; margin: 0; }

@@ -10,6 +10,7 @@ import type { Decisao } from '../regras/direcao'
 import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../regras/contrato'
 import type { Caminho, Renovacao } from '../regras/renovacao'
 import type { Indicadores } from '../regras/indicadores'
+import type { LinhaImportacao } from '../regras/importacao'
 import type { Entrega, Material, Parceria, ParceriaComEmpresa, PrazoAberto, Relatorio } from './tipos'
 import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
@@ -625,4 +626,14 @@ export async function registrarBalanco(parceria: string, referencia: string, res
   const { error } = await supabase.from('relatorios').insert({ parceria_id: parceria, tipo: 'balanco', referencia, resumo, nota_parceiro: notaParceiro, autor_id: sessao.session?.user.id })
   if (error?.code === '23505') throw new ErroApi('Este período já tem registro.')
   falhou(error, 'Não foi possível registrar o balanço.')
+}
+
+// ── Migração dos parceiros atuais (REQ-017) ───────────────────────
+
+export type ResultadoImportacao = { linha: number; ok: boolean; motivo?: string; empresa_id?: string; etapa?: Etapa }
+
+export async function importarParceiros(linhas: LinhaImportacao[]): Promise<ResultadoImportacao[]> {
+  const { data, error } = await supabase.rpc('importar_parceiros', { linhas })
+  falhou(error, 'Não foi possível importar.')
+  return (data ?? []) as ResultadoImportacao[]
 }

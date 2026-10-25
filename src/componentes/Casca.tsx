@@ -29,6 +29,7 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Configuração', itens: [
     { para: '/config/usuarios', rotulo: 'Usuários', acao: 'gerir_usuarios' },
     { para: '/config/regras', rotulo: 'Regras e modelos' },
+    { para: '/config/importar', rotulo: 'Importar parceiros', acao: 'editar_empresa' },
   ] },
 ]
 

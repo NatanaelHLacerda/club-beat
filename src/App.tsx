@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Casca } from './componentes/Casca'
-import { EmBreve } from './componentes/EmBreve'
+import { NaoEncontrada } from './componentes/NaoEncontrada'
 import { Entrar } from './telas/acesso/Entrar'
 import { RedefinirSenha } from './telas/acesso/RedefinirSenha'
 import { Regras } from './telas/config/Regras'
@@ -18,6 +18,7 @@ import { Parcerias } from './telas/parcerias/Parcerias'
 import { Renovacoes } from './telas/renovacoes/Renovacoes'
 import { Prazos } from './telas/prazos/Prazos'
 import { Painel } from './telas/painel/Painel'
+import { Importar } from './telas/config/Importar'
 import { Avisos } from './telas/avisos/Avisos'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
@@ -47,7 +48,8 @@ export function App() {
         <Route path="/prazos" element={<Prazos />} />
         <Route path="/config/usuarios" element={<Usuarios />} />
         <Route path="/config/regras" element={<Regras />} />
-        <Route path="*" element={<EmBreve titulo="Página não encontrada" />} />
+        <Route path="/config/importar" element={<Importar />} />
+        <Route path="*" element={<NaoEncontrada />} />
       </Route>
     </Routes>
   )
