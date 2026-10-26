@@ -76,6 +76,7 @@ Referência: https://site-beat-life-club.vercel.app/ (código em `~/Documents/am
 |---|---|---|
 | 037 | Menu da pessoa (perfil, disponibilidade, avisos, configuração, sair) | 007, 019, 033 |
 | 038 | Menu lateral enxuto (sem Configuração e Avisos) | 037 |
+| 039 | Meu perfil (nome, senha, disponibilidade) | 001, 037 |
 
 ## Template
 

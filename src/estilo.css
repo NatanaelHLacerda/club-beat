@@ -621,3 +621,12 @@ fieldset.campo { min-inline-size: 0; }
 .grupo a { padding: 6px 12px; line-height: 1.4; }
 .subitens a { padding: 5px 12px; }
 .grupo a.ativo::before { top: 5px; bottom: 5px; }
+
+/* ── REQ-039: Meu perfil ── */
+.grade-perfil { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 1000px) { .grade-perfil { grid-template-columns: 1fr; } }
+.perfil-identidade { display: flex; gap: 18px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.perfil-leitura { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.perfil-leitura dt { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+.perfil-leitura dd { margin: 2px 0 0; color: var(--ink); overflow-wrap: anywhere; }
+.perfil-interruptor { padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); }

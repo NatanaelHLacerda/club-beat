@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { alterarDisponibilidade, contarAvisosNaoLidos, sair } from '../../dados/api'
+import { alterarDisponibilidade, sair } from '../../dados/api'
 import { rotuloPapel, type Perfil } from '../../dados/tipos'
 import { pode, type Acao } from '../../lib/permissoes'
 import { useSessao } from '../../sessao'
@@ -14,11 +14,10 @@ const configuracao: { para: string; rotulo: string; icone: NomeIcone; acao?: Aca
   { para: '/config/componentes', rotulo: 'Componentes', icone: 'componentes', acao: 'ver_componentes' },
 ]
 
-// REQ-019/037 — avatar abre o menu da pessoa: perfil, disponibilidade (Gerente), avisos, configuração e sair.
+// REQ-019/037/039 — avatar abre o menu da pessoa: Meu perfil, disponibilidade (Gerente), configuração e sair.
 export function MenuUsuario({ perfil }: { perfil: Perfil }) {
   const { recarregar } = useSessao()
   const [aberto, setAberto] = useState(false)
-  const [naoLidos, setNaoLidos] = useState(0)
   const [salvando, setSalvando] = useState(false)
   const [erro, setErro] = useState('')
   const caixa = useRef<HTMLDivElement>(null)
@@ -34,13 +33,7 @@ export function MenuUsuario({ perfil }: { perfil: Perfil }) {
   }, [])
 
   useEffect(() => {
-    if (!aberto) return
-    let vivo = true
-    const contar = () => { contarAvisosNaoLidos().then((n) => { if (vivo) setNaoLidos(n) }, () => {}) }
-    contar()
-    window.addEventListener('avisos-mudaram', contar)
-    if (pelaTecla.current) itens()[0]?.focus()
-    return () => { vivo = false; window.removeEventListener('avisos-mudaram', contar) }
+    if (aberto && pelaTecla.current) itens()[0]?.focus()
   }, [aberto])
 
   const fechar = (devolverFoco = false) => { setAberto(false); setErro(''); if (devolverFoco) botao.current?.focus() }
@@ -83,6 +76,10 @@ export function MenuUsuario({ perfil }: { perfil: Perfil }) {
             </span>
           </div>
 
+          <div className="menu-pessoa-secao">
+            <Link data-item className="resultado" to="/perfil" onClick={() => fechar()}><Icone nome="usuarios" />Meu perfil</Link>
+          </div>
+
           {perfil.papel === 'gerente' && (
             <div className="menu-pessoa-secao">
               <button type="button" data-item role="switch" aria-checked={perfil.disponivel} className="menu-pessoa-interruptor" disabled={salvando} onClick={() => void trocarDisponibilidade()}>
@@ -96,11 +93,6 @@ export function MenuUsuario({ perfil }: { perfil: Perfil }) {
             </div>
           )}
 
-          <div className="menu-pessoa-secao">
-            <Link data-item className="resultado" to="/avisos" onClick={() => fechar()}>
-              <Icone nome="avisos" />Meus avisos{naoLidos > 0 && <span className="contador num" aria-label={`${naoLidos} não lidos`}>{naoLidos}</span>}
-            </Link>
-          </div>
 
           {permitidos.length > 0 && (
             <div className="menu-pessoa-secao">

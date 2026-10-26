@@ -21,6 +21,7 @@ import { Importar } from './telas/config/Importar'
 import { Componentes } from './telas/config/Componentes'
 import { Inicio } from './telas/inicio/Inicio'
 import { Avisos } from './telas/avisos/Avisos'
+import { MeuPerfil } from './telas/perfil/MeuPerfil'
 import { Formulario } from './telas/publico/Formulario'
 import { Privacidade } from './telas/publico/Privacidade'
 
@@ -48,6 +49,7 @@ export function App() {
         <Route path="/renovacoes" element={<Renovacoes />} />
         <Route path="/painel" element={<Painel />} />
         <Route path="/avisos" element={<Avisos />} />
+        <Route path="/perfil" element={<MeuPerfil />} />
         <Route path="/prazos" element={<Prazos />} />
         <Route path="/config/usuarios" element={<Usuarios />} />
         <Route path="/config/regras" element={<Regras />} />

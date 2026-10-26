@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { definirNovaSenha } from '../../dados/api'
 import { MolduraEntrada } from '../../componentes/Moldura'
+import { erroNovaSenha } from '../../regras/perfil'
 
 export function RedefinirSenha() {
   const navegar = useNavigate()
@@ -12,8 +13,8 @@ export function RedefinirSenha() {
   async function aoEnviar(e: FormEvent) {
     e.preventDefault()
     setErro('')
-    if (senha.length < 8) { setErro('A senha precisa ter pelo menos 8 caracteres.'); return }
-    if (senha !== confirma) { setErro('As duas senhas não são iguais.'); return }
+    const problema = erroNovaSenha(senha, confirma)
+    if (problema) { setErro(problema); return }
     try {
       await definirNovaSenha(senha)
       navegar('/inicio', { replace: true })

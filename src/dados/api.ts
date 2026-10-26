@@ -50,6 +50,17 @@ export async function definirNovaSenha(senha: string) {
   falhou(error, 'Não foi possível trocar a senha. Peça um novo link.')
 }
 
+// REQ-039 — Meu perfil: só o próprio nome (rpc) e a própria senha (sessão atual).
+export async function atualizarMeuNome(nome: string) {
+  const { error } = await supabase.rpc('atualizar_meu_nome', { novo_nome: nome })
+  falhou(error, 'Não foi possível salvar o nome.')
+}
+
+export async function trocarMinhaSenha(senha: string) {
+  const { error } = await supabase.auth.updateUser({ password: senha })
+  falhou(error, 'Não foi possível trocar a senha. Tente de novo.')
+}
+
 export function aoMudarSessao(callback: (logado: boolean) => void) {
   const { data } = supabase.auth.onAuthStateChange((_evento, sessao) => callback(Boolean(sessao)))
   return () => data.subscription.unsubscribe()
