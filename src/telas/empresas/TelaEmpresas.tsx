@@ -102,7 +102,7 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
           destaque={(e) => { const s = prazoDe(e.id)?.situacao; return s === 'atrasado' ? 'atrasado' : s === 'vence_hoje' ? 'alerta' : null }}
           colunas={[
             { titulo: 'Marca', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><b style={{ color: 'var(--ink)', fontWeight: 500 }} title={e.marca}>{e.exemplo ? e.marca.replace(/\s*\(exemplo\)$/i, '') : e.marca}</b><Exemplo mostrar={e.exemplo} /></span> },
-            { titulo: 'CNPJ', classe: 'num muted', render: (e) => formatarCnpj(e.cnpj) },
+            { titulo: 'CNPJ', classe: 'num muted', largo: true, render: (e) => formatarCnpj(e.cnpj) },
             { titulo: 'Segmento', classe: 'estreita', render: (e) => e.segmento },
             { titulo: 'Etapa', render: (e) => <EtapaTag etapa={e.etapa} /> },
             { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
