@@ -21,7 +21,7 @@ describe('gráficos do painel inicial (REQ-020)', () => {
     const b = barrasDoFunil([{ chave: 'triagem1', rotulo: 'Triagem 1', quantidade: 2 }, { chave: 'recebida', rotulo: 'Recebida', quantidade: 1 }])
     expect(b[0].largura).toBe(100)
     expect(b[1].largura).toBe(50)
-    expect(b[0].cor).toBe('#142540')
+    expect(b[0].cor).toBe('#0C1F32')
     expect(barrasDoFunil([{ chave: 'direcao', rotulo: 'Com a Direção', quantidade: 0 }])[0].largura).toBe(0)
   })
 })

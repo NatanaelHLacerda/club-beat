@@ -20,7 +20,7 @@ export function GraficoPontos({ dias, titulo }: { dias: PontoDia[]; titulo: stri
             <g key={d.dia}>
               {Array.from({ length: linhas }, (_, j) => (
                 <circle key={j} cx={x} cy={altura - 26 - j * 14} r={4.5}
-                  fill={j < n ? (d.dia === pico.dia && pico.quantidade ? '#142540' : '#3F5A8A') : '#E8DFCC'} />
+                  fill={j < n ? (d.dia === pico.dia && pico.quantidade ? '#0C1F32' : '#5A84A8') : '#EFE4CE'} />
               ))}
               {(d.dia === 1 || d.dia % 5 === 0) && <text x={x} y={altura - 6} textAnchor="middle" className="eixo">{d.dia}</text>}
               {d.dia === pico.dia && pico.quantidade > 0 && (
@@ -51,7 +51,8 @@ export function FunilBarras({ etapas }: { etapas: { chave: string; rotulo: strin
 }
 
 // ── Rosca (kit: "Projects Summary") ─────────────────────────────
-const corPadrao: Record<string, string> = { bronze: '#8C5A2B', prata: '#9AA1AD', ouro: '#D2AE6A', master: '#142540' }
+// Padrões no Manual de Marca v2.0 (Ouro = Dourado, Master = Oceano).
+const corPadrao: Record<string, string> = { bronze: '#8C5A2B', prata: '#9AA1AD', ouro: '#CBA052', master: '#0C1F32' }
 const rotuloPadrao: Record<string, string> = { bronze: 'Bronze', prata: 'Prata', ouro: 'Ouro', master: 'Master' }
 
 export function Rosca({ valores, centro }: { valores: { chave: string; valor: number }[]; centro: string }) {
@@ -67,19 +68,19 @@ export function Rosca({ valores, centro }: { valores: { chave: string; valor: nu
   return (
     <div className="rosca">
       <svg viewBox="0 0 140 140" role="img" aria-label={`${centro}: ${valores.map((v) => `${rotuloPadrao[v.chave] ?? v.chave} ${v.valor}`).join(', ')}.`}>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#E8DFCC" strokeWidth={14} />
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke="#EFE4CE" strokeWidth={14} />
         {arcos.map((a) => {
           const d = caminho(a.inicio, a.fim)
           return d
-            ? <path key={a.chave} d={d} fill="none" stroke={corPadrao[a.chave] ?? '#3F5A8A'} strokeWidth={14} />
-            : <circle key={a.chave} cx={cx} cy={cy} r={r} fill="none" stroke={corPadrao[a.chave] ?? '#3F5A8A'} strokeWidth={14} />
+            ? <path key={a.chave} d={d} fill="none" stroke={corPadrao[a.chave] ?? '#5A84A8'} strokeWidth={14} />
+            : <circle key={a.chave} cx={cx} cy={cy} r={r} fill="none" stroke={corPadrao[a.chave] ?? '#5A84A8'} strokeWidth={14} />
         })}
         <text x={cx} y={cy - 2} textAnchor="middle" className="rosca-total">{total}</text>
         <text x={cx} y={cy + 16} textAnchor="middle" className="eixo">{centro}</text>
       </svg>
       <ul className="legenda">
         {valores.map((v) => (
-          <li key={v.chave}><span className="ponto" style={{ background: corPadrao[v.chave] ?? '#3F5A8A' }} />{rotuloPadrao[v.chave] ?? v.chave}<b className="num">{v.valor}</b>
+          <li key={v.chave}><span className="ponto" style={{ background: corPadrao[v.chave] ?? '#5A84A8' }} />{rotuloPadrao[v.chave] ?? v.chave}<b className="num">{v.valor}</b>
             <span className="muted pequeno">{total ? `${Math.round((v.valor / total) * 100)}%` : '—'}</span></li>
         ))}
       </ul>

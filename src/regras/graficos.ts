@@ -36,7 +36,8 @@ export function arcosDaRosca(valores: { chave: string; valor: number }[]): Arco[
   })
 }
 
-const degrade = ['#142540', '#1E3358', '#2C4570', '#3F5A8A', '#56719F', '#6E89B5', '#86A0C8']
+// Oceano → Céu do Manual de Marca v2.0.
+const degrade = ['#0C1F32', '#1A3550', '#2B4A68', '#3F6587', '#5A84A8', '#7AA3C7', '#88BEE7']
 
 export type BarraFunil = { chave: string; rotulo: string; quantidade: number; largura: number; cor: string }
 
