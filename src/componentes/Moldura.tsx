@@ -8,7 +8,7 @@ export function MolduraEntrada({ children }: { children: ReactNode }) {
   return (
     <div className="moldura-entrada">
       <aside className="painel-marca" aria-hidden="true">
-        <div className="marca-grande"><b>Club Beat</b><span>Parcerias</span></div>
+        <div className="marca-grande"><img className="logo" src="/marca/logo-branco.png" width="1481" height="619" alt="" /><span>Parcerias</span></div>
         <div className="pilha" style={{ gap: 16 }}>
           <span className="filete" />
           <p className="frase">{frase}</p>
@@ -16,7 +16,7 @@ export function MolduraEntrada({ children }: { children: ReactNode }) {
         </div>
       </aside>
       <main className="area-entrada">
-        <div className="marca-movel"><b>Club Beat</b><span>Parcerias</span></div>
+        <div className="marca-movel"><img className="logo" src="/marca/logo-oceano.png" width="1481" height="619" alt="The Beat Life Club" /><span>Parcerias</span></div>
         {children}
       </main>
     </div>
@@ -27,7 +27,7 @@ export function CabecalhoPublico({ subtitulo }: { subtitulo?: string }) {
   return (
     <header className="cabecalho-publico">
       <div className="interno">
-        <div className="marca-grande"><b>Club Beat</b><span>Parcerias</span></div>
+        <div className="marca-grande"><img className="logo" src="/marca/logo-branco.png" width="1481" height="619" alt="The Beat Life Club" /><span>Parcerias</span></div>
         <span className="filete" />
         <p className="frase">{subtitulo ?? frase}</p>
       </div>

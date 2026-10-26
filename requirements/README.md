@@ -57,6 +57,19 @@ Cadeia 3 — refino pelo kit do Figma (APROVADO):
 | 029 | Quadro do funil no padrão do kit | 026, 021 |
 | 030 | Ficha da empresa: painéis e histórico no padrão do kit | 026, 022 |
 
+### Cadeia 4 — design system do site e desejo (APROVADO)
+
+Referência: https://site-beat-life-club.vercel.app/ (código em `~/Documents/amigos/parcerias-lp`, Manual de Marca v2.0). Substitui a seção Visual do `CLAUDE.md` (Sora, pílulas, cantos redondos) ao final do REQ-031.
+
+| REQ | Semente | Depende de |
+|---|---|---|
+| 031 | Fundamentos da marca do site (tokens, tipografia, forma, logo) | 018, 026 |
+| 032 | Componentes no padrão do site | 031 |
+| 033 | Casca com a marca do site | 031, 032, 019 |
+| 034 | Entrada e páginas públicas que geram desejo | 031, 032, 025 |
+| 035 | Painel e parcerias que geram desejo | 031, 032, 033, 011, 016, 020 |
+| 036 | Telas de trabalho no novo padrão | 031, 032, 033 |
+
 ## Template
 
 ```markdown

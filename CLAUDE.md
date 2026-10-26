@@ -1,4 +1,4 @@
-# CRM de Parcerias — Club Beat
+# CRM de Parcerias — The Beat Life Club
 
 CRM do fluxo de parcerias do Club Beat (Fernanda, Gerente de Negócios). Domínio: documento-base `~/Downloads/analise-fernanda.pdf` (v1.0, 22/10/2026) e o cenário `cenario-crm.html`. Requisitos em `requirements/`, SPDD em `spdd/`, perfil em `.claude/spdd-perfil.md`.
 
@@ -53,9 +53,15 @@ src/estilo.css         tokens e estilos
 
 ## Visual
 
-Menu lateral escuro em Oceano `#0F1D33`→`#16294A` com brilho dourado num canto (ink + brand-glow dos criativos); cabeçalho claro em variações do mesmo Oceano (`#EEF1F7`→`#E2E8F1`, linha `#C9D2E1`, título e ícones Oceano) e área de trabalho clara com a paleta de `~/Downloads/Elementos_de_Marca_para_o_Designer.pdf`: fundo Areia profunda `#ECE3D2`, cartões `#F7F1E6`, sem faixas laterais coloridas, títulos e botão principal Oceano `#142540` (texto claro sobre Oceano), texto `#3B4256`, rótulos e links em Dourado escuro `#7F6024`, Dourado `#D2AE6A` só como detalhe, linhas `#DCCFB5`. Fonte única Sora, a mesma dos criativos da Iris Machine (`skills/iris-machine/design-system.md`), em títulos, números e textos. Peças visuais em `src/componentes/ui` (REQ-018); referência em `/config/componentes`. Cor-sinal por padrão só como detalhe; Master em dourado sobre Oceano. Redesenho das telas pela cadeia REQ-018 a REQ-025.
+Design system do site de parcerias (https://site-beat-life-club.vercel.app/, código em `~/Documents/amigos/parcerias-lp`, Manual de Marca design-beat v2.0), trazido pela cadeia REQ-031 a REQ-036:
 
-Refino pelo kit do Figma (REQ-026 a REQ-030, arquivo `jXAbzyaCTYIqPUbejivp1C`): texto 15/16/18,5/20,5/27,5 px (escala do kit +15%, `html { font-size: 115% }`; px de fonte novos já multiplicados por 1,15); cartões com 20 px de respiro e só a sombra `--sombra-cartao` (sem borda por baixo); blocos dentro de um cartão são painéis tingidos `#EFE6D4`, nunca outro cartão; botão principal em pílula de 44 px; cabeçalho de cartão em faixa (`SecaoCabecalho`); barra de ações numa linha (`Topo secao=…`) com filtros no botão "Filtros"; células de tabela em uma linha (`quebra` para listas, `largo` para colunas que somem); colunas do quadro tingidas por `grupoDaEtapa`.
+- Paleta: Oceano `#0C1F32` (títulos e ação principal), Dourado `#CBA052` só como detalhe (traço do eyebrow, marcador ativo, foco no escuro), texto dourado em `#7A5A28`, Branco na área de trabalho, Areia `#EFE4CE` e Areia clara `#F7F2E7` em faixas e cabeçalhos; Céu, Sálvia, Floresta e Preto do Manual como apoio. Erro `#8C3B2E`. Tokens no `:root` de `src/estilo.css`; regra nova usa token, nunca valor solto.
+- Tipografia: Space Grotesk (300 só no título da tela e nos números grandes; 500 em títulos de cartão) e Libre Bodoni itálico como acento de uma ou duas palavras (classe `.acento`), nunca em tabela, campo ou rótulo. Fontes servidas de `public/fonts`; sem Google Fonts. Corpo 16 px; campos e tabelas 15 px.
+- Forma: cantos retos de 3 px (`--radius`); linhas de 1 px no lugar de sombras; sombra só em flutuantes (menu, modal, painel lateral).
+- Rótulo de seção: `.eyebrow` em caixa-alta com traço dourado. Botões retos em caixa-alta com espaçamento de letras; ações de linha de tabela ficam como ícone com dica.
+- Marca: logo do site em `public/marca` (`logo-branco.png` sobre Oceano, `logo-oceano.png` sobre claro) e a estrela como favicon. Menu lateral em Oceano.
+- Desejo: foto da casa e voz editorial na entrada, na ficha pública, no Início e na vitrine de parcerias; telas de trabalho ficam densas, sem foto.
+- Peças em `src/componentes/ui`; referência em `/config/componentes`.
 
 ## Papéis
 

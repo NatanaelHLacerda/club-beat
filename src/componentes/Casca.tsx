@@ -60,8 +60,8 @@ export function Casca() {
       {gaveta && <div className="fundo-gaveta" onClick={() => setGaveta(false)} aria-hidden="true" />}
       <nav className={`lateral${gaveta ? ' aberta' : ''}`} aria-label="Menu principal">
         <div className="marca-lateral">
-          <span className="selo" aria-hidden="true">CB</span>
-          <span className="marca"><b>Club Beat</b><span>Parcerias</span></span>
+          <img className="logo" src="/marca/logo-branco.png" width="1481" height="619" alt="The Beat Life Club" />
+          <span className="marca-rotulo">Parcerias</span>
         </div>
         {grupos.map((g) => {
           const itens = g.itens.filter((i) => !i.acao || pode(perfil, i.acao))
