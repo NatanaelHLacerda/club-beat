@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Topo } from '../../componentes/Casca'
 import { EtapaTag, NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
-import { Avatar, Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
+import { Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarMinhaFila, listarPrazos } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
 import { formatarData } from '../../regras/formato'
