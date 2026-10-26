@@ -94,6 +94,7 @@ export function Casca() {
       <div className="area">
         <header className="barra-superior">
           <button className="botao-icone grande abrir-gaveta" aria-label="Abrir menu" onClick={() => setGaveta(true)}><Icone nome="menu" tamanho={20} /></button>
+          <img className="estrela-movel" src="/marca/estrela-oceano.png" width="521" height="521" alt="" />
           <div className="titulo-slot" ref={setSlot} />
           <BuscaGlobal />
           <Sino />
@@ -110,12 +111,13 @@ export function Casca() {
 }
 
 // REQ-027 — `secao` abre a barra de ações à esquerda (nome da seção com contagem); ações à direita, numa linha.
-export function Topo({ eyebrow, titulo, secao, children }: { eyebrow?: string; titulo: string; secao?: ReactNode; children?: ReactNode }) {
+// REQ-033 — eyebrow com traço dourado acima do título leve; `acento` é a palavra em Libre Bodoni itálico depois do título.
+export function Topo({ eyebrow, titulo, acento, secao, children }: { eyebrow?: string; titulo: string; acento?: string; secao?: ReactNode; children?: ReactNode }) {
   const slot = useContext(SlotTitulo)
   const cabeca = (
     <div className="topo-titulo">
-      <h1>{titulo}</h1>
-      {eyebrow && <span className="contexto">{eyebrow}</span>}
+      {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+      <h1>{titulo}{acento && <> <span className="acento">{acento}</span></>}</h1>
     </div>
   )
   return (
