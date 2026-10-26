@@ -11,6 +11,7 @@ import { etapasDoFunil, rotuloEtapa } from '../../regras/etapas'
 import { formatarData, formatarDinheiro, hojeISO } from '../../regras/formato'
 import { agruparPorDia } from '../../regras/graficos'
 import { rotuloSituacaoPrazo } from '../../regras/prazos'
+import { saudacao } from '../../regras/saudacao'
 import { diasParaOFim } from '../../regras/renovacao'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
@@ -43,12 +44,28 @@ export function Inicio() {
   const proximas = (datas.dado ?? []).filter((d) => d.data >= hoje).slice(0, 5)
   const etapasDoGrafico = etapasDoFunil.filter((e) => !['ativa', 'renovacao', 'encerrada'].includes(e))
   const nome = perfil?.nome.replace(/\s*\(exemplo\)$/i, '').split(' ')[0] ?? ''
+  const noFunil = lista.filter((e) => !['ativa', 'renovacao', 'encerrada', 'espera', 'recusada'].includes(e.etapa)).length
+  const dataPorExtenso = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'America/Sao_Paulo' })
 
   return (
     <>
-      <Topo eyebrow={nomeMes(mes)} titulo={`Olá, ${nome}`}>
+      <Topo eyebrow={nomeMes(mes)} titulo="Início">
         <Link className="ver-todos" to="/painel">Indicadores detalhados</Link>
       </Topo>
+
+      {/* REQ-035 — faixa editorial de abertura: saudação e três números de destaque. */}
+      <section className="faixa-abertura" aria-labelledby="saudacao">
+        <img className="foto" src="/marca/fotos/casa-lounge-terraco.jpg" width="1400" height="932" alt="" decoding="async" />
+        <div className="faixa-abertura-texto">
+          <span className="eyebrow">{dataPorExtenso}</span>
+          <h2 id="saudacao">{saudacao(new Date())}, <span className="acento">{nome}.</span></h2>
+        </div>
+        <dl className="faixa-abertura-numeros">
+          <div><dt>Parcerias ativas</dt><dd className="destaque-numero">{ativas ?? '—'}</dd></div>
+          <div><dt>Empresas no funil</dt><dd className="destaque-numero">{empresas.dado ? noFunil : '—'}</dd></div>
+          <div><dt>Prazos de hoje</dt><dd className="destaque-numero">{prazos.dado ? paraHoje.length : '—'}</dd></div>
+        </dl>
+      </section>
 
       <div className="numeros">
         <CartaoNumero rotulo="Empresas que chegaram" icone="empresas" valor={i ? i.chegaram : '—'} atual={i?.chegaram ?? null} anterior={anterior.dado?.chegaram ?? null} />

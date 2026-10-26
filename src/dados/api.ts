@@ -165,6 +165,21 @@ export async function urlAnexo(caminho: string): Promise<string> {
   return data!.signedUrl
 }
 
+// REQ-035 — logotipo mais recente de cada empresa (vitrine de parcerias), por URL assinada de 5 min.
+export async function listarLogotipos(empresas: string[]): Promise<Record<string, string>> {
+  if (!empresas.length) return {}
+  const { data, error } = await supabase.from('anexos').select('empresa_id, caminho').eq('tipo', 'logotipo').in('empresa_id', empresas).order('criado_em', { ascending: false })
+  falhou(error, 'Não foi possível carregar os logotipos.')
+  const maisRecente = new Map<string, string>()
+  for (const a of (data ?? []) as { empresa_id: string; caminho: string }[]) if (!maisRecente.has(a.empresa_id)) maisRecente.set(a.empresa_id, a.caminho)
+  if (!maisRecente.size) return {}
+  const caminhos = [...maisRecente.values()]
+  const { data: urls, error: erroUrl } = await supabase.storage.from('anexos').createSignedUrls(caminhos, 300)
+  falhou(erroUrl, 'Não foi possível carregar os logotipos.')
+  const porCaminho = new Map((urls ?? []).filter((u) => u.signedUrl && u.path).map((u) => [u.path as string, u.signedUrl]))
+  return Object.fromEntries([...maisRecente].flatMap(([empresa, caminho]) => (porCaminho.has(caminho) ? [[empresa, porCaminho.get(caminho)!]] : [])))
+}
+
 // ── Mensagens (REQ-015) ───────────────────────────────────────────
 
 export async function listarModelos(): Promise<ModeloMensagem[]> {

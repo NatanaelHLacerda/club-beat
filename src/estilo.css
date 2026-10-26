@@ -605,3 +605,38 @@ fieldset.campo { min-inline-size: 0; }
   .painel-dados dt:first-child { margin-top: 0; }
 }
 .painel-dados dd.num { white-space: nowrap; }
+
+/* ── REQ-035: faixa de abertura do Início e vitrine de parcerias ── */
+.faixa-abertura { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 32px; padding: 40px 44px; background: var(--oceano); color: var(--branco); }
+.faixa-abertura .foto { position: absolute; inset: 0; opacity: 0.35; }
+.faixa-abertura::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--oceano) 0%, color-mix(in srgb, var(--oceano) 70%, transparent) 55%, color-mix(in srgb, var(--oceano) 30%, transparent) 100%); }
+.faixa-abertura > :not(.foto) { position: relative; z-index: 1; }
+.faixa-abertura-texto { display: flex; flex-direction: column; gap: 14px; }
+.faixa-abertura .eyebrow { color: color-mix(in srgb, var(--branco) 82%, transparent); }
+.faixa-abertura h2 { color: var(--branco); font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
+.faixa-abertura-numeros { margin: 0; display: grid; grid-template-columns: repeat(3, auto); gap: 0; }
+.faixa-abertura-numeros > div { display: flex; flex-direction: column-reverse; gap: 6px; padding: 0 28px; border-left: 1px solid var(--moldura-linha); }
+.faixa-abertura-numeros dt { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: color-mix(in srgb, var(--branco) 82%, transparent); white-space: nowrap; }
+.faixa-abertura-numeros dd { margin: 0; color: var(--branco); font-size: clamp(2.25rem, 3.4vw, 3.25rem); line-height: 1; }
+@media (max-width: 1100px) { .faixa-abertura { grid-template-columns: 1fr; } .faixa-abertura-numeros > div:first-child { padding-left: 0; border-left: 0; } }
+@media (max-width: 600px) {
+  .faixa-abertura { padding: 28px 20px; gap: 24px; }
+  .faixa-abertura-numeros { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .faixa-abertura-numeros > div { padding: 0 12px; }
+  .faixa-abertura-numeros dt { white-space: normal; }
+}
+
+.vitrine { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.vitrine-cartao { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: inherit; text-align: left; cursor: pointer; transition: border-color 0.24s var(--ease); }
+.vitrine-cartao:hover { border-color: var(--ink); }
+.vitrine-marca { aspect-ratio: 3 / 2; display: grid; place-items: center; padding: 28px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.vitrine-marca img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.vitrine-marca.master { background: var(--oceano); border-bottom: 2px solid var(--dourado); }
+.vitrine-iniciais { font-size: 3.5rem; color: var(--ink); line-height: 1; }
+.vitrine-marca.master .vitrine-iniciais { color: var(--dourado); }
+.vitrine-corpo { display: flex; flex-direction: column; gap: 12px; padding: 20px 22px 22px; }
+.vitrine-nome { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.vitrine-nome b { color: var(--ink); font-size: 1.125rem; font-weight: 500; }
+.vitrine-dados { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.9375rem; }
+.vitrine-dados > span { display: flex; justify-content: space-between; gap: 12px; }
+.vitrine-dados .rotulo { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
