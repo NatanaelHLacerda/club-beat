@@ -1,4 +1,4 @@
-// REQ-018 — peças visuais do CRM (estilo do kit de referência, identidade do Club). Sem chamada de dados.
+// REQ-018/032 — peças visuais do CRM no padrão do site de parcerias (Manual de Marca v2.0). Sem chamada de dados.
 import { useEffect, type MouseEvent as EventoMouse, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { calcularVariacao, textoVariacao } from '../../regras/variacao'
@@ -44,7 +44,8 @@ export function Pill({ tom = 'neutro', children, icone }: { tom?: TomPill; child
 }
 
 // ── Avatar por iniciais ─────────────────────────────────────────
-const tons = ['#142540', '#2C4570', '#3F5A8A', '#7F6024', '#1E3358']
+// Tons do Manual de Marca v2.0 (Oceano, Oceano claro, Floresta, Dourado de texto): branco sobre eles passa AA.
+const tons = ['#0C1F32', '#1A3550', '#2B4A68', '#0A3A1E', '#7A5A28']
 export function iniciais(nome: string): string {
   const partes = nome.replace(/\(exemplo\)/i, '').trim().split(/\s+/).filter(Boolean)
   return ((partes[0]?.[0] ?? '') + (partes.length > 1 ? partes[partes.length - 1][0] : partes[0]?.[1] ?? '')).toUpperCase()

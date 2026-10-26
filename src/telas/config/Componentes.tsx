@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { SemAcesso, Topo } from '../../componentes/Casca'
 import { EtapaTag, PadraoTag } from '../../componentes/Rotulos'
-import { Avatar, BarraBusca, Carregando, CartaoNumero, Icone, Pill, Progresso, SecaoCabecalho, Tabela, Vazio, type NomeIcone } from '../../componentes/ui'
+import { Avatar, BarraBusca, Carregando, CartaoNumero, Icone, PainelLateral, Pill, Progresso, SecaoCabecalho, Tabela, Vazio, type NomeIcone } from '../../componentes/ui'
 import { pode } from '../../lib/permissoes'
 import { useSessao } from '../../sessao'
 
@@ -13,11 +13,13 @@ const linhas: Exemplo[] = [
   { id: '2', marca: 'Marca Exemplo B', padrao: 'master', situacao: 'no_prazo' },
 ]
 
-// REQ-018 — página de referência das peças visuais (só administradora).
+// REQ-018/032 — página de referência das peças visuais (só administradora).
 export function Componentes() {
   const { perfil } = useSessao()
   const [busca, setBusca] = useState('')
   const [acao, setAcao] = useState('')
+  const [modo, setModo] = useState<'quadro' | 'lista'>('quadro')
+  const [painel, setPainel] = useState(false)
   if (!pode(perfil, 'ver_componentes')) return (<><Topo titulo="Componentes" /><SemAcesso /></>)
   return (
     <>
@@ -31,6 +33,35 @@ export function Componentes() {
         <CartaoNumero rotulo="Receita mensal" valor="R$ …" atual={null} anterior={null} icone="painel" />
         <CartaoNumero rotulo="Sem mês anterior" valor="4" atual={4} anterior={0} />
       </div>
+
+      <SecaoCabecalho titulo="Botões" />
+      <div className="linha">
+        <button type="button" className="botao primario">Salvar</button>
+        <button type="button" className="botao primario"><Icone nome="mais" tamanho={14} />Nova empresa</button>
+        <button type="button" className="botao">Contorno</button>
+        <button type="button" className="botao leve">Leve</button>
+        <button type="button" className="botao perigo">Recusar</button>
+        <button type="button" className="botao primario" disabled>Desativado</button>
+        <button type="button" className="botao primario grande">Grande</button>
+      </div>
+
+      <SecaoCabecalho titulo="Campos" />
+      <div className="grade-3">
+        <label className="campo"><span>Nome da marca <b>*</b></span><input defaultValue="Marca Exemplo" /></label>
+        <label className="campo"><span>Segmento</span><select defaultValue=""><option value="">Escolha uma opção</option><option>tecnologia</option></select></label>
+        <label className="campo invalido"><span>CNPJ <b>*</b></span><input defaultValue="11.111.111/1111-11" aria-invalid="true" aria-describedby="cnpj-erro" /><small id="cnpj-erro" className="msg">CNPJ inválido</small></label>
+      </div>
+      <label className="marcar"><input type="checkbox" defaultChecked /><span>Caixa de marcar</span></label>
+
+      <SecaoCabecalho titulo="Alternador e painel lateral" />
+      <div className="linha">
+        <div className="alternar" role="group" aria-label="Modo de exibição">
+          <button type="button" className={modo === 'quadro' ? 'ativo' : ''} aria-pressed={modo === 'quadro'} onClick={() => setModo('quadro')}><Icone nome="funil" tamanho={14} />Quadro</button>
+          <button type="button" className={modo === 'lista' ? 'ativo' : ''} aria-pressed={modo === 'lista'} onClick={() => setModo('lista')}><Icone nome="fila" tamanho={14} />Lista</button>
+        </div>
+        <button type="button" className="botao" onClick={() => setPainel(true)}>Abrir painel lateral</button>
+      </div>
+      {painel && <PainelLateral titulo="Painel de exemplo" aoFechar={() => setPainel(false)}><p className="muted">Conteúdo do painel.</p></PainelLateral>}
 
       <SecaoCabecalho titulo="Pills e padrões" />
       <div className="linha">
