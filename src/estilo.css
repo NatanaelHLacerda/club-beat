@@ -512,7 +512,8 @@ ul.legenda .muted { text-align: right; }
 .moldura-entrada { min-height: 100%; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); background: var(--branco); }
 .painel-foto { position: relative; overflow: hidden; min-height: 100vh; background: var(--oceano); }
 .painel-foto .foto { position: absolute; inset: 0; }
-.painel-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--oceano) 55%, transparent) 0%, transparent 32%, transparent 45%, color-mix(in srgb, var(--oceano) 92%, transparent) 100%); }
+/* Véu Oceano em cima (logo) e embaixo (frase): a foto do estúdio é clara. */
+.painel-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--oceano) 72%, transparent) 0%, color-mix(in srgb, var(--oceano) 20%, transparent) 26%, transparent 40%, color-mix(in srgb, var(--oceano) 55%, transparent) 62%, color-mix(in srgb, var(--oceano) 94%, transparent) 100%); }
 .painel-foto-texto { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 48px 56px; }
 .painel-foto-texto .logo { width: 190px; }
 .painel-foto-frase { display: flex; flex-direction: column; gap: 18px; animation-delay: 0.15s; }

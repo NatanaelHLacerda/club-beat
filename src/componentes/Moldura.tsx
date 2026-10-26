@@ -6,8 +6,8 @@ export function MolduraEntrada({ children }: { children: ReactNode }) {
   return (
     <div className="moldura-entrada">
       <aside className="painel-foto">
-        <img className="foto revela" src="/marca/fotos/hero-ciclismo-janela.jpg" width="2000" height="1125" fetchPriority="high" decoding="async"
-          alt="Duas pessoas pedalando lado a lado em sala escura, com janela de folhagem dourada ao fundo" />
+        <img className="foto revela" src="/marca/fotos/studio-pilates.jpg" width="1600" height="1068" fetchPriority="high" decoding="async"
+          alt="Estúdio de pilates com aparelhos de madeira, bolas brancas sobre tapetes e espelhos com luz dourada" />
         <div className="painel-foto-texto">
           <img className="logo" src="/marca/logo-branco.png" width="1481" height="619" alt="The Beat Life Club" />
           <div className="painel-foto-frase revela">

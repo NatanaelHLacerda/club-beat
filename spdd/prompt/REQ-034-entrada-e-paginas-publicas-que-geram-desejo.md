@@ -7,7 +7,7 @@
 Entrada, redefinição de senha, ficha pública e privacidade com a experiência do site. Fora: campos e regras da ficha.
 
 ## E · Entities
-Sem entidade. Fotos: `public/marca/fotos/hero-ciclismo-janela.jpg` (entrada) e `casa-lounge-terraco.jpg` (cabeçalho público).
+Sem entidade. Fotos: `public/marca/fotos/studio-pilates.jpg` (entrada, 1600 px, 186 KB) e `casa-lounge-terraco.jpg` (cabeçalho público).
 
 ## A · Approach
 Molduras reescritas em `Moldura.tsx`; telas só trocam o título. Animação de entrada por CSS (`.revela`), desligada pela regra global de `prefers-reduced-motion`.
