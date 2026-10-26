@@ -157,6 +157,8 @@ export type FiltrosEmpresas = {
   gerente?: string
   origem?: Origem | ''
   busca?: string
+  /* Empresas › Geral (sem recusadas) ou Empresas › Recusadas; sem valor, todas (Funil). */
+  recorte?: 'geral' | 'recusadas'
 }
 
 // ── Mensagens (REQ-015) ───────────────────────────────────────────

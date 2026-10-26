@@ -95,6 +95,8 @@ export async function alterarDisponibilidade(usuario: string, valor: boolean) {
 
 export async function listarEmpresas(filtros: FiltrosEmpresas = {}): Promise<Empresa[]> {
   let q = supabase.from('empresas').select('*').order('criado_em', { ascending: false })
+  if (filtros.recorte === 'recusadas') q = q.eq('etapa', 'recusada')
+  if (filtros.recorte === 'geral') q = q.neq('etapa', 'recusada')
   if (filtros.padrao) q = q.eq('padrao_final', filtros.padrao)
   if (filtros.porte) q = q.eq('porte', filtros.porte)
   if (filtros.segmento) q = q.eq('segmento', filtros.segmento)

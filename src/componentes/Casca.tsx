@@ -8,13 +8,16 @@ import { MenuUsuario } from './casca/MenuUsuario'
 import { Sino } from './casca/Sino'
 import { Icone, type NomeIcone } from './ui'
 
-type Item = { para: string; rotulo: string; icone: NomeIcone; acao?: Acao }
+type Item = { para: string; rotulo: string; icone: NomeIcone; acao?: Acao; subitens?: { para: string; rotulo: string }[] }
 
 const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Funil', itens: [
     { para: '/inicio', rotulo: 'Início', icone: 'inicio' },
     { para: '/funil', rotulo: 'Funil', icone: 'funil' },
-    { para: '/empresas', rotulo: 'Empresas', icone: 'empresas' },
+    { para: '/empresas', rotulo: 'Empresas', icone: 'empresas', subitens: [
+      { para: '/empresas', rotulo: 'Geral' },
+      { para: '/empresas/recusadas', rotulo: 'Recusadas' },
+    ] },
     { para: '/fila', rotulo: 'Minha fila', icone: 'fila', acao: 'conduzir' },
     { para: '/direcao', rotulo: 'Direção', icone: 'direcao' },
   ] },
@@ -38,9 +41,6 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   ] },
 ]
 
-const chaveRecolhida = 'crm.lateral.recolhida'
-const lerRecolhida = () => { try { return localStorage.getItem(chaveRecolhida) === '1' } catch { return false } }
-
 // O título de cada tela é desenhado na barra superior (portal).
 const SlotTitulo = createContext<HTMLElement | null>(null)
 
@@ -48,7 +48,6 @@ export function Casca() {
   const { carregando, perfil } = useSessao()
   const local = useLocation()
   const [gaveta, setGaveta] = useState(false)
-  const [recolhida, setRecolhida] = useState(lerRecolhida)
   const [slot, setSlot] = useState<HTMLElement | null>(null)
 
   useEffect(() => { setGaveta(false) }, [local.pathname])
@@ -56,14 +55,8 @@ export function Casca() {
   if (carregando) return <div className="tela-solta muted">Carregando…</div>
   if (!perfil) return <Navigate to="/entrar" replace state={{ de: local.pathname }} />
 
-  function alternar() {
-    const novo = !recolhida
-    setRecolhida(novo)
-    try { localStorage.setItem(chaveRecolhida, novo ? '1' : '0') } catch { /* sem armazenamento: vale só nesta visita */ }
-  }
-
   return (
-    <div className={`casca${recolhida ? ' recolhida' : ''}`}>
+    <div className="casca">
       {gaveta && <div className="fundo-gaveta" onClick={() => setGaveta(false)} aria-hidden="true" />}
       <nav className={`lateral${gaveta ? ' aberta' : ''}`} aria-label="Menu principal">
         <div className="marca-lateral">
@@ -76,8 +69,20 @@ export function Casca() {
           return (
             <div className="grupo" key={g.titulo}>
               <small>{g.titulo}</small>
-              {itens.map((i) => (
-                <NavLink key={i.para} to={i.para} title={recolhida ? i.rotulo : undefined} className={({ isActive }) => (isActive ? 'ativo' : '')}>
+              {itens.map((i) => i.subitens ? (
+                <div className="com-subitens" key={i.para}>
+                  <NavLink to={i.para} end className={() => (local.pathname.startsWith(i.para) ? 'pai-ativo' : '')}>
+                    <Icone nome={i.icone} />
+                    <span className="rotulo-item">{i.rotulo}</span>
+                  </NavLink>
+                  <div className="subitens">
+                    {i.subitens.map((s) => (
+                      <NavLink key={s.para} to={s.para} end className={({ isActive }) => (isActive ? 'ativo' : '')}>{s.rotulo}</NavLink>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <NavLink key={i.para} to={i.para} className={({ isActive }) => (isActive ? 'ativo' : '')}>
                   <Icone nome={i.icone} />
                   <span className="rotulo-item">{i.rotulo}</span>
                 </NavLink>
@@ -85,9 +90,6 @@ export function Casca() {
             </div>
           )
         })}
-        <button className="recolher" onClick={alternar} aria-label={recolhida ? 'Expandir menu' : 'Recolher menu'} title={recolhida ? 'Expandir menu' : 'Recolher menu'}>
-          <Icone nome={recolhida ? 'expandir' : 'recolher'} /><span className="rotulo-item">Recolher menu</span>
-        </button>
       </nav>
       <div className="area">
         <header className="barra-superior">

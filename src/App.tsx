@@ -36,7 +36,8 @@ export function App() {
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/funil" element={<TelaEmpresas key="funil" />} />
         <Route path="/fila" element={<MinhaFila />} />
-        <Route path="/empresas" element={<TelaEmpresas key="empresas" forcarLista />} />
+        <Route path="/empresas" element={<TelaEmpresas key="empresas" forcarLista recorte="geral" />} />
+        <Route path="/empresas/recusadas" element={<TelaEmpresas key="recusadas" forcarLista recorte="recusadas" />} />
         <Route path="/empresas/nova" element={<NovaEmpresa />} />
         <Route path="/empresas/:id" element={<Ficha />} />
         <Route path="/parcerias" element={<Parcerias />} />

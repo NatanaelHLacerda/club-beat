@@ -20,13 +20,13 @@ const chaveModo = 'crm.empresas.modo'
 const lerModo = (): Modo => { try { return localStorage.getItem(chaveModo) === 'lista' ? 'lista' : 'quadro' } catch { return 'quadro' } }
 
 // REQ-021 — Funil (quadro) e Empresas (lista) na mesma tela. Regras de etapa do REQ-004.
-export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean }) {
+export function TelaEmpresas({ forcarLista = false, recorte }: { forcarLista?: boolean; recorte?: FiltrosEmpresas['recorte'] }) {
   const { perfil } = useSessao()
   const navegar = useNavigate()
   const [parametros] = useSearchParams()
   const [modo, setModo] = useState<Modo>(() => (forcarLista ? 'lista' : lerModo()))
   const [filtros, setFiltros] = useState<FiltrosEmpresas>(() => ({ busca: parametros.get('busca') ?? '' }))
-  const empresas = useConsulta(() => listarEmpresas(filtros), [JSON.stringify(filtros)])
+  const empresas = useConsulta(() => listarEmpresas({ ...filtros, recorte }), [JSON.stringify(filtros), recorte])
   const usuarios = useConsulta(listarUsuarios)
   const prazos = useConsulta(listarPrazos)
   const [comSaidas, setComSaidas] = useState(false)
@@ -37,6 +37,7 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
   const podeMover = pode(perfil, 'triar')
   const lista = empresas.dado ?? []
   const prazoDe = (id: string) => prazos.dado?.find((p) => p.empresa_id === id)
+  const recusadas = recorte === 'recusadas'
 
   function trocarModo(m: Modo) {
     setModo(m)
@@ -57,15 +58,15 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
 
   return (
     <>
-      <Topo eyebrow="Funil de parcerias" titulo={modo === 'quadro' ? 'Funil' : 'Empresas'}
+      <Topo eyebrow={recusadas ? 'Empresas' : 'Funil de parcerias'} titulo={recusadas ? 'Recusadas' : modo === 'quadro' ? 'Funil' : 'Empresas'}
         secao={empresas.dado ? <>{lista.length} {lista.length === 1 ? 'empresa' : 'empresas'}</> : 'Empresas'}>
         <BarraBusca id="filtro-busca" valor={filtros.busca ?? ''} mudar={(v) => setFiltros({ ...filtros, busca: v })} placeholder="Buscar por marca, razão social ou CNPJ" />
         <Filtros filtros={filtros} mudar={setFiltros} usuarios={usuarios.dado ?? []} />
-        <div className="alternar" role="group" aria-label="Modo de exibição">
+        {!recusadas && <div className="alternar" role="group" aria-label="Modo de exibição">
           <button className={modo === 'quadro' ? 'ativo' : ''} aria-pressed={modo === 'quadro'} onClick={() => trocarModo('quadro')}><Icone nome="funil" tamanho={14} />Quadro</button>
           <button className={modo === 'lista' ? 'ativo' : ''} aria-pressed={modo === 'lista'} onClick={() => trocarModo('lista')}><Icone nome="fila" tamanho={14} />Lista</button>
-        </div>
-        {pode(perfil, 'editar_empresa') && <Link className="botao primario" to="/empresas/nova"><Icone nome="mais" tamanho={14} /> Nova empresa</Link>}
+        </div>}
+        {!recusadas && pode(perfil, 'editar_empresa') && <Link className="botao primario" to="/empresas/nova"><Icone nome="mais" tamanho={14} /> Nova empresa</Link>}
       </Topo>
       <FiltrosAtivos filtros={filtros} mudar={setFiltros} usuarios={usuarios.dado ?? []} />
       {aviso && <div className="aviso alerta" role="alert">{aviso}</div>}
@@ -98,17 +99,23 @@ export function TelaEmpresas({ forcarLista = false }: { forcarLista?: boolean })
           </div>
         </>
       ) : (
-        <Tabela<Empresa> itens={lista} chave={(e) => e.id} aoAbrir={(e) => navegar(`/empresas/${e.id}`)} vazio="Nenhuma empresa encontrada."
+        <Tabela<Empresa> itens={lista} chave={(e) => e.id} aoAbrir={(e) => navegar(`/empresas/${e.id}`)} vazio={recusadas ? 'Nenhuma empresa recusada.' : 'Nenhuma empresa encontrada.'}
           destaque={(e) => { const s = prazoDe(e.id)?.situacao; return s === 'atrasado' ? 'atrasado' : s === 'vence_hoje' ? 'alerta' : null }}
           colunas={[
             { titulo: 'Marca', render: (e) => <span className="linha" style={{ gap: 10, flexWrap: 'nowrap' }}><Avatar nome={e.marca} tamanho={28} /><b style={{ color: 'var(--ink)', fontWeight: 500 }} title={e.marca}>{e.exemplo ? e.marca.replace(/\s*\(exemplo\)$/i, '') : e.marca}</b><Exemplo mostrar={e.exemplo} /></span> },
             { titulo: 'CNPJ', classe: 'num muted', largo: true, render: (e) => formatarCnpj(e.cnpj) },
             { titulo: 'Segmento', classe: 'estreita', render: (e) => e.segmento },
-            { titulo: 'Etapa', render: (e) => <EtapaTag etapa={e.etapa} /> },
-            { titulo: 'Padrão', render: (e) => <PadraoTag padrao={e.padrao_final} /> },
+            ...(recusadas ? [
+              { titulo: 'Motivo', quebra: true, render: (e: Empresa) => e.motivo_saida ?? <span className="muted">—</span> },
+            ] : [
+              { titulo: 'Etapa', render: (e: Empresa) => <EtapaTag etapa={e.etapa} /> },
+              { titulo: 'Padrão', render: (e: Empresa) => <PadraoTag padrao={e.padrao_final} /> },
+            ]),
             { titulo: 'Responsável', render: (e) => { const r = e.responsavel_id ?? e.gerente1_id; return r ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, r)} tamanho={22} />{nomeDe(usuarios.dado, r).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">—</span> } },
-            { titulo: 'Prazo', render: (e) => { const p = prazoDe(e.id); return p ? <span title={`${p.descricao} · ${formatarData(p.prazo)}`}><Pill tom={p.situacao === 'atrasado' ? 'perigo' : p.situacao === 'vence_hoje' ? 'alerta' : 'neutro'}>{rotuloSituacaoPrazo[p.situacao]}</Pill></span> : <span className="muted">—</span> } },
-            { titulo: 'Chegada', classe: 'num muted', largo: true, render: (e) => formatarData(e.criado_em) },
+            ...(recusadas ? [] : [{ titulo: 'Prazo', render: (e: Empresa) => { const p = prazoDe(e.id); return p ? <span title={`${p.descricao} · ${formatarData(p.prazo)}`}><Pill tom={p.situacao === 'atrasado' ? 'perigo' : p.situacao === 'vence_hoje' ? 'alerta' : 'neutro'}>{rotuloSituacaoPrazo[p.situacao]}</Pill></span> : <span className="muted">—</span> } }]),
+            recusadas
+              ? { titulo: 'Recusada em', classe: 'num muted', render: (e: Empresa) => formatarData(e.etapa_desde) }
+              : { titulo: 'Chegada', classe: 'num muted', largo: true, render: (e: Empresa) => formatarData(e.criado_em) },
           ]}
           acoes={[
             { rotulo: 'Ver', icone: 'ver', aoClicar: (e) => navegar(`/empresas/${e.id}`) },
