@@ -1,7 +1,8 @@
 // REQ-018/032 — peças visuais do CRM no padrão do site de parcerias (Manual de Marca v2.0). Sem chamada de dados.
-import { useEffect, type MouseEvent as EventoMouse, type ReactNode } from 'react'
+import { useEffect, useState, type MouseEvent as EventoMouse, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { calcularVariacao, textoVariacao } from '../../regras/variacao'
+import { useFotos } from '../FotosEquipe'
 import { Icone, type NomeIcone } from './Icone'
 
 // ── Cartão de número ────────────────────────────────────────────
@@ -50,8 +51,15 @@ export function iniciais(nome: string): string {
   const partes = nome.replace(/\(exemplo\)/i, '').trim().split(/\s+/).filter(Boolean)
   return ((partes[0]?.[0] ?? '') + (partes.length > 1 ? partes[partes.length - 1][0] : partes[0]?.[1] ?? '')).toUpperCase()
 }
-export function Avatar({ nome, tamanho = 32 }: { nome: string; tamanho?: number }) {
+// REQ-040 — `pessoa` (id do perfil) mostra a foto da equipe quando houver; sem foto ou com erro, as iniciais.
+export function Avatar({ nome, tamanho = 32, pessoa }: { nome: string; tamanho?: number; pessoa?: string | null }) {
+  const { fotoDe } = useFotos()
+  const foto = fotoDe(pessoa)
+  const [falhou, setFalhou] = useState<string | null>(null)
   const tom = tons[[...nome].reduce((s, c) => s + c.charCodeAt(0), 0) % tons.length]
+  if (foto && falhou !== foto) {
+    return <img className="avatar avatar-foto" src={foto} width={tamanho} height={tamanho} style={{ width: tamanho, height: tamanho }} alt="" onError={() => setFalhou(foto)} />
+  }
   return (
     <span className="avatar" style={{ width: tamanho, height: tamanho, background: tom, fontSize: tamanho * 0.38 }} aria-hidden="true">
       {iniciais(nome)}

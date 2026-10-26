@@ -150,7 +150,7 @@ export function Ficha() {
               {e.motivo_saida && <div><span className="muted">Motivo: </span>{e.motivo_saida}</div>}
               {e.retomar_em && <div><span className="muted">Retomar em: </span>{formatarData(e.retomar_em)}</div>}
               {([['Gerente 1', e.gerente1_id], ['Gerente 2', e.gerente2_id], ['Responsável final', e.responsavel_id]] as const).map(([r, uid]) => (
-                <div key={r} className="linha entre"><span className="muted">{r}</span>{uid ? <span className="linha" style={{ gap: 6 }}><Avatar nome={nomeDe(lista, uid)} tamanho={20} />{nomeDe(lista, uid).replace(/\s*\(exemplo\)$/, '')}</span> : <span>—</span>}</div>
+                <div key={r} className="linha entre"><span className="muted">{r}</span>{uid ? <span className="linha" style={{ gap: 6 }}><Avatar nome={nomeDe(lista, uid)} pessoa={uid} tamanho={20} />{nomeDe(lista, uid).replace(/\s*\(exemplo\)$/, '')}</span> : <span>—</span>}</div>
               ))}
               <div className="linha entre"><span className="muted">Chegou em</span><span>{formatarData(e.criado_em)}</span></div>
             </div>

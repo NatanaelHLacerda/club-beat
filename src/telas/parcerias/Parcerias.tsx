@@ -99,7 +99,7 @@ export function Parcerias() {
             { titulo: 'Próximo relatório', render: (p) => { const r = relDe(p); return r ? <span className="pilha" style={{ gap: 2 }}><DataComIcone texto={formatarData(r.prazo)} erro={r.atrasado} />{r.atrasado && <Pill tom="perigo">{textosAcompanhamento.atrasado}</Pill>}</span> : <Pill tom="ok">em dia</Pill> } },
             { titulo: 'Balanço', render: (p) => { const b = balDe(p); return b ? <DataComIcone texto={formatarData(b.prazo)} erro={b.atrasado} /> : <Pill tom="ok">em dia</Pill> } },
             { titulo: 'Fim', render: (p) => <DataComIcone texto={formatarData(p.fim)} /> },
-            { titulo: 'Responsável', render: (p) => p.responsavel_id ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, p.responsavel_id)} tamanho={22} />{nomeDe(usuarios.dado, p.responsavel_id).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },
+            { titulo: 'Responsável', render: (p) => p.responsavel_id ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, p.responsavel_id)} pessoa={p.responsavel_id} tamanho={22} />{nomeDe(usuarios.dado, p.responsavel_id).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },
           ]}
           acoes={[{ rotulo: 'Abrir parceria', icone: 'ver', aoClicar: (p) => navegar(`/empresas/${p.empresa_id}`) }]} />
       )}

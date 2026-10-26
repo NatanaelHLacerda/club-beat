@@ -45,7 +45,7 @@ export function Prazos() {
             { titulo: 'Etapa', render: (p) => <EtapaTag etapa={p.etapa} /> },
             { titulo: 'Prazo', render: (p) => <DataComIcone texto={formatarData(p.prazo)} erro={p.situacao === 'atrasado'} /> },
             { titulo: 'Situação', render: (p) => <Pill tom={tom[p.situacao]}>{rotuloSituacaoPrazo[p.situacao]}</Pill> },
-            { titulo: 'Com quem', render: (p) => p.responsavel_id ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, p.responsavel_id)} tamanho={22} />{nomeDe(usuarios.dado, p.responsavel_id).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">{rotuloPapel[p.papel_responsavel]}</span> },
+            { titulo: 'Com quem', render: (p) => p.responsavel_id ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, p.responsavel_id)} pessoa={p.responsavel_id} tamanho={22} />{nomeDe(usuarios.dado, p.responsavel_id).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">{rotuloPapel[p.papel_responsavel]}</span> },
           ]}
           acoes={[{ rotulo: 'Abrir empresa', icone: 'ver', aoClicar: (p) => navegar(`/empresas/${p.empresa_id}`) }]} />
       )}

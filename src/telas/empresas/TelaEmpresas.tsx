@@ -111,7 +111,7 @@ export function TelaEmpresas({ forcarLista = false, recorte }: { forcarLista?: b
               { titulo: 'Etapa', render: (e: Empresa) => <EtapaTag etapa={e.etapa} /> },
               { titulo: 'Padrão', render: (e: Empresa) => <PadraoTag padrao={e.padrao_final} /> },
             ]),
-            { titulo: 'Responsável', render: (e) => { const r = e.responsavel_id ?? e.gerente1_id; return r ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, r)} tamanho={22} />{nomeDe(usuarios.dado, r).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">—</span> } },
+            { titulo: 'Responsável', render: (e) => { const r = e.responsavel_id ?? e.gerente1_id; return r ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, r)} pessoa={r} tamanho={22} />{nomeDe(usuarios.dado, r).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">—</span> } },
             ...(recusadas ? [] : [{ titulo: 'Prazo', render: (e: Empresa) => { const p = prazoDe(e.id); return p ? <span title={`${p.descricao} · ${formatarData(p.prazo)}`}><Pill tom={p.situacao === 'atrasado' ? 'perigo' : p.situacao === 'vence_hoje' ? 'alerta' : 'neutro'}>{rotuloSituacaoPrazo[p.situacao]}</Pill></span> : <span className="muted">—</span> } }]),
             recusadas
               ? { titulo: 'Recusada em', classe: 'num muted', render: (e: Empresa) => formatarData(e.etapa_desde) }

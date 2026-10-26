@@ -6,6 +6,7 @@ import { useSessao } from '../sessao'
 import { BuscaGlobal } from './casca/BuscaGlobal'
 import { MenuUsuario } from './casca/MenuUsuario'
 import { Sino } from './casca/Sino'
+import { ProvedorFotos } from './FotosEquipe'
 import { Icone, type NomeIcone } from './ui'
 
 type Item = { para: string; rotulo: string; icone: NomeIcone; acao?: Acao; subitens?: { para: string; rotulo: string }[] }
@@ -50,6 +51,7 @@ export function Casca() {
   if (!perfil) return <Navigate to="/entrar" replace state={{ de: local.pathname }} />
 
   return (
+    <ProvedorFotos>
     <div className="casca">
       {gaveta && <div className="fundo-gaveta" onClick={() => setGaveta(false)} aria-hidden="true" />}
       <nav className={`lateral${gaveta ? ' aberta' : ''}`} aria-label="Menu principal">
@@ -101,6 +103,7 @@ export function Casca() {
         </main>
       </div>
     </div>
+    </ProvedorFotos>
   )
 }
 

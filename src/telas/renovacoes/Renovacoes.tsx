@@ -39,7 +39,7 @@ export function Renovacoes() {
             { titulo: 'Fim', render: (p) => <DataComIcone texto={formatarData(p.fim)} /> },
             { titulo: 'Faltam', classe: 'num', render: (p) => { const d = diasParaOFim(p.fim, hoje); return <span className={d <= 30 ? 'erro' : ''}>{d} dias</span> } },
             { titulo: 'Decisão', render: (p) => p.renovacao?.decidida_em ? <Pill tom="ok">{rotuloCaminho[p.renovacao.caminho!]}</Pill> : p.renovacao?.aguardando_direcao ? <Pill tom="ouro">Com a Direção</Pill> : <Pill tom="alerta">Sem decisão</Pill> },
-            { titulo: 'Responsável', render: (p) => p.responsavel_id ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, p.responsavel_id)} tamanho={22} />{nomeDe(usuarios.dado, p.responsavel_id).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },
+            { titulo: 'Responsável', render: (p) => p.responsavel_id ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, p.responsavel_id)} pessoa={p.responsavel_id} tamanho={22} />{nomeDe(usuarios.dado, p.responsavel_id).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },
           ]}
           acoes={[{ rotulo: 'Avaliar renovação', icone: 'renovacoes', aoClicar: (p) => navegar(`/empresas/${p.empresa_id}`) }]} />
       )}

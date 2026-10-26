@@ -61,6 +61,36 @@ export async function trocarMinhaSenha(senha: string) {
   falhou(error, 'Não foi possível trocar a senha. Tente de novo.')
 }
 
+// REQ-040 — foto de perfil: grava na própria pasta, aponta pela rpc e apaga a anterior.
+export async function enviarMinhaFoto(pessoa: string, foto: Blob, anterior: string | null) {
+  const caminho = `${pessoa}/${Date.now()}.jpg`
+  const { error } = await supabase.storage.from('fotos-perfil').upload(caminho, foto, { contentType: 'image/jpeg' })
+  falhou(error, 'Não foi possível enviar a foto. Tente de novo.')
+  const { error: erroRpc } = await supabase.rpc('definir_minha_foto', { caminho })
+  if (erroRpc) {
+    await supabase.storage.from('fotos-perfil').remove([caminho])
+    falhou(erroRpc, 'Não foi possível salvar a foto.')
+  }
+  if (anterior) await supabase.storage.from('fotos-perfil').remove([anterior])
+}
+
+export async function removerMinhaFoto(anterior: string | null) {
+  const { error } = await supabase.rpc('definir_minha_foto', { caminho: null })
+  falhou(error, 'Não foi possível remover a foto.')
+  if (anterior) await supabase.storage.from('fotos-perfil').remove([anterior])
+}
+
+export async function listarFotosDaEquipe(): Promise<Record<string, string>> {
+  const { data, error } = await supabase.from('perfis').select('id, foto_caminho').not('foto_caminho', 'is', null)
+  falhou(error, 'Não foi possível carregar as fotos.')
+  const linhas = (data ?? []) as { id: string; foto_caminho: string }[]
+  if (!linhas.length) return {}
+  const { data: urls, error: erroUrl } = await supabase.storage.from('fotos-perfil').createSignedUrls(linhas.map((l) => l.foto_caminho), 3600)
+  falhou(erroUrl, 'Não foi possível carregar as fotos.')
+  const porCaminho = new Map((urls ?? []).filter((u) => u.signedUrl && u.path).map((u) => [u.path as string, u.signedUrl]))
+  return Object.fromEntries(linhas.flatMap((l) => (porCaminho.has(l.foto_caminho) ? [[l.id, porCaminho.get(l.foto_caminho)!]] : [])))
+}
+
 export function aoMudarSessao(callback: (logado: boolean) => void) {
   const { data } = supabase.auth.onAuthStateChange((_evento, sessao) => callback(Boolean(sessao)))
   return () => data.subscription.unsubscribe()

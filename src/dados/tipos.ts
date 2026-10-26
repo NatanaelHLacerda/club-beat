@@ -27,6 +27,8 @@ export type Perfil = {
   admin: boolean
   disponivel: boolean
   ativo: boolean
+  /* REQ-040 — caminho da foto no bucket fotos-perfil; null sem foto. */
+  foto_caminho: string | null
 }
 
 // ── Empresas e funil (REQ-004) ────────────────────────────────────

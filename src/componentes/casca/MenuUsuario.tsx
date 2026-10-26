@@ -62,13 +62,13 @@ export function MenuUsuario({ perfil }: { perfil: Perfil }) {
         onKeyDown={(e) => { pelaTecla.current = e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' }}
         onMouseDown={() => { pelaTecla.current = false }}
         onClick={() => setAberto(!aberto)}>
-        <Avatar nome={perfil.nome} tamanho={34} />
+        <Avatar nome={perfil.nome} tamanho={34} pessoa={perfil.id} />
         <span className="pilha usuario-nome" style={{ gap: 0 }}><b>{nome}</b><span className="muted pequeno">{rotuloPapel[perfil.papel]}</span></span>
       </button>
       {aberto && (
         <div className="flutuante usuario-lista" id="menu-pessoa" ref={lista}>
           <div className="menu-pessoa-cabeca">
-            <Avatar nome={perfil.nome} tamanho={40} />
+            <Avatar nome={perfil.nome} tamanho={40} pessoa={perfil.id} />
             <span className="pilha" style={{ gap: 2, minWidth: 0 }}>
               <b>{nome}</b>
               <span className="muted pequeno menu-pessoa-email">{perfil.email}</span>

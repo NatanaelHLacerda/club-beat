@@ -44,7 +44,7 @@ export function CartaoEmpresa({ empresa: e, usuarios, prazo, arrastavel, aoArras
       <dl className="cartao-empresa-dados">
         <dt>Segmento</dt><dd title={e.segmento}>{e.segmento}</dd>
         <dt>Responsável</dt>
-        <dd>{responsavel ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios, responsavel)} tamanho={18} />{nomeDe(usuarios, responsavel).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">Sem responsável</span>}</dd>
+        <dd>{responsavel ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios, responsavel)} pessoa={responsavel} tamanho={18} />{nomeDe(usuarios, responsavel).replace(/\s*\(exemplo\)$/, '')}</span> : <span className="muted">Sem responsável</span>}</dd>
         <dt>Na etapa</dt><dd className="num">{dias === 1 ? '1 dia' : `${dias} dias`}</dd>
         <dt>Prazo</dt>
         <dd>{prazo ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Pill tom={prazo.situacao === 'atrasado' ? 'perigo' : prazo.situacao === 'vence_hoje' ? 'alerta' : 'neutro'}>{rotuloSituacaoPrazo[prazo.situacao]}</Pill><span className="num muted">{formatarData(prazo.prazo).slice(0, 5)}</span></span> : <span className="muted">—</span>}</dd>

@@ -34,7 +34,7 @@ export function Direcao() {
             { titulo: 'Empresa', render: (e) => <NomeEmpresa marca={e.marca} exemplo={e.exemplo} /> },
             { titulo: 'Padrão', render: (e) => <span className="linha" style={{ gap: 6 }}><PadraoTag padrao={e.padrao_final} />{e.candidata_master && <Pill tom="ouro">Master?</Pill>}</span> },
             { titulo: 'Motivos', render: (e) => <span className="pequeno">{(e.direcao?.motivos ?? []).join(', ')}</span> },
-            { titulo: 'Levada por', render: (e) => e.direcao?.levada_por ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, e.direcao.levada_por)} tamanho={22} />{nomeDe(usuarios.dado, e.direcao.levada_por).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },
+            { titulo: 'Levada por', render: (e) => e.direcao?.levada_por ? <span className="linha" style={{ gap: 6, flexWrap: 'nowrap' }}><Avatar nome={nomeDe(usuarios.dado, e.direcao.levada_por)} pessoa={e.direcao.levada_por} tamanho={22} />{nomeDe(usuarios.dado, e.direcao.levada_por).replace(/\s*\(exemplo\)$/, '')}</span> : '—' },
             { titulo: 'Prazo', render: (e) => <DataComIcone texto={formatarData(e.direcao?.prazo)} erro={prazoVencido(e.direcao?.prazo, hoje)} /> },
           ]}
           acoes={[{ rotulo: 'Decidir', icone: 'direcao', aoClicar: (e) => navegar(`/empresas/${e.id}`) }]} />

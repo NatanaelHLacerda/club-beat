@@ -43,7 +43,7 @@ export function AbaTempo({ empresa, usuarios }: PropsAba) {
             const autor = i.autor_id ? nomeDe(usuarios, i.autor_id).replace(/\s*\(exemplo\)$/, '') : 'Sistema'
             return (
               <li key={i.id}>
-                {i.autor_id ? <Avatar nome={autor} tamanho={34} /> : <span className="icone-redondo"><Icone nome="regras" tamanho={16} /></span>}
+                {i.autor_id ? <Avatar nome={autor} tamanho={34} pessoa={i.autor_id} /> : <span className="icone-redondo"><Icone nome="regras" tamanho={16} /></span>}
                 <div className="pilha" style={{ gap: 4, minWidth: 0 }}>
                   <span className="tempo-cabeca"><b>{autor}</b><span className="pill">{rotuloTipo[i.tipo]}</span><time dateTime={i.em}>{formatarDataHora(i.em)}</time></span>
                   <p className="tempo-texto">{descrever(i)}</p>

@@ -1,7 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { Topo } from '../../componentes/Casca'
 import { Avatar, SecaoCabecalho } from '../../componentes/ui'
-import { alterarDisponibilidade, atualizarMeuNome, trocarMinhaSenha } from '../../dados/api'
+import { useFotos } from '../../componentes/FotosEquipe'
+import { alterarDisponibilidade, atualizarMeuNome, enviarMinhaFoto, removerMinhaFoto, trocarMinhaSenha } from '../../dados/api'
+import { fotoQuadrada } from '../../lib/imagem'
+import { erroArquivoFoto, tiposFoto } from '../../regras/foto'
 import { rotuloPapel } from '../../dados/tipos'
 import { erroNome, erroNovaSenha, normalizarNome } from '../../regras/perfil'
 import { useSessao } from '../../sessao'
@@ -11,6 +14,9 @@ type Retorno = { ok?: string; erro?: string }
 // REQ-039 — Meu perfil: cada pessoa muda o próprio nome, a própria senha e (Gerente) a disponibilidade.
 export function MeuPerfil() {
   const { perfil, recarregar } = useSessao()
+  const { recarregarFotos } = useFotos()
+  const [retornoFoto, setRetornoFoto] = useState<Retorno>({})
+  const [salvandoFoto, setSalvandoFoto] = useState(false)
   const [nome, setNome] = useState(perfil?.nome ?? '')
   const [retornoNome, setRetornoNome] = useState<Retorno>({})
   const [salvandoNome, setSalvandoNome] = useState(false)
@@ -53,6 +59,28 @@ export function MeuPerfil() {
     try { await alterarDisponibilidade(perfil.id, !perfil.disponivel); await recarregar() } catch (err) { setRetornoDisp({ erro: (err as Error).message }) } finally { setSalvandoDisp(false) }
   }
 
+  async function escolherFoto(arquivo: File | undefined) {
+    if (!arquivo || !perfil) return
+    const problema = erroArquivoFoto(arquivo)
+    if (problema) { setRetornoFoto({ erro: problema }); return }
+    setSalvandoFoto(true); setRetornoFoto({})
+    try {
+      await enviarMinhaFoto(perfil.id, await fotoQuadrada(arquivo), perfil.foto_caminho)
+      await Promise.all([recarregar(), recarregarFotos()])
+      setRetornoFoto({ ok: 'Foto salva.' })
+    } catch (err) { setRetornoFoto({ erro: (err as Error).message }) } finally { setSalvandoFoto(false) }
+  }
+
+  async function tirarFoto() {
+    if (!perfil) return
+    setSalvandoFoto(true); setRetornoFoto({})
+    try {
+      await removerMinhaFoto(perfil.foto_caminho)
+      await Promise.all([recarregar(), recarregarFotos()])
+      setRetornoFoto({ ok: 'Foto removida.' })
+    } catch (err) { setRetornoFoto({ erro: (err as Error).message }) } finally { setSalvandoFoto(false) }
+  }
+
   const mudouNome = normalizarNome(nome) !== perfil.nome
 
   return (
@@ -63,7 +91,20 @@ export function MeuPerfil() {
         <section className="cartao">
           <SecaoCabecalho titulo="Dados" />
           <div className="perfil-identidade">
-            <Avatar nome={perfil.nome} tamanho={56} />
+            <div className="perfil-foto">
+              <Avatar nome={perfil.nome} tamanho={96} pessoa={perfil.id} />
+              <div className="pilha" style={{ gap: 8 }}>
+                <label className={`botao${salvandoFoto ? ' desativado' : ''}`} aria-disabled={salvandoFoto}>
+                  {salvandoFoto ? 'Enviando…' : perfil.foto_caminho ? 'Trocar foto' : 'Enviar foto'}
+                  <input type="file" accept={tiposFoto.join(',')} className="sr-only" disabled={salvandoFoto}
+                    onChange={(e) => { void escolherFoto(e.target.files?.[0]); e.target.value = '' }} />
+                </label>
+                {perfil.foto_caminho && <button type="button" className="botao leve" disabled={salvandoFoto} onClick={() => void tirarFoto()}>Remover foto</button>}
+                <span className="muted pequeno">JPG, PNG ou WebP, até 5 MB.</span>
+              </div>
+            </div>
+            {retornoFoto.erro && <p className="erro pequeno" role="alert">{retornoFoto.erro}</p>}
+            {retornoFoto.ok && <p className="ok pequeno" role="status">{retornoFoto.ok}</p>}
             <dl className="perfil-leitura">
               <div><dt>E-mail</dt><dd>{perfil.email}</dd></div>
               <div><dt>Papel</dt><dd>{rotuloPapel[perfil.papel]}{perfil.admin ? ' · administradora' : ''}</dd></div>
