@@ -99,8 +99,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* ── REQ-033: casca com a marca do site (menu Oceano com a logo, cabeçalho branco com título editorial) ── */
 html { scrollbar-color: var(--line-campo) var(--bg); }
 .casca { display: grid; grid-template-columns: 264px minmax(0, 1fr); min-height: 100%; }
-.area { display: flex; flex-direction: column; min-width: 0; }
-.conteudo { min-width: 0; display: flex; flex-direction: column; }
+.area { display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+.conteudo { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
 /* Menu lateral */
 .lateral { position: sticky; top: 0; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; gap: 26px; padding: 28px 16px; background: var(--moldura); color: var(--moldura-suave); scrollbar-color: var(--moldura-3) transparent; }
@@ -332,8 +332,10 @@ tbody tr.clicavel:hover td { background: var(--surface-2); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 /* Funil (quadro) */
-.funil-rolagem { overflow-x: auto; padding-bottom: 8px; }
-.funil { display: grid; grid-auto-flow: column; grid-auto-columns: 300px; gap: 16px; }
+/* O quadro ocupa a altura toda da tela: colunas vão até o fim da área de trabalho. */
+.conteudo:has(> .funil-rolagem) { padding-bottom: 24px; }
+.funil-rolagem { flex: 1; min-height: 420px; display: flex; flex-direction: column; overflow-x: auto; padding-bottom: 8px; }
+.funil { flex: 1; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 1fr); gap: 16px; }
 .coluna { display: flex; flex-direction: column; gap: 10px; min-height: 200px; padding: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); }
 .coluna > header { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; padding: 10px 12px; background: var(--branco); border: 1px solid var(--line); border-radius: var(--radius); }
 .coluna > header b { color: var(--ink); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
