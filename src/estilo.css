@@ -593,3 +593,22 @@ fieldset.campo { min-inline-size: 0; }
 .vitrine-dados { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.9375rem; }
 .vitrine-dados > span { display: flex; justify-content: space-between; gap: 12px; }
 .vitrine-dados .rotulo { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+
+/* ── REQ-037: menu da pessoa (perfil, disponibilidade, avisos, configuração, sair) ── */
+.usuario-lista { width: 300px; max-width: calc(100vw - 32px); }
+.menu-pessoa-cabeca { display: flex; gap: 12px; align-items: center; padding: 16px; }
+.menu-pessoa-cabeca b { color: var(--ink); font-weight: 500; }
+.menu-pessoa-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu-pessoa-secao { display: flex; flex-direction: column; padding: 6px 0; border-top: 1px solid var(--line); }
+.menu-pessoa-secao > .eyebrow { padding: 8px 14px 4px; font-size: 0.6875rem; }
+.menu-pessoa-secao .resultado { text-decoration: none; }
+.menu-pessoa-secao .resultado .icone { color: var(--muted); }
+.menu-pessoa-secao .contador { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: var(--radius); background: var(--oceano); color: var(--branco); font-size: 0.75rem; }
+.menu-pessoa-secao > .erro { padding: 0 14px 8px; }
+.menu-pessoa-interruptor { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 14px; border: 0; background: none; color: var(--text); text-align: left; cursor: pointer; }
+.menu-pessoa-interruptor:hover { background: var(--surface-2); }
+.menu-pessoa-interruptor:disabled { opacity: 0.6; cursor: progress; }
+.trilho-interruptor { flex: none; width: 38px; height: 22px; padding: 2px; border: 1px solid var(--line-campo); border-radius: var(--radius); background: var(--branco); transition: background 0.2s var(--ease); }
+.trilho-interruptor span { display: block; width: 16px; height: 16px; background: var(--line-campo); transition: transform 0.2s var(--ease), background 0.2s var(--ease); }
+.menu-pessoa-interruptor[aria-checked="true"] .trilho-interruptor { background: var(--oceano); border-color: var(--oceano); }
+.menu-pessoa-interruptor[aria-checked="true"] .trilho-interruptor span { background: var(--dourado); transform: translateX(16px); }

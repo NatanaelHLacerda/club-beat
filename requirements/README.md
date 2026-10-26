@@ -70,6 +70,13 @@ Referência: https://site-beat-life-club.vercel.app/ (código em `~/Documents/am
 | 035 | Painel e parcerias que geram desejo | 031, 032, 033, 011, 016, 020 |
 | 036 | Telas de trabalho no novo padrão | 031, 032, 033 |
 
+### Cadeia 5 — menu lateral enxuto e menu da pessoa (APROVADO)
+
+| REQ | Semente | Depende de |
+|---|---|---|
+| 037 | Menu da pessoa (perfil, disponibilidade, avisos, configuração, sair) | 007, 019, 033 |
+| 038 | Menu lateral enxuto (sem Configuração e Avisos) | 037 |
+
 ## Template
 
 ```markdown
