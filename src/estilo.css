@@ -680,3 +680,25 @@ h3 { font-size: 16px; }
   .painel-dados dt:first-child { margin-top: 0; }
 }
 .painel-dados dd.num { white-space: nowrap; }
+
+/* ── Cabeçalho claro: Areia clara com acentos em variações do Oceano do menu lateral ── */
+.barra-superior {
+  background:
+    radial-gradient(55% 180% at 100% 0%, rgba(210, 174, 106, 0.16) 0%, transparent 60%),
+    linear-gradient(180deg, #EEF1F7 0%, #E2E8F1 100%);
+  border-bottom: 1px solid #C9D2E1;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 18px rgba(15, 29, 51, 0.06);
+}
+.barra-superior .topo-titulo h1 { color: var(--moldura); }
+.barra-superior .topo-titulo .contexto { color: var(--moldura-3); opacity: 0.85; }
+.barra-superior .busca { background: #F8F9FC; border-color: #C9D2E1; color: #4A5A78; }
+.barra-superior .busca input { color: var(--moldura); }
+.barra-superior .busca input::placeholder { color: #6A7894; }
+.barra-superior .busca:focus-within { background: #FFFDF8; border-color: var(--moldura-3); box-shadow: 0 0 0 3px rgba(30, 51, 88, 0.12); }
+.barra-superior .botao-icone.grande { background: #F8F9FC; border-color: #C9D2E1; color: var(--moldura-2); }
+.barra-superior .botao-icone.grande:hover { background: rgba(30, 51, 88, 0.12); }
+.barra-superior .usuario-nome b { color: var(--moldura); }
+.barra-superior .usuario-nome .muted { color: #5B6883; }
+.barra-superior .avatar { box-shadow: 0 0 0 2px #EEF1F7, 0 0 0 3px var(--moldura-3); }
+.barra-superior :focus-visible { outline-color: var(--moldura-3); }
+.bolinha { background: var(--moldura-2); color: var(--moldura-texto); box-shadow: 0 0 0 2px #EEF1F7; }
