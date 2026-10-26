@@ -80,8 +80,8 @@ export function Formulario() {
     return (
       <Pagina>
         <div className="cartao destaque confirmacao">
-          <span className="selo-ok" aria-hidden="true">✓</span>
-          <h1>Ficha enviada</h1>
+          <img className="estrela" src="/marca/estrela-oceano.png" width="521" height="521" alt="" />
+          <h2 className="titulo-etapa">Ficha <span className="acento">enviada.</span></h2>
           <p role="status">{textosFormulario.enviado}</p>
           {whatsapp && <a className="botao primario" style={{ textAlign: 'center', textDecoration: 'none' }} href={`https://wa.me/55${whatsapp}`} target="_blank" rel="noreferrer">Falar com o Club no WhatsApp</a>}
         </div>
@@ -94,8 +94,8 @@ export function Formulario() {
       <div ref={topo} className="pilha" style={{ gap: 14 }}>
         <IndicadorEtapas etapas={titulosEtapas} atual={etapa} />
         <div className="pilha" style={{ gap: 2 }}>
-          <span className="eyebrow-publico">Etapa {etapa} de 5</span>
-          <h1>{titulosEtapas[etapa - 1]}</h1>
+          <span className="eyebrow">Etapa {etapa} de 5</span>
+          <h2 className="titulo-etapa">{titulosEtapas[etapa - 1]}</h2>
         </div>
       </div>
 
@@ -180,9 +180,9 @@ export function Formulario() {
       </div>
 
       <div className="linha entre">
-        {etapa > 1 ? <button className="botao leve" onClick={() => setEtapa(etapa - 1)}>← Voltar</button> : <span />}
+        {etapa > 1 ? <button className="botao" onClick={() => setEtapa(etapa - 1)}>Voltar</button> : <span />}
         {etapa < 5 ? (
-          <button className="botao primario" onClick={avancar}>Continuar →</button>
+          <button className="botao primario" onClick={avancar}>Continuar</button>
         ) : (
           <button className="botao primario" disabled={enviando} onClick={() => void enviar()}>{enviando ? 'Enviando…' : 'Enviar ficha'}</button>
         )}
@@ -194,7 +194,7 @@ export function Formulario() {
 function Pagina({ children }: { children: ReactNode }) {
   return (
     <div className="pagina-publica">
-      <CabecalhoPublico subtitulo="Conte quem é a sua empresa. A nossa equipe responde em até 1 dia útil." />
+      <CabecalhoPublico subtitulo="Conte o que a sua marca quer construir com a Beat. O time de parcerias responde em até 1 dia útil." />
       <div className="publico">{children}</div>
     </div>
   )

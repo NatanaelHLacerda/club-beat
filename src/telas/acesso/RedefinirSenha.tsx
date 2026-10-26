@@ -25,7 +25,7 @@ export function RedefinirSenha() {
   return (
     <MolduraEntrada>
       <form className="form-entrada" onSubmit={aoEnviar}>
-        <div className="pilha" style={{ gap: 4 }}><h1>Criar nova senha</h1><p className="muted">Pelo menos 8 caracteres.</p></div>
+        <div className="pilha" style={{ gap: 4 }}><h1>Crie a sua <span className="acento">nova senha.</span></h1><p className="muted">Pelo menos 8 caracteres.</p></div>
         <label className="campo"><span>Nova senha</span>
           <input id="nova-senha" type="password" autoComplete="new-password" value={senha} onChange={(e) => setSenha(e.target.value)} />
         </label>

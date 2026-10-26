@@ -107,7 +107,6 @@ html { scrollbar-color: var(--line-campo) var(--bg); }
 .marca-lateral .logo { width: 150px; }
 .marca-rotulo { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; color: var(--dourado); }
 .marca-grande .logo { width: 200px; }
-.marca-movel .logo { width: 170px; }
 .grupo { display: flex; flex-direction: column; gap: 2px; }
 .grupo > small { padding: 0 12px 6px; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; color: var(--dourado); }
 .grupo a { position: relative; display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--radius); color: var(--moldura-suave); font-size: 0.9375rem; text-decoration: none; transition: background 0.2s var(--ease), color 0.2s var(--ease); }
@@ -349,17 +348,6 @@ tbody tr.clicavel:hover td { background: var(--surface-2); }
 .grade-ficha { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
 @media (max-width: 1000px) { .grade-ficha { grid-template-columns: 1fr; } }
 
-/* Formulário público (REQ-002) */
-.publico { width: min(640px, 100%); margin: 0 auto; padding: 32px 16px 64px; display: flex; flex-direction: column; gap: 20px; }
-.publico .cartao { gap: 16px; }
-.eyebrow-publico { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
-.progresso { height: 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
-.progresso span { display: block; height: 100%; background: var(--primary); transition: width 0.3s ease; }
-.grade-cidade { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 12px; }
-.legenda { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
-.legenda b { color: var(--danger); font-weight: 500; }
-.isca { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-
 /* Calendário (REQ-012) */
 .ano { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
 .mes { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; text-align: left; display: flex; flex-direction: column; gap: 4px; cursor: pointer; color: inherit; }
@@ -483,50 +471,62 @@ tbody tr.clicavel:hover td { background: var(--surface-2); }
   .legenda-calendario { display: none; }
 }
 
-/* ── REQ-025: entrada e páginas públicas ── */
-.moldura-entrada { min-height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.painel-marca { background: var(--primary); color: var(--primary-ink); padding: 56px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-.painel-marca::after { content: ""; position: absolute; right: -120px; bottom: -120px; width: 360px; height: 360px; border-radius: 50%; border: 1px solid rgba(210, 174, 106, 0.35); }
-.marca-grande { display: flex; flex-direction: column; gap: 2px; }
-.marca-grande b { font-family: var(--font-titulo); font-size: 2rem; font-weight: 600; color: inherit; }
-.marca-grande span { color: var(--gold-soft); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
-.filete { display: block; width: 48px; height: 2px; background: var(--gold-soft); }
-.frase { font-family: var(--font-titulo); font-size: 2.1rem; line-height: 1.2; max-width: 16ch; color: var(--primary-ink); }
-.frase-apoio { color: rgba(244, 238, 226, 0.75); max-width: 36ch; }
-.area-entrada { display: grid; place-items: center; padding: 32px 16px; background: var(--surface); }
-.form-entrada { width: min(380px, 100%); display: flex; flex-direction: column; gap: 14px; }
-.form-entrada input { padding: 11px 12px; }
-.marca-movel { display: none; }
+/* ── REQ-034: entrada e páginas públicas com a foto e a voz editorial do site ── */
+@keyframes revela { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.revela { animation: revela 0.6s var(--ease) both; }
+.foto { display: block; width: 100%; height: 100%; object-fit: cover; }
+.frase { font-family: var(--font-titulo); font-weight: 300; font-size: clamp(1.9rem, 3.2vw, 2.75rem); line-height: 1.15; letter-spacing: -0.02em; color: var(--branco); max-width: 18ch; text-wrap: balance; }
+.frase-apoio { color: color-mix(in srgb, var(--branco) 82%, transparent); max-width: 44ch; }
+
+/* Entrada: metade foto, metade formulário */
+.moldura-entrada { min-height: 100%; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); background: var(--branco); }
+.painel-foto { position: relative; overflow: hidden; min-height: 100vh; background: var(--oceano); }
+.painel-foto .foto { position: absolute; inset: 0; }
+.painel-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--oceano) 55%, transparent) 0%, transparent 32%, transparent 45%, color-mix(in srgb, var(--oceano) 92%, transparent) 100%); }
+.painel-foto-texto { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 48px 56px; }
+.painel-foto-texto .logo { width: 190px; }
+.painel-foto-frase { display: flex; flex-direction: column; gap: 18px; animation-delay: 0.15s; }
+.painel-foto .eyebrow { color: color-mix(in srgb, var(--branco) 82%, transparent); }
+.area-entrada { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 36px; padding: 48px 24px; }
+.marca-entrada { width: min(400px, 100%); display: flex; flex-direction: column; gap: 18px; }
+.marca-entrada .logo { width: 150px; }
+.form-entrada { width: min(400px, 100%); display: flex; flex-direction: column; gap: 18px; }
+.form-entrada h1 { font-size: clamp(2rem, 3vw, 2.5rem); }
 @media (max-width: 860px) {
   .moldura-entrada { grid-template-columns: 1fr; }
-  .painel-marca { display: none; }
-  .area-entrada { align-content: start; gap: 28px; padding-top: 48px; }
-  .marca-movel { display: flex; flex-direction: column; align-items: center; }
-  .marca-movel b { font-family: var(--font-titulo); font-size: 1.6rem; color: var(--ink); }
-  .marca-movel span { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; }
+  .painel-foto { min-height: 220px; height: 220px; }
+  .painel-foto-texto { padding: 20px; }
+  .painel-foto-texto .logo { width: 150px; }
+  .painel-foto-frase { display: none; }
+  .area-entrada { justify-content: flex-start; padding: 28px 16px 48px; gap: 24px; }
+  .marca-entrada .logo { display: none; }
 }
-.pagina-publica { min-height: 100%; background: var(--surface); }
-.cabecalho-publico { background: var(--primary); color: var(--primary-ink); padding: 40px 16px 56px; }
-.cabecalho-publico .interno { width: min(640px, 100%); margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
-.cabecalho-publico .frase { font-size: 1.35rem; max-width: 32ch; }
-.pagina-publica .publico { margin-top: -28px; }
-.pagina-publica .publico > .cartao, .pagina-publica .publico > div > .cartao { box-shadow: var(--sombra); }
-.indicador-etapas { list-style: none; margin: 0; padding: 14px 10px; display: flex; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--sombra); }
-.indicador-etapas li { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; color: var(--muted); min-width: 0; text-align: center; }
-.indicador-etapas li:not(:last-child)::after { content: ""; position: absolute; top: 13px; left: calc(50% + 16px); right: calc(-50% + 16px); height: 2px; background: var(--line); }
-.indicador-etapas li.feito:not(:last-child)::after { background: var(--primary); }
-.indicador-etapas .bola { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-weight: 600; font-size: 0.8rem; background: var(--bg-2); color: var(--muted); }
-.indicador-etapas li.feito .bola { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
-.indicador-etapas li.atual .bola { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 0 4px rgba(20, 37, 64, 0.12); }
-.indicador-etapas li.atual { color: var(--ink); font-weight: 600; }
-@media (max-width: 520px) { .indicador-etapas .nome-etapa { display: none; } }
-.confirmacao { align-items: center; text-align: center; padding: 36px 24px; }
-.selo-ok { width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: var(--gold-soft); display: grid; place-items: center; font-size: 1.4rem; }
-.campo input[type="checkbox"], .campo input[type="radio"], .marcar input { width: auto; padding: 0; flex: none; }
-.marcar { text-align: left; }
-fieldset.campo { min-inline-size: 0; }
-.legenda { display: block; }
 
+/* Ficha pública e privacidade: cabeçalho fotográfico, ficha em painel com borda dourada */
+.pagina-publica { min-height: 100%; background: var(--surface-2); }
+.cabecalho-publico { position: relative; overflow: hidden; background: var(--oceano); color: var(--branco); padding: 48px 16px 88px; }
+.cabecalho-publico .foto { position: absolute; inset: 0; opacity: 0.45; }
+.cabecalho-publico::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--oceano) 40%, transparent), var(--oceano)); }
+.cabecalho-publico .interno { position: relative; z-index: 1; width: min(680px, 100%); margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.cabecalho-publico .logo { width: 170px; margin-bottom: 12px; }
+.cabecalho-publico .eyebrow { color: color-mix(in srgb, var(--branco) 82%, transparent); }
+.publico { width: min(680px, 100%); margin: -48px auto 0; padding: 0 16px 72px; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; }
+.publico > .cartao, .publico > div > .cartao { border-top: 2px solid var(--dourado); }
+.publico .cartao { gap: 18px; }
+.titulo-etapa { font-size: clamp(1.6rem, 2.6vw, 2.1rem); font-weight: 300; letter-spacing: -0.02em; }
+.indicador-etapas { list-style: none; margin: 0; padding: 18px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; background: var(--branco); border: 1px solid var(--line); border-radius: var(--radius); }
+.indicador-etapas li { display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 2px solid var(--line); color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; min-width: 0; }
+.indicador-etapas li.feito { border-color: var(--oceano); color: var(--text); }
+.indicador-etapas li.atual { border-color: var(--dourado); color: var(--ink); }
+.indicador-etapas .nome-etapa { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 640px) { .indicador-etapas .nome-etapa { display: none; } .indicador-etapas li.atual .nome-etapa { display: inline; } }
+.confirmacao { align-items: center; text-align: center; padding: 40px 24px; gap: 18px; }
+.confirmacao .estrela { width: 48px; height: 48px; }
+.grade-cidade { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 12px; }
+.legenda { display: block; margin-bottom: 8px; }
+.isca { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.campo input[type="checkbox"], .campo input[type="radio"] { width: auto; padding: 0; flex: none; }
+fieldset.campo { min-inline-size: 0; }
 
 /* Área de trabalho: menos branco, mais hierarquia. */
 .coluna { background: var(--surface-2); }

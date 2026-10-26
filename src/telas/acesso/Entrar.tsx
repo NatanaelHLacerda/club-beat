@@ -44,7 +44,7 @@ export function Entrar() {
   return (
     <MolduraEntrada>
       <form className="form-entrada" onSubmit={aoEnviar}>
-        <div className="pilha" style={{ gap: 4 }}><h1>Entrar</h1><p className="muted">Use o e-mail e a senha do CRM de Parcerias.</p></div>
+        <div className="pilha" style={{ gap: 4 }}><h1>Entre na <span className="acento">casa.</span></h1><p className="muted">Use o e-mail e a senha do CRM de Parcerias.</p></div>
         <label className="campo"><span>E-mail</span>
           <input id="email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
