@@ -612,3 +612,12 @@ fieldset.campo { min-inline-size: 0; }
 .trilho-interruptor span { display: block; width: 16px; height: 16px; background: var(--line-campo); transition: transform 0.2s var(--ease), background 0.2s var(--ease); }
 .menu-pessoa-interruptor[aria-checked="true"] .trilho-interruptor { background: var(--oceano); border-color: var(--oceano); }
 .menu-pessoa-interruptor[aria-checked="true"] .trilho-interruptor span { background: var(--dourado); transform: translateX(16px); }
+
+/* ── REQ-038: menu lateral enxuto cabe em 1366 × 768 sem rolar ── */
+.lateral { gap: 18px; padding: 20px 16px; }
+.marca-lateral { gap: 8px; }
+.marca-lateral .logo { width: 124px; }
+.grupo > small { padding-bottom: 4px; }
+.grupo a { padding: 6px 12px; line-height: 1.4; }
+.subitens a { padding: 5px 12px; }
+.grupo a.ativo::before { top: 5px; bottom: 5px; }

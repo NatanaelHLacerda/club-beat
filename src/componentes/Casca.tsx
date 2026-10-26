@@ -24,20 +24,14 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Parcerias', itens: [
     { para: '/parcerias', rotulo: 'Parcerias ativas', icone: 'parcerias' },
     { para: '/calendario', rotulo: 'Calendário', icone: 'calendario' },
+    { para: '/renovacoes', rotulo: 'Renovações', icone: 'renovacoes' },
     { para: '/operacoes', rotulo: 'Operações', icone: 'operacoes', acao: 'ver_operacoes' },
     { para: '/juridico', rotulo: 'Jurídico', icone: 'juridico', acao: 'ver_juridico' },
-    { para: '/renovacoes', rotulo: 'Renovações', icone: 'renovacoes' },
   ] },
+  // REQ-038 — Avisos ficam no sino e no menu da pessoa; Configuração, no menu da pessoa (REQ-037).
   { titulo: 'Acompanhamento', itens: [
     { para: '/painel', rotulo: 'Painel', icone: 'painel' },
     { para: '/prazos', rotulo: 'Prazos', icone: 'prazos' },
-    { para: '/avisos', rotulo: 'Avisos', icone: 'avisos' },
-  ] },
-  { titulo: 'Configuração', itens: [
-    { para: '/config/usuarios', rotulo: 'Usuários', icone: 'usuarios', acao: 'gerir_usuarios' },
-    { para: '/config/regras', rotulo: 'Regras e modelos', icone: 'regras' },
-    { para: '/config/importar', rotulo: 'Importar parceiros', icone: 'importar', acao: 'editar_empresa' },
-    { para: '/config/componentes', rotulo: 'Componentes', icone: 'componentes', acao: 'ver_componentes' },
   ] },
 ]
 
