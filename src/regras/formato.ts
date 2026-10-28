@@ -46,3 +46,16 @@ export function diasDesde(v: string | Date, hoje = new Date()): number {
 export function hojeISO(hoje = new Date()): string {
   return hoje.toLocaleDateString('en-CA', { timeZone: fusoClub })
 }
+
+// "1.234,56" ou "1234,5" → centavos; vazio → null; inválido → undefined.
+export function reaisParaCentavos(v: string): number | null | undefined {
+  const t = v.replace(/^R\$\s*/, '').trim()
+  if (!t) return null
+  if (!/^\d{1,3}(\.\d{3})*(,\d{1,2})?$|^\d+(,\d{1,2})?$/.test(t)) return undefined
+  const [inteiro, dec = ''] = t.replace(/\./g, '').split(',')
+  return Number(inteiro) * 100 + Number(dec.padEnd(2, '0'))
+}
+
+export function centavosParaReais(c: number | null | undefined): string {
+  return c === null || c === undefined ? '' : (c / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}

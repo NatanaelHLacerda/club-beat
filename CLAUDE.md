@@ -49,6 +49,8 @@ src/estilo.css         tokens e estilos
 - Toda tabela nova tem RLS ligada e `grant` explícito (o Supabase local não concede acesso por padrão).
 - Nenhum dado de membro do Club entra no sistema. CPF só no pacote do contrato e nunca em listas.
 - E-mail ainda não tem provedor: toda mensagem vai para a tabela `mensagens` (caixa de saída) e aparece na linha do tempo; envio real fica para quando houver provedor.
+- Pontuação da Triagem 2 (cortes, pontos por opção, faixas de investimento) mora em `parametros` e se edita em Manutenção (`/manutencao`, Direção/admin); `src/regras/classificacao.ts` traz só o padrão de fábrica (REQ-041).
+- Encerrada e Recusada ficam fora das colunas do funil e aparecem em Empresas › Histórico, com motivo (REQ-044).
 - Textos da tela em português, simples, no vocabulário do Club (parceiro, membro, ativação, padrão, contrapartida).
 
 ## Visual

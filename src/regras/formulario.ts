@@ -1,10 +1,12 @@
 // REQ-002 — validação das 5 etapas do formulário público. O banco repete a validação em enviar_ficha.
+import { validarDecisor } from './decisor'
 import { cnpjValido } from './formato'
 
 export type Ficha = {
   cnpj: string; razao_social: string; marca: string; cidade: string; uf: string; bairro: string; segmento: string
   site: string; instagram: string; tempo_atuacao: string; faixa_faturamento: string; faixa_funcionarios: string; unidades: string
   contato_nome: string; contato_cargo: string; contato_whatsapp: string; contato_email: string; quem_decide: string
+  decisor_nome: string; decisor_email: string; decisor_whatsapp: string
   busca: string[]; motivo_parceria: string; objetivo: string; publico: string; parcerias_anteriores: string
   investimento_faixa: string; inicio_desejado: string; duracao: string; datas_interesse: string; indicado_por: string
   aceite_nao_proposta: boolean; consentimento: boolean
@@ -13,7 +15,7 @@ export type Ficha = {
 export const fichaVazia: Ficha = {
   cnpj: '', razao_social: '', marca: '', cidade: '', uf: '', bairro: '', segmento: '', site: '', instagram: '',
   tempo_atuacao: '', faixa_faturamento: '', faixa_funcionarios: '', unidades: '', contato_nome: '', contato_cargo: '',
-  contato_whatsapp: '', contato_email: '', quem_decide: '', busca: [], motivo_parceria: '', objetivo: '', publico: '',
+  contato_whatsapp: '', contato_email: '', quem_decide: '', decisor_nome: '', decisor_email: '', decisor_whatsapp: '', busca: [], motivo_parceria: '', objetivo: '', publico: '',
   parcerias_anteriores: '', investimento_faixa: '', inicio_desejado: '', duracao: '', datas_interesse: '', indicado_por: '',
   aceite_nao_proposta: false, consentimento: false,
 }
@@ -54,6 +56,7 @@ export function validarEtapa(etapa: number, f: Ficha, arquivos: { tamanho: numbe
   if (etapa === 2) {
     exigir(erros, f, ['contato_nome', 'contato_cargo', 'contato_whatsapp', 'contato_email'])
     if (f.contato_email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.contato_email.trim())) erros.contato_email = textosFormulario.email
+    Object.assign(erros, validarDecisor(f))
   }
   if (etapa === 3) {
     exigir(erros, f, ['motivo_parceria', 'objetivo', 'publico'])

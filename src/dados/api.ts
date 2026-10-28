@@ -11,8 +11,9 @@ import type { Conferencia as ConferenciaContrato, Pacote, TipoMinuta } from '../
 import type { Caminho, Renovacao } from '../regras/renovacao'
 import type { Indicadores } from '../regras/indicadores'
 import type { LinhaImportacao } from '../regras/importacao'
+import { chavesPontuacao, lerConfigPontuacao, type ConfigPontuacao } from '../regras/classificacao'
 import type { Entrega, Material, Parceria, ParceriaComEmpresa, PrazoAberto, Relatorio } from './tipos'
-import type { Anexo, Aviso, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
+import type { Anexo, Aviso, DocumentoJuridico, PastaJuridica, CamposEditaveis, DataDoCalendario, Categoria, Conflito, FichaClassificacao, Padrao, Porte, Empresa, Etapa, FiltrosEmpresas, ItemHistorico, Mensagem, ModeloMensagem, Papel, Perfil, TipoAnexo } from './tipos'
 
 export class ErroApi extends Error {}
 
@@ -137,7 +138,8 @@ export async function alterarDisponibilidade(usuario: string, valor: boolean) {
 export async function listarEmpresas(filtros: FiltrosEmpresas = {}): Promise<Empresa[]> {
   let q = supabase.from('empresas').select('*').order('criado_em', { ascending: false })
   if (filtros.recorte === 'recusadas') q = q.eq('etapa', 'recusada')
-  if (filtros.recorte === 'geral') q = q.neq('etapa', 'recusada')
+  if (filtros.recorte === 'geral' || filtros.recorte === 'funil') q = q.not('etapa', 'in', '(recusada,encerrada)')
+  if (filtros.recorte === 'historico') q = q.in('etapa', ['encerrada', 'recusada']).order('etapa_desde', { ascending: false })
   if (filtros.padrao) q = q.eq('padrao_final', filtros.padrao)
   if (filtros.porte) q = q.eq('porte', filtros.porte)
   if (filtros.segmento) q = q.eq('segmento', filtros.segmento)
@@ -221,6 +223,55 @@ export async function listarLogotipos(empresas: string[]): Promise<Record<string
   return Object.fromEntries([...maisRecente].flatMap(([empresa, caminho]) => (porCaminho.has(caminho) ? [[empresa, porCaminho.get(caminho)!]] : [])))
 }
 
+// ── Documentos jurídicos (REQ-043) ────────────────────────────────
+
+export async function listarDocumentosJuridicos(pasta: PastaJuridica): Promise<DocumentoJuridico[]> {
+  const { data, error } = await supabase.from('documentos_juridicos').select('*').eq('pasta', pasta).order('criado_em', { ascending: false })
+  falhou(error, 'Não foi possível carregar os documentos.')
+  return (data ?? []) as DocumentoJuridico[]
+}
+
+export async function enviarDocumentoJuridico(pasta: PastaJuridica, titulo: string, descricao: string, arquivo: File) {
+  if (arquivo.size > limiteAnexo) throw new ErroApi('Arquivo acima de 20 MB.')
+  const { data: sessao } = await supabase.auth.getSession()
+  const caminho = `${pasta}/${crypto.randomUUID()}-${arquivo.name.replace(/[^\w.-]+/g, '_')}`
+  const { error: erroArquivo } = await supabase.storage.from('juridico').upload(caminho, arquivo)
+  falhou(erroArquivo, /mime|type/i.test(erroArquivo?.message ?? '') ? 'Tipo de arquivo não aceito. Use PDF, Word, Excel, ODT ou TXT.' : 'Não foi possível enviar o arquivo.')
+  const { error } = await supabase.from('documentos_juridicos').insert({
+    pasta, titulo: titulo.trim(), descricao: descricao.trim() || null, caminho, nome_arquivo: arquivo.name, tamanho: arquivo.size, enviado_por: sessao.session?.user.id,
+  })
+  if (error) await supabase.storage.from('juridico').remove([caminho])
+  falhou(error, 'Não foi possível registrar o documento.')
+}
+
+export async function urlDocumentoJuridico(caminho: string, nomeArquivo: string): Promise<string> {
+  const { data, error } = await supabase.storage.from('juridico').createSignedUrl(caminho, 300, { download: nomeArquivo })
+  falhou(error, 'Não foi possível abrir o documento.')
+  return data!.signedUrl
+}
+
+export async function apagarDocumentoJuridico(doc: DocumentoJuridico) {
+  const { error } = await supabase.from('documentos_juridicos').delete().eq('id', doc.id)
+  falhou(error, 'Não foi possível apagar o documento.')
+  await supabase.storage.from('juridico').remove([doc.caminho])
+}
+
+// ── Manutenção: pontuação configurável (REQ-041) ──────────────────
+
+export async function lerPontuacao(): Promise<ConfigPontuacao> {
+  const { data, error } = await supabase.from('parametros').select('chave, valor').in('chave', Object.values(chavesPontuacao))
+  falhou(error, 'Não foi possível carregar a configuração de pontuação.')
+  return lerConfigPontuacao((data ?? []) as { chave: string; valor: unknown }[])
+}
+
+// Só quem a regra do banco deixa (direção ou admin); a função valida de novo.
+export async function salvarPontuacao(config: ConfigPontuacao) {
+  const { error } = await supabase.rpc('salvar_config_pontuacao', {
+    p_criterios: config.criterios, p_cortes: config.cortes, p_investimento: config.investimento,
+  })
+  falhou(error, 'Não foi possível salvar a configuração de pontuação.')
+}
+
 // ── Mensagens (REQ-015) ───────────────────────────────────────────
 
 export async function listarModelos(): Promise<ModeloMensagem[]> {
@@ -259,7 +310,8 @@ export async function enviarFicha(ficha: Ficha, arquivos: ArquivoFicha[], segund
     if (error) throw new ErroApi(/mime|type/i.test(error.message) ? 'Tipo de arquivo não aceito. Use PDF, PPT, PPTX, PNG, JPG ou SVG.' : 'Não foi possível enviar o arquivo. Tente de novo.')
     enviados.push({ caminho, nome: arquivo.name, tamanho: arquivo.size, tipo })
   }
-  const dados = { ...ficha, cnpj: ficha.cnpj.replace(/\D/g, ''), segundos, site_empresa_confirmacao: isca }
+  const outra = ficha.quem_decide === 'outra pessoa'
+  const dados = { ...ficha, ...(outra ? {} : { decisor_nome: '', decisor_email: '', decisor_whatsapp: '' }), cnpj: ficha.cnpj.replace(/\D/g, ''), segundos, site_empresa_confirmacao: isca }
   const { error } = await supabase.rpc('enviar_ficha', { dados, arquivos: enviados })
   falhou(error, 'Não foi possível enviar a ficha agora. Tente de novo em instantes.')
 }
@@ -295,7 +347,8 @@ export async function conferirCnpj(cnpj: string): Promise<Conferencia | null> {
 }
 
 export async function cadastrarEmpresa(campos: Partial<CamposEditaveis>): Promise<string> {
-  const { data, error } = await supabase.from('empresas').insert({ ...campos, cnpj: (campos.cnpj ?? '').replace(/\D/g, '') }).select('id').single()
+  const limpo = campos.quem_decide === 'outra pessoa' ? campos : { ...campos, decisor_nome: null, decisor_email: null, decisor_whatsapp: null }
+  const { data, error } = await supabase.from('empresas').insert({ ...limpo, cnpj: (campos.cnpj ?? '').replace(/\D/g, '') }).select('id').single()
   if (error?.code === '23505') throw new ErroApi('Já existe uma empresa com este CNPJ.')
   falhou(error, 'Não foi possível cadastrar a empresa.')
   return (data as { id: string }).id
@@ -622,8 +675,8 @@ export async function decidirRenovacao(parceria: string, caminho: Caminho, avali
   return data as string
 }
 
-export async function encerrarParceria(parceria: string, checklist: Record<string, boolean>) {
-  const { error } = await supabase.rpc('encerrar_parceria', { parceria, checklist })
+export async function encerrarParceria(parceria: string, checklist: Record<string, boolean>, motivo: string) {
+  const { error } = await supabase.rpc('encerrar_parceria', { parceria, checklist, motivo })
   falhou(error, 'Não foi possível encerrar a parceria.')
 }
 

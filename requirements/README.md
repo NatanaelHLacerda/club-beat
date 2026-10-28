@@ -78,6 +78,10 @@ Referência: https://site-beat-life-club.vercel.app/ (código em `~/Documents/am
 | 038 | Menu lateral enxuto (sem Configuração e Avisos) | 037 |
 | 039 | Meu perfil (nome, senha, disponibilidade) | 001, 037 |
 | 040 | Foto de perfil | 018, 039 |
+| 041 | Manutenção / Configurações: pontuação configurável | 006, 038 |
+| 042 | Quem decide a parceria (Triagem 1 → 2) | 002, 003, 005, 006 |
+| 043 | Jurídico: Minutas Contratuais e Regras de Classificação | 011, 041 |
+| 044 | Negociação (abas) e Histórico de encerradas | 004, 008, 013 |
 
 ## Template
 

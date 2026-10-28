@@ -13,6 +13,9 @@ import { Calendario } from './telas/calendario/Calendario'
 import { Operacoes } from './telas/operacoes/Operacoes'
 import { Direcao } from './telas/direcao/Direcao'
 import { Juridico } from './telas/juridico/Juridico'
+import { Historico } from './telas/empresas/Historico'
+import { Negociacao } from './telas/negociacao/Negociacao'
+import { Manutencao } from './telas/manutencao/Manutencao'
 import { Parcerias } from './telas/parcerias/Parcerias'
 import { Renovacoes } from './telas/renovacoes/Renovacoes'
 import { Prazos } from './telas/prazos/Prazos'
@@ -35,10 +38,12 @@ export function App() {
       <Route element={<Casca />}>
         <Route path="/" element={<Navigate to="/inicio" replace />} />
         <Route path="/inicio" element={<Inicio />} />
-        <Route path="/funil" element={<TelaEmpresas key="funil" />} />
+        <Route path="/funil" element={<TelaEmpresas key="funil" recorte="funil" />} />
+        <Route path="/negociacao" element={<Negociacao />} />
         <Route path="/fila" element={<MinhaFila />} />
         <Route path="/empresas" element={<TelaEmpresas key="empresas" forcarLista recorte="geral" />} />
         <Route path="/empresas/recusadas" element={<TelaEmpresas key="recusadas" forcarLista recorte="recusadas" />} />
+        <Route path="/empresas/historico" element={<Historico />} />
         <Route path="/empresas/nova" element={<NovaEmpresa />} />
         <Route path="/empresas/:id" element={<Ficha />} />
         <Route path="/parcerias" element={<Parcerias />} />
@@ -46,6 +51,7 @@ export function App() {
         <Route path="/operacoes" element={<Operacoes />} />
         <Route path="/direcao" element={<Direcao />} />
         <Route path="/juridico" element={<Juridico />} />
+        <Route path="/manutencao" element={<Manutencao />} />
         <Route path="/renovacoes" element={<Renovacoes />} />
         <Route path="/painel" element={<Painel />} />
         <Route path="/avisos" element={<Avisos />} />

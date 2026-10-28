@@ -15,9 +15,11 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Funil', itens: [
     { para: '/inicio', rotulo: 'Início', icone: 'inicio' },
     { para: '/funil', rotulo: 'Funil', icone: 'funil' },
+    { para: '/negociacao', rotulo: 'Negociação', icone: 'mensagem' },
     { para: '/empresas', rotulo: 'Empresas', icone: 'empresas', subitens: [
       { para: '/empresas', rotulo: 'Geral' },
       { para: '/empresas/recusadas', rotulo: 'Recusadas' },
+      { para: '/empresas/historico', rotulo: 'Histórico / Encerradas' },
     ] },
     { para: '/fila', rotulo: 'Minha fila', icone: 'fila', acao: 'conduzir' },
     { para: '/direcao', rotulo: 'Direção', icone: 'direcao' },
@@ -33,6 +35,10 @@ const grupos: { titulo: string; itens: Item[] }[] = [
   { titulo: 'Acompanhamento', itens: [
     { para: '/painel', rotulo: 'Painel', icone: 'painel' },
     { para: '/prazos', rotulo: 'Prazos', icone: 'prazos' },
+  ] },
+  // REQ-041 — Manutenção: a Direção (e o administrador) ajusta pontuação e faixas sem mexer em código.
+  { titulo: 'Sistema', itens: [
+    { para: '/manutencao', rotulo: 'Manutenção / Configurações', icone: 'regras', acao: 'manter_sistema' },
   ] },
 ]
 

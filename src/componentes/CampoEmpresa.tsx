@@ -64,7 +64,7 @@ export function CampoEmpresa({ campo, valor, mudar, obrigatorio, erro, ajuda }: 
   }
   return (
     <label className={classe}>{cabeca}
-      <input id={id} type={campo === 'unidades' ? 'number' : campo === 'contato_email' ? 'email' : 'text'} min={campo === 'unidades' ? 0 : undefined}
+      <input id={id} type={campo === 'unidades' ? 'number' : campo === 'contato_email' || campo === 'decisor_email' ? 'email' : 'text'} min={campo === 'unidades' ? 0 : undefined}
         value={(valor as string | number | null) ?? ''}
         onChange={(e) => mudar(campo === 'unidades' ? (e.target.value === '' ? null : Number(e.target.value)) : e.target.value || null)} />{rodape}
     </label>

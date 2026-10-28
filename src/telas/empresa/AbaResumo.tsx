@@ -3,6 +3,7 @@ import { CampoEmpresa, valorLegivel } from '../../componentes/CampoEmpresa'
 import { atualizarEmpresa } from '../../dados/api'
 import { blocosFicha, rotuloCampo } from '../../dados/campos'
 import type { CamposEditaveis, Empresa } from '../../dados/tipos'
+import { camposDecisor, decideOutraPessoaSim, validarDecisor } from '../../regras/decisor'
 import { cnpjValido, formatarCnpj, formatarDataHora, soDigitos } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
 import { useSessao } from '../../sessao'
@@ -18,6 +19,8 @@ export function AbaResumo({ empresa, atualizar }: PropsAba) {
   async function salvar() {
     setErro('')
     if (rascunho.cnpj !== undefined && !cnpjValido(rascunho.cnpj ?? '')) { setErro('CNPJ inválido'); return }
+    const problemas = validarDecisor({ ...empresa, ...rascunho }, false)
+    if (Object.keys(problemas).length) { setErro('Se outra pessoa decide, informe nome, e-mail e WhatsApp válidos do decisor.'); return }
     const campos = { ...rascunho } as Partial<CamposEditaveis>
     if (campos.cnpj) campos.cnpj = soDigitos(campos.cnpj)
     try {
@@ -29,8 +32,10 @@ export function AbaResumo({ empresa, atualizar }: PropsAba) {
 
   return (
     <div className="pilha">
-      {blocosFicha.map((b) => {
-        const emEdicao = editando === b.titulo
+      {blocosFicha.map((bloco) => {
+        const emEdicao = editando === bloco.titulo
+        const outra = decideOutraPessoaSim({ quem_decide: 'quem_decide' in rascunho && emEdicao ? rascunho.quem_decide : empresa.quem_decide })
+        const b = { ...bloco, campos: bloco.campos.filter((c) => outra || !(camposDecisor as readonly string[]).includes(c)) }
         return (
           <section key={b.titulo} className="cartao">
             <div className="linha entre">

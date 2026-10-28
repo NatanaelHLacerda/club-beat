@@ -23,6 +23,7 @@ export const itensEncerramento = [
 export const textosRenovacao = {
   direcao: 'Ouro e Master: a Direção decide a renovação.',
   encerramento: 'Marque todos os itens do encerramento.',
+  semMotivoEncerramento: 'Informe o motivo do encerramento.',
 } as const
 
 export function diasParaOFim(fim: string, hoje: string): number {
@@ -42,3 +43,6 @@ export const quemDecideRenovacao = (padrao: Padrao | null, novo?: Padrao | null)
   padrao === 'ouro' || padrao === 'master' || novo === 'ouro' || novo === 'master' ? 'direcao' : 'gerente'
 
 export const pendenciasEncerramento = (marcas: Record<string, boolean>) => itensEncerramento.filter((i) => !marcas[i.id]).map((i) => i.rotulo)
+
+// REQ-044 — o motivo do encerramento é digitado por quem encerra, nunca inventado pelo sistema.
+export const motivoEncerramentoValido = (motivo: string) => motivo.trim().length > 0

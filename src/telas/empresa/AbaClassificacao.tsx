@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { PadraoTag } from '../../componentes/Rotulos'
-import { concluirTriagem2, conferirConflito, encerrarComA5, listarModelos, salvarClassificacao } from '../../dados/api'
+import { concluirTriagem2, conferirConflito, encerrarComA5, lerPontuacao, listarModelos, salvarClassificacao } from '../../dados/api'
 import { faixasFaturamento } from '../../dados/campos'
 import { rotuloPorte, type Conflito, type FichaClassificacao } from '../../dados/tipos'
 import {
-  avaliarAderencia, classificarPorte, criteriosAderencia, criteriosPontos, padraoFinal, pontosSugeridos, textosClassificacao,
+  avaliarAderencia, classificarPorte, configPontuacaoPadrao, criteriosAderencia, faixasDePontos, padraoFinal, pontosSugeridos,
+  rotuloFaixaInvestimento, textosClassificacao,
   type CriterioPontos, type FaixaInvestimento, type RespostaAderencia,
 } from '../../regras/classificacao'
 import { formatarData, formatarDataHora } from '../../regras/formato'
@@ -12,6 +13,7 @@ import { preencherModelo } from '../../regras/mensagens'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
 import { useSessao } from '../../sessao'
+import { ResumoTriagem1 } from './ResumoTriagem1'
 import type { PropsAba } from './Ficha'
 
 const rotuloResposta: Record<RespostaAderencia, string> = { sim: 'Sim', em_parte: 'Em parte', nao: 'Não' }
@@ -19,6 +21,8 @@ const rotuloResposta: Record<RespostaAderencia, string> = { sim: 'Sim', em_parte
 export function AbaClassificacao({ empresa, atualizar }: PropsAba) {
   const { perfil } = useSessao()
   const modelos = useConsulta(listarModelos)
+  const pontuacao = useConsulta(lerPontuacao)
+  const config = pontuacao.dado ?? configPontuacaoPadrao
   const [ficha, setFicha] = useState<FichaClassificacao>(() => {
     const salva = empresa.classificacao ?? {}
     const porte = classificarPorte({ faturamento: empresa.faixa_faturamento, funcionarios: empresa.faixa_funcionarios, receitaPorte: empresa.receita_porte }).porte
@@ -36,7 +40,7 @@ export function AbaClassificacao({ empresa, atualizar }: PropsAba) {
     receitaPorte: empresa.receita_porte, grupoFaixa: ficha.grupo ? ficha.grupo_faixa : null,
   }), [empresa, ficha.industria, ficha.grupo, ficha.grupo_faixa])
   const aderencia = avaliarAderencia(ficha.aderencia ?? {})
-  const padrao = padraoFinal(ficha.pontos ?? {}, ficha.faixa_investimento ?? null)
+  const padrao = padraoFinal(ficha.pontos ?? {}, ficha.faixa_investimento ?? null, config)
 
   useEffect(() => {
     if (!empresa.categoria) return
@@ -84,6 +88,8 @@ export function AbaClassificacao({ empresa, atualizar }: PropsAba) {
       {empresa.triagem2_concluida_em && <div className="aviso">Triagem 2 concluída em {formatarDataHora(empresa.triagem2_concluida_em)}.</div>}
       {!editavel && !empresa.triagem2_concluida_em && <div className="aviso">A classificação é feita com a empresa em Triagem 2.</div>}
       {conflito && <div className="aviso perigo" role="alert">Conflito de exclusividade com {conflito.marca} até {formatarData(conflito.fim)}.</div>}
+
+      <ResumoTriagem1 empresa={empresa} />
 
       <div className="grade-2">
         <section className="cartao">
@@ -134,28 +140,26 @@ export function AbaClassificacao({ empresa, atualizar }: PropsAba) {
           <label className="campo" style={{ minWidth: 220 }}><span>Faixa de investimento que a empresa aceita</span>
             <select id="c-faixa" disabled={!editavel} value={ficha.faixa_investimento ?? ''} onChange={(e) => mudarFaixa((e.target.value || null) as FaixaInvestimento | null)}>
               <option value="">Escolha</option>
-              <option value="bronze">Faixa Bronze (R$ …)</option>
-              <option value="prata">Faixa Prata (R$ …)</option>
-              <option value="ouro">Faixa Ouro (a partir de R$ …)</option>
+              {(['bronze', 'prata', 'ouro'] as const).map((f) => <option key={f} value={f}>{rotuloFaixaInvestimento(f, config.investimento)}</option>)}
             </select>
           </label>
         </div>
         <div className="tabela-rolagem">
           <table>
-            <thead><tr><th>Critério</th><th>1 ponto</th><th>2 pontos</th><th>3 pontos</th></tr></thead>
+            <thead><tr><th>Critério</th><th>Opção 1</th><th>Opção 2</th><th>Opção 3</th></tr></thead>
             <tbody>
-              {criteriosPontos.map((c) => {
+              {config.criterios.map((c) => {
                 const fixo = c.id === 'porte'
                 const valor = fixo ? pontosPorte : ficha.pontos?.[c.id]
                 return (
                   <tr key={c.id}>
                     <td>{c.rotulo}{fixo && <small className="muted"> (do porte)</small>}</td>
                     {c.opcoes.map((o, i) => (
-                      <td key={o}>
+                      <td key={o.rotulo}>
                         <label className="marcar">
                           <input type="radio" name={`pt-${c.id}`} disabled={!editavel || fixo} checked={valor === i + 1}
                             onChange={() => mudarFicha({ ...ficha, pontos: { ...ficha.pontos, [c.id as CriterioPontos]: (i + 1) as 1 | 2 | 3 } })} />
-                          <span className="pequeno">{o}</span>
+                          <span className="pequeno">{o.rotulo} <small className="muted">({o.pontos} {o.pontos === 1 ? 'ponto' : 'pontos'})</small></span>
                         </label>
                       </td>
                     ))}
@@ -165,6 +169,7 @@ export function AbaClassificacao({ empresa, atualizar }: PropsAba) {
             </tbody>
           </table>
         </div>
+        <p className="muted pequeno">{faixasDePontos(config).map((f) => `${f.padrao[0].toUpperCase()}${f.padrao.slice(1)} ${f.de} a ${f.ate}`).join(' · ')}</p>
         <div className="numeros">
           <div className="numero"><small>Soma</small><b>{padrao.pontos || '—'}</b></div>
           <div className="numero"><small>Padrão pelos pontos</small><b><PadraoTag padrao={padrao.porPontos} /></b></div>

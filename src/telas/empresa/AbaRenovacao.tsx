@@ -6,7 +6,8 @@ import { rotuloPadrao, type Padrao } from '../../dados/tipos'
 import { contratadoFeito, notaMedia } from '../../regras/acompanhamento'
 import { formatarData, formatarDataHora, hojeISO } from '../../regras/formato'
 import {
-  diasParaOFim, itensEncerramento, pendenciasEncerramento, quemDecideRenovacao, rotuloCaminho, textosRenovacao, type Caminho, type Renovacao,
+  diasParaOFim, itensEncerramento, motivoEncerramentoValido, pendenciasEncerramento, quemDecideRenovacao, rotuloCaminho, textosRenovacao,
+  type Caminho, type Renovacao,
 } from '../../regras/renovacao'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
@@ -25,6 +26,7 @@ export function AbaRenovacao({ empresa, usuarios, atualizar, abrirAba }: PropsAb
   const [caminho, setCaminho] = useState<Caminho | ''>(r.caminho ?? '')
   const [novoPadrao, setNovoPadrao] = useState<Padrao | ''>((r.novo_padrao as Padrao | undefined) ?? '')
   const [encerramento, setEncerramento] = useState<Record<string, boolean>>(r.encerramento ?? {})
+  const [motivoEncerramento, setMotivoEncerramento] = useState('')
   const [erro, setErro] = useState('')
   const [aviso, setAviso] = useState('')
 
@@ -105,10 +107,14 @@ export function AbaRenovacao({ empresa, usuarios, atualizar, abrirAba }: PropsAb
           {itensEncerramento.map((i) => (
             <label key={i.id} className="marcar"><input type="checkbox" checked={Boolean(encerramento[i.id])} onChange={(e) => setEncerramento({ ...encerramento, [i.id]: e.target.checked })} /><span>{i.rotulo}</span></label>
           ))}
+          <label className="campo"><span>Motivo do encerramento</span>
+            <textarea value={motivoEncerramento} onChange={(e) => setMotivoEncerramento(e.target.value)} placeholder="Por que a parceria está terminando?" />
+          </label>
           <p className="muted pequeno">Ao encerrar, a exclusividade da categoria fica livre e a empresa vai para Encerrada.</p>
           <div><button className="botao perigo" onClick={() => {
             if (pendenciasEncerramento(encerramento).length) { setErro(textosRenovacao.encerramento); return }
-            void agir(() => encerrarParceria(p.id, encerramento), 'Parceria encerrada.')
+            if (!motivoEncerramentoValido(motivoEncerramento)) { setErro(textosRenovacao.semMotivoEncerramento); return }
+            void agir(() => encerrarParceria(p.id, encerramento, motivoEncerramento), 'Parceria encerrada.')
           }}>Encerrar parceria</button></div>
         </section>
       )}

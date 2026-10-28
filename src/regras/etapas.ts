@@ -7,6 +7,11 @@ export const etapasDoFunil: Etapa[] = [
   'recebida', 'triagem1', 'triagem2', 'reuniao', 'proposta', 'direcao', 'contrato', 'ativa', 'renovacao', 'encerrada',
 ]
 export const saidas: Etapa[] = ['espera', 'recusada']
+// REQ-044 — Encerrada (parceria que terminou) e Recusada (lead perdido) saem das colunas do funil e vão para o Histórico.
+export const etapasArquivadas: Etapa[] = ['encerrada', 'recusada']
+export const estaArquivada = (e: Etapa) => etapasArquivadas.includes(e)
+export const colunasDoFunil: Etapa[] = etapasDoFunil.filter((e) => !estaArquivada(e))
+export const situacaoArquivada = (e: Etapa): 'Encerrada' | 'Perdida' | null => (e === 'encerrada' ? 'Encerrada' : e === 'recusada' ? 'Perdida' : null)
 export const todasEtapas: Etapa[] = [...etapasDoFunil, ...saidas]
 
 export const rotuloEtapa: Record<Etapa, string> = {
@@ -30,6 +35,7 @@ export const mensagensEtapa = {
   ativa: 'A parceria só fica ativa ao registrar a assinatura do contrato.',
   direcao: 'O caso vai para a Direção pela porta da Direção, na proposta.',
   saidaDepoisDeAtiva: 'Parceria ativa não sai do funil por aqui: use a renovação ou o encerramento.',
+  encerrada: 'O encerramento é registrado na aba Renovação, com o motivo — não por aqui.',
 } as const
 
 export const exigeMotivo = (para: Etapa) => saidas.includes(para)
@@ -39,6 +45,8 @@ export const exigeRetomar = (para: Etapa) => para === 'espera'
 export function bloqueioDeMudanca(de: Etapa, para: Etapa): string | null {
   if (para === 'ativa') return mensagensEtapa.ativa
   if (para === 'direcao') return mensagensEtapa.direcao
+  // REQ-044 — Encerrada só pela aba Renovação (exige motivo digitado); nunca por arrastar o card.
+  if (para === 'encerrada') return mensagensEtapa.encerrada
   if (saidas.includes(para) && ['ativa', 'renovacao', 'encerrada'].includes(de)) return mensagensEtapa.saidaDepoisDeAtiva
   return null
 }

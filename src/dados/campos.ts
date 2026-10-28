@@ -36,7 +36,7 @@ export const rotuloCampo: Partial<Record<keyof Empresa | string, string>> = {
   segmento: 'Segmento', site: 'Site', instagram: 'Instagram', tempo_atuacao: 'Tempo de atuação (anos)',
   faixa_faturamento: 'Faturamento anual aproximado', faixa_funcionarios: 'Número de funcionários', unidades: 'Unidades ou lojas',
   contato_nome: 'Nome do responsável', contato_cargo: 'Cargo', contato_whatsapp: 'WhatsApp', contato_email: 'E-mail',
-  quem_decide: 'Quem decide a parceria', busca: 'O que a empresa busca', motivo_parceria: 'Por que busca a parceria com o Club',
+  quem_decide: 'Quem decide a parceria?', decisor_nome: 'Nome completo do decisor', decisor_email: 'E-mail do decisor', decisor_whatsapp: 'Telefone / WhatsApp do decisor', busca: 'O que a empresa busca', motivo_parceria: 'Por que busca a parceria com o Club',
   objetivo: 'Objetivo principal', publico: 'Público da marca', parcerias_anteriores: 'Parcerias ou patrocínios anteriores',
   investimento_faixa: 'Investimento previsto', inicio_desejado: 'Quando quer começar', duracao: 'Duração pretendida',
   datas_interesse: 'Datas de interesse', origem: 'Origem', indicado_por: 'Indicada por',
@@ -49,7 +49,7 @@ export const rotuloCampo: Partial<Record<keyof Empresa | string, string>> = {
 
 export const blocosFicha: { titulo: string; campos: (keyof Empresa)[] }[] = [
   { titulo: 'Sobre a empresa', campos: ['cnpj', 'razao_social', 'marca', 'cidade', 'uf', 'bairro', 'segmento', 'site', 'instagram', 'tempo_atuacao', 'faixa_faturamento', 'faixa_funcionarios', 'unidades'] },
-  { titulo: 'Responsável', campos: ['contato_nome', 'contato_cargo', 'contato_whatsapp', 'contato_email', 'quem_decide'] },
+  { titulo: 'Responsável', campos: ['contato_nome', 'contato_cargo', 'contato_whatsapp', 'contato_email', 'quem_decide', 'decisor_nome', 'decisor_email', 'decisor_whatsapp'] },
   { titulo: 'Sobre a parceria', campos: ['busca', 'motivo_parceria', 'objetivo', 'publico', 'parcerias_anteriores', 'investimento_faixa', 'inicio_desejado', 'duracao', 'datas_interesse', 'origem', 'indicado_por'] },
 ]
 

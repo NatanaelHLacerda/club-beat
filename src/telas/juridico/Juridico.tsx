@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SemAcesso, Topo } from '../../componentes/Casca'
 import { NomeEmpresa, PadraoTag } from '../../componentes/Rotulos'
 import { Carregando, CartaoNumero, DataComIcone, Pill, Tabela } from '../../componentes/ui'
 import { listarParaJuridico } from '../../dados/api'
 import type { Empresa } from '../../dados/tipos'
+import { rotuloPasta } from '../../dados/tipos'
+import { PastaDocumentos } from './PastaDocumentos'
 import { formatarData, hojeISO } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
@@ -20,6 +23,7 @@ export function Juridico() {
   const { perfil } = useSessao()
   const navegar = useNavigate()
   const lista = useConsulta(listarParaJuridico)
+  const [aba, setAba] = useState<'contratos' | 'minutas' | 'diretrizes'>('contratos')
   if (!pode(perfil, 'ver_juridico')) return (<><Topo titulo="Jurídico" /><SemAcesso /></>)
   const hoje = hojeISO()
   const casos = lista.dado ?? []
@@ -27,6 +31,13 @@ export function Juridico() {
   return (
     <>
       <Topo eyebrow="Contratos" titulo="Jurídico" />
+      <div className="alternar" role="group" aria-label="Pastas do Jurídico">
+        <button className={aba === 'contratos' ? 'ativo' : ''} aria-pressed={aba === 'contratos'} onClick={() => setAba('contratos')}>Contratos em andamento</button>
+        <button className={aba === 'minutas' ? 'ativo' : ''} aria-pressed={aba === 'minutas'} onClick={() => setAba('minutas')}>{rotuloPasta.minutas}</button>
+        <button className={aba === 'diretrizes' ? 'ativo' : ''} aria-pressed={aba === 'diretrizes'} onClick={() => setAba('diretrizes')}>{rotuloPasta.diretrizes}</button>
+      </div>
+      {aba !== 'contratos' && <PastaDocumentos pasta={aba} />}
+      {aba === 'contratos' && <>
       <div className="numeros">
         <CartaoNumero rotulo="Em andamento" icone="juridico" valor={lista.dado ? casos.length : '—'} />
         <CartaoNumero rotulo="Minuta em preparo" icone="regras" valor={lista.dado ? casos.filter((e) => e.contrato?.enviado_juridico_em && !e.contrato?.pronto_em).length : '—'} />
@@ -46,6 +57,7 @@ export function Juridico() {
           ]}
           acoes={[{ rotulo: 'Abrir contrato', icone: 'juridico', aoClicar: (e) => navegar(`/empresas/${e.id}`) }]} />
       )}
+      </>}
     </>
   )
 }

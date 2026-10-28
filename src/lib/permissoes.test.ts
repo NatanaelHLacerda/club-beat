@@ -23,6 +23,19 @@ describe('permissões (REQ-001)', () => {
     expect(pode(perfil('gerente', true), 'gerir_usuarios')).toBe(true)
     expect(pode(perfil('direcao'), 'gerir_usuarios')).toBe(false)
   })
+  it('Manutenção é da Direção ou do administrador', () => {
+    expect(pode(perfil('direcao'), 'manter_sistema')).toBe(true)
+    expect(pode(perfil('gerente', true), 'manter_sistema')).toBe(true)
+    expect(pode(perfil('gerente'), 'manter_sistema')).toBe(false)
+    expect(pode(perfil('juridico'), 'manter_sistema')).toBe(false)
+  })
+  it('só Jurídico e Direção mexem nos documentos jurídicos; Gerente só lê', () => {
+    expect(pode(perfil('juridico'), 'gerir_documentos_juridicos')).toBe(true)
+    expect(pode(perfil('direcao'), 'gerir_documentos_juridicos')).toBe(true)
+    expect(pode(perfil('gerente'), 'gerir_documentos_juridicos')).toBe(false)
+    expect(pode(perfil('gerente'), 'ver_juridico')).toBe(true)
+    expect(pode(perfil('financeiro'), 'ver_juridico')).toBe(false)
+  })
   it('usuário inativo ou ausente não pode nada', () => {
     expect(pode({ papel: 'direcao', admin: true, ativo: false }, 'ver_crm')).toBe(false)
     expect(pode(null, 'ver_crm')).toBe(false)

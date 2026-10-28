@@ -7,7 +7,7 @@ import { TrocaEtapa } from '../../componentes/TrocaEtapa'
 import { Avatar, BarraBusca, Carregando, Icone, PainelLateral, Pill, Tabela, Vazio } from '../../componentes/ui'
 import { listarEmpresas, listarPrazos, listarUsuarios, moverEtapa } from '../../dados/api'
 import type { Empresa, FiltrosEmpresas } from '../../dados/tipos'
-import { bloqueioDeMudanca, etapasDoFunil, exigeMotivo, grupoDaEtapa, rotuloEtapa, saidas, type Etapa } from '../../regras/etapas'
+import { bloqueioDeMudanca, colunasDoFunil, exigeMotivo, grupoDaEtapa, rotuloEtapa, type Etapa } from '../../regras/etapas'
 import { formatarCnpj, formatarData } from '../../regras/formato'
 import { rotuloSituacaoPrazo } from '../../regras/prazos'
 import { pode } from '../../lib/permissoes'
@@ -54,7 +54,7 @@ export function TelaEmpresas({ forcarLista = false, recorte }: { forcarLista?: b
     try { await moverEtapa(e.id, para); setAviso(''); await empresas.recarregar() } catch (err) { setAviso((err as Error).message) }
   }
 
-  const colunas: Etapa[] = comSaidas ? [...etapasDoFunil, ...saidas] : etapasDoFunil
+  const colunas: Etapa[] = comSaidas ? [...colunasDoFunil, 'espera'] : colunasDoFunil
 
   return (
     <>
@@ -74,7 +74,7 @@ export function TelaEmpresas({ forcarLista = false, recorte }: { forcarLista?: b
 
       {empresas.carregando && !empresas.dado ? <Carregando linhas={4} /> : modo === 'quadro' ? (
         <>
-          <label className="marcar pequeno"><input type="checkbox" checked={comSaidas} onChange={(e) => setComSaidas(e.target.checked)} /><span>Mostrar saídas (Em espera e Recusada)</span></label>
+          <label className="marcar pequeno"><input type="checkbox" checked={comSaidas} onChange={(e) => setComSaidas(e.target.checked)} /><span>Mostrar Em espera</span></label>
           <div className="funil-rolagem">
             <div className="funil">
               {colunas.map((etapa) => {

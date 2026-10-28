@@ -18,6 +18,8 @@ export type Acao =
   | 'ver_juridico'
   | 'registrar_entregas'
   | 'ver_componentes'
+  | 'manter_sistema'
+  | 'gerir_documentos_juridicos'
 
 const matriz: Record<Acao, Papel[]> = {
   ver_crm: ['primeira_pessoa', 'gerente', 'direcao', 'juridico', 'financeiro', 'operacoes'],
@@ -36,10 +38,13 @@ const matriz: Record<Acao, Papel[]> = {
   ver_juridico: ['juridico', 'gerente', 'direcao'],
   registrar_entregas: ['primeira_pessoa', 'gerente', 'operacoes'],
   ver_componentes: [],
+  manter_sistema: ['direcao'],
+  gerir_documentos_juridicos: ['juridico', 'direcao'],
 }
 
 export function pode(perfil: Pick<Perfil, 'papel' | 'admin' | 'ativo'> | null, acao: Acao): boolean {
   if (!perfil || !perfil.ativo) return false
   if (acao === 'gerir_usuarios' || acao === 'ver_componentes') return perfil.admin
+  if (acao === 'manter_sistema' && perfil.admin) return true // Direção ou administrador (igual ao banco)
   return matriz[acao].includes(perfil.papel)
 }

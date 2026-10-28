@@ -1,4 +1,6 @@
 // REQ-006 — porte, pontos, padrão e aderência (documento-base cap. 6 e 7).
+// REQ-041 — faixas, notas e pontos da ficha vêm da configuração (tela Manutenção); os valores daqui são o padrão de fábrica.
+import { formatarDinheiro } from './formato'
 import type { Padrao, Porte } from '../dados/tipos'
 
 const rotulosPorte: Record<Porte, string> = { pequena: 'Pequena', media1: 'Média I', media2: 'Média II', grande: 'Grande' }
@@ -57,17 +59,39 @@ export function classificarPorte(e: EntradaPorte): ResultadoPorte {
 
 // ── Pontos e padrão ──────────────────────────────────────────────
 
-export const criteriosPontos = [
-  { id: 'porte', rotulo: 'Porte', opcoes: ['Pequena', 'Média I', 'Média II ou grande'] },
-  { id: 'investimento', rotulo: 'Investimento proposto', opcoes: ['Faixa Bronze', 'Faixa Prata', 'Faixa Ouro'] },
-  { id: 'duracao', rotulo: 'Duração pretendida', opcoes: ['Até 6 meses', '12 meses', 'Mais de 12 meses'] },
-  { id: 'marca', rotulo: 'Força da marca', opcoes: ['Conhecida no bairro ou na cidade', 'Conhecida na região', 'Conhecida em todo o país'] },
-  { id: 'contrapartidas', rotulo: 'Profundidade das contrapartidas', opcoes: ['Telas e poucas ativações', 'Ativações e eventos do Club', 'Calendário próprio ou exclusividade'] },
-] as const
-
-export type CriterioPontos = (typeof criteriosPontos)[number]['id']
+export const idsCriterios = ['porte', 'investimento', 'duracao', 'marca', 'contrapartidas'] as const
+export type CriterioPontos = (typeof idsCriterios)[number]
+// Cada critério guarda a OPÇÃO escolhida (1, 2 ou 3); quanto ela vale em pontos vem da configuração.
 export type Pontos = Partial<Record<CriterioPontos, 1 | 2 | 3>>
 export type FaixaInvestimento = 'bronze' | 'prata' | 'ouro'
+
+export type OpcaoPontos = { rotulo: string; pontos: number }
+export type CriterioConfig = { id: CriterioPontos; rotulo: string; opcoes: OpcaoPontos[] }
+// Soma < minimo: sem padrão. Até bronze_ate: Bronze. Até prata_ate: Prata. Acima: Ouro (Master nunca sai dos pontos).
+export type CortesPadrao = { minimo: number; bronze_ate: number; prata_ate: number }
+export type FaixaValor = { de: number | null; ate: number | null }
+// Valores em centavos; null = a Direção ainda não definiu (aparece "R$ …").
+export type FaixasInvestimento = { bronze: FaixaValor; prata: FaixaValor; ouro: { de: number | null } }
+export type ConfigPontuacao = { criterios: CriterioConfig[]; cortes: CortesPadrao; investimento: FaixasInvestimento }
+
+export const limitePontosPorOpcao = 10
+
+export const chavesPontuacao = { criterios: 'pontuacao_criterios', cortes: 'pontuacao_cortes', investimento: 'pontuacao_investimento' } as const
+
+const opcoes = (...itens: [string, number][]): OpcaoPontos[] => itens.map(([rotulo, pontos]) => ({ rotulo, pontos }))
+
+// Padrão de fábrica: idêntico às regras do documento-base (cap. 7). Mesmos valores do seed das migrations.
+export const configPontuacaoPadrao: ConfigPontuacao = {
+  criterios: [
+    { id: 'porte', rotulo: 'Porte', opcoes: opcoes(['Pequena', 1], ['Média I', 2], ['Média II ou grande', 3]) },
+    { id: 'investimento', rotulo: 'Investimento proposto', opcoes: opcoes(['Faixa Bronze', 1], ['Faixa Prata', 2], ['Faixa Ouro', 3]) },
+    { id: 'duracao', rotulo: 'Duração pretendida', opcoes: opcoes(['Até 6 meses', 1], ['12 meses', 2], ['Mais de 12 meses', 3]) },
+    { id: 'marca', rotulo: 'Força da marca', opcoes: opcoes(['Conhecida no bairro ou na cidade', 1], ['Conhecida na região', 2], ['Conhecida em todo o país', 3]) },
+    { id: 'contrapartidas', rotulo: 'Profundidade das contrapartidas', opcoes: opcoes(['Telas e poucas ativações', 1], ['Ativações e eventos do Club', 2], ['Calendário próprio ou exclusividade', 3]) },
+  ],
+  cortes: { minimo: 5, bronze_ate: 7, prata_ate: 11 },
+  investimento: { bronze: { de: null, ate: null }, prata: { de: null, ate: null }, ouro: { de: null } },
+}
 
 const ordemPadrao: Padrao[] = ['bronze', 'prata', 'ouro', 'master']
 
@@ -81,24 +105,132 @@ export function pontosSugeridos(porte: Porte | null, faixa: FaixaInvestimento | 
   return p
 }
 
-export const somaPontos = (p: Pontos) => criteriosPontos.reduce((s, c) => s + (p[c.id] ?? 0), 0)
-export const pontosCompletos = (p: Pontos) => criteriosPontos.every((c) => p[c.id])
+// Pontos que a opção escolhida vale. Sem escolha: 0.
+export function pontosDaOpcao(criterio: CriterioConfig, escolha: number | undefined): number {
+  return escolha ? (criterio.opcoes[escolha - 1]?.pontos ?? 0) : 0
+}
 
-export function padraoPorPontos(soma: number): Padrao | null {
-  if (soma < 5) return null
-  if (soma <= 7) return 'bronze'
-  if (soma <= 11) return 'prata'
+export const somaPontos = (p: Pontos, criterios: CriterioConfig[] = configPontuacaoPadrao.criterios) =>
+  criterios.reduce((s, c) => s + pontosDaOpcao(c, p[c.id]), 0)
+export const pontosCompletos = (p: Pontos, criterios: CriterioConfig[] = configPontuacaoPadrao.criterios) => criterios.every((c) => p[c.id])
+
+export const pontuacaoMinima = (criterios: CriterioConfig[]) => criterios.reduce((s, c) => s + Math.min(...c.opcoes.map((o) => o.pontos)), 0)
+export const pontuacaoMaxima = (criterios: CriterioConfig[]) => criterios.reduce((s, c) => s + Math.max(...c.opcoes.map((o) => o.pontos)), 0)
+
+export function padraoPorPontos(soma: number, cortes: CortesPadrao = configPontuacaoPadrao.cortes): Padrao | null {
+  if (soma < cortes.minimo) return null
+  if (soma <= cortes.bronze_ate) return 'bronze'
+  if (soma <= cortes.prata_ate) return 'prata'
   return 'ouro'
+}
+
+export type FaixaDePontos = { padrao: 'bronze' | 'prata' | 'ouro'; de: number; ate: number }
+
+// As três faixas como intervalos fechados, para mostrar "Bronze 5 a 7 · Prata 8 a 11 · Ouro 12 a 15".
+export function faixasDePontos(config: ConfigPontuacao = configPontuacaoPadrao): FaixaDePontos[] {
+  const { minimo, bronze_ate, prata_ate } = config.cortes
+  return [
+    { padrao: 'bronze', de: minimo, ate: bronze_ate },
+    { padrao: 'prata', de: bronze_ate + 1, ate: prata_ate },
+    { padrao: 'ouro', de: prata_ate + 1, ate: pontuacaoMaxima(config.criterios) },
+  ]
 }
 
 export type ResultadoPadrao = { pontos: number; porPontos: Padrao | null; final: Padrao | null; limitadoPeloInvestimento: boolean }
 
-export function padraoFinal(p: Pontos, faixa: FaixaInvestimento | null): ResultadoPadrao {
-  const pontos = somaPontos(p)
-  const porPontos = pontosCompletos(p) ? padraoPorPontos(pontos) : null
+export function padraoFinal(p: Pontos, faixa: FaixaInvestimento | null, config: ConfigPontuacao = configPontuacaoPadrao): ResultadoPadrao {
+  const pontos = somaPontos(p, config.criterios)
+  const porPontos = pontosCompletos(p, config.criterios) ? padraoPorPontos(pontos, config.cortes) : null
   if (!porPontos || !faixa) return { pontos, porPontos, final: null, limitadoPeloInvestimento: false }
   const menor = ordemPadrao.indexOf(faixa) < ordemPadrao.indexOf(porPontos) ? faixa : porPontos
   return { pontos, porPontos, final: menor, limitadoPeloInvestimento: menor !== porPontos }
+}
+
+// "Faixa Prata (R$ 5.000,00 a R$ 9.000,00)"; sem valor definido pela Direção, "R$ …" (DP-0601).
+export function rotuloFaixaInvestimento(faixa: FaixaInvestimento, f: FaixasInvestimento = configPontuacaoPadrao.investimento): string {
+  const nome = { bronze: 'Faixa Bronze', prata: 'Faixa Prata', ouro: 'Faixa Ouro' }[faixa]
+  if (faixa === 'ouro') return `${nome} (a partir de ${formatarDinheiro(f.ouro.de)})`
+  const { de, ate } = f[faixa]
+  if (de !== null && ate !== null) return `${nome} (${formatarDinheiro(de)} a ${formatarDinheiro(ate)})`
+  if (ate !== null) return `${nome} (até ${formatarDinheiro(ate)})`
+  if (de !== null) return `${nome} (a partir de ${formatarDinheiro(de)})`
+  return `${nome} (R$ …)`
+}
+
+// ── Validação da configuração (o banco repete em salvar_config_pontuacao) ──
+
+const inteiro = (n: unknown): n is number => typeof n === 'number' && Number.isInteger(n)
+const valorOuNulo = (n: number | null) => n === null || (inteiro(n) && n >= 0)
+
+export function validarConfigPontuacao(c: ConfigPontuacao): string[] {
+  const erros: string[] = []
+
+  for (const id of idsCriterios) {
+    const crit = c.criterios.find((x) => x.id === id)
+    if (!crit) { erros.push(`Falta o critério "${id}".`); continue }
+    const nome = crit.rotulo.trim() || id
+    if (!crit.rotulo.trim()) erros.push(`Dê um nome ao critério "${id}".`)
+    if (crit.opcoes.length !== 3) { erros.push(`${nome}: são três opções por critério.`); continue }
+    crit.opcoes.forEach((o, i) => {
+      if (!o.rotulo.trim()) erros.push(`${nome}: descreva a opção ${i + 1}.`)
+      if (!inteiro(o.pontos) || o.pontos < 0 || o.pontos > limitePontosPorOpcao) erros.push(`${nome}: os pontos da opção ${i + 1} vão de 0 a ${limitePontosPorOpcao}.`)
+    })
+    if (crit.opcoes.every((o) => inteiro(o.pontos)) && (crit.opcoes[0].pontos > crit.opcoes[1].pontos || crit.opcoes[1].pontos > crit.opcoes[2].pontos)) {
+      erros.push(`${nome}: cada opção vale o mesmo ou mais pontos que a anterior.`)
+    }
+  }
+
+  const { minimo, bronze_ate, prata_ate } = c.cortes
+  if (![minimo, bronze_ate, prata_ate].every(inteiro)) {
+    erros.push('Os cortes de pontos precisam ser números inteiros.')
+  } else if (erros.length === 0) {
+    const maximo = pontuacaoMaxima(c.criterios)
+    if (minimo < 0) erros.push('A pontuação mínima não pode ser negativa.')
+    if (bronze_ate < minimo) erros.push('O fim da faixa Bronze não pode ser menor que a pontuação mínima.')
+    if (prata_ate <= bronze_ate) erros.push('O fim da faixa Prata precisa ser maior que o fim da Bronze.')
+    if (prata_ate >= maximo) erros.push(`O fim da faixa Prata precisa ser menor que a pontuação máxima (${maximo}) para sobrar pontos ao Ouro.`)
+  }
+
+  const { bronze, prata, ouro } = c.investimento
+  const todos = [bronze.de, bronze.ate, prata.de, prata.ate, ouro.de]
+  if (!todos.every(valorOuNulo)) {
+    erros.push('Os valores das faixas de investimento precisam ser positivos (ou ficar em branco).')
+  } else {
+    if (bronze.de !== null && bronze.ate !== null && bronze.de > bronze.ate) erros.push('Bronze: o valor inicial é maior que o final.')
+    if (prata.de !== null && prata.ate !== null && prata.de > prata.ate) erros.push('Prata: o valor inicial é maior que o final.')
+    const cresce: [number | null, number | null, string][] = [
+      [bronze.ate, prata.de, 'A faixa Prata precisa começar acima do fim da Bronze.'],
+      [prata.ate, ouro.de, 'A faixa Ouro precisa começar acima do fim da Prata.'],
+    ]
+    for (const [antes, depois, msg] of cresce) if (antes !== null && depois !== null && depois <= antes) erros.push(msg)
+  }
+  return erros
+}
+
+type LinhaParametro = { chave: string; valor: unknown }
+
+// Monta a configuração a partir das linhas de `parametros`. Parte ausente ou inválida cai no padrão de fábrica:
+// uma configuração quebrada nunca trava a Triagem 2.
+export function lerConfigPontuacao(linhas: LinhaParametro[]): ConfigPontuacao {
+  const valorDe = (chave: string) => linhas.find((l) => l.chave === chave)?.valor
+  const bruto = valorDe(chavesPontuacao.criterios)
+  const criterios = Array.isArray(bruto) ? (bruto as CriterioConfig[]) : configPontuacaoPadrao.criterios
+  const cortesBrutos = valorDe(chavesPontuacao.cortes) as Partial<CortesPadrao> | null | undefined
+  const cortes = cortesBrutos && typeof cortesBrutos === 'object'
+    ? { ...configPontuacaoPadrao.cortes, ...cortesBrutos }
+    : configPontuacaoPadrao.cortes
+  const investBruto = valorDe(chavesPontuacao.investimento) as Partial<FaixasInvestimento> | null | undefined
+  const investimento: FaixasInvestimento = {
+    bronze: { ...configPontuacaoPadrao.investimento.bronze, ...(investBruto?.bronze ?? {}) },
+    prata: { ...configPontuacaoPadrao.investimento.prata, ...(investBruto?.prata ?? {}) },
+    ouro: { ...configPontuacaoPadrao.investimento.ouro, ...(investBruto?.ouro ?? {}) },
+  }
+  const lida: ConfigPontuacao = { criterios, cortes, investimento }
+  if (validarConfigPontuacao(lida).length === 0) return lida
+  // Só os critérios e cortes derrubam o cálculo; valores de investimento inválidos viram "R$ …".
+  const semInvestimento = { criterios, cortes, investimento: configPontuacaoPadrao.investimento }
+  if (validarConfigPontuacao(semInvestimento).length === 0) return semInvestimento
+  return configPontuacaoPadrao
 }
 
 // ── Aderência ao membro ──────────────────────────────────────────

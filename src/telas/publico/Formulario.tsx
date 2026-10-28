@@ -4,6 +4,7 @@ import { enviarFicha, whatsappDoClub, type ArquivoFicha } from '../../dados/api'
 import { duracoes, faixasFaturamento, faixasFuncionarios, objetivos, opcoesBusca, quemDecideOpcoes, segmentos, temposAtuacao, ufs } from '../../dados/campos'
 import type { TipoAnexo } from '../../dados/tipos'
 import { CabecalhoPublico, IndicadorEtapas } from '../../componentes/Moldura'
+import { decideOutraPessoaSim } from '../../regras/decisor'
 import { fichaVazia, limiteArquivo, textosFormulario, tiposAceitos, titulosEtapas, validarEtapa, type Erros, type Ficha } from '../../regras/formulario'
 
 type CampoTexto = { [K in keyof Ficha]: Ficha[K] extends string ? K : never }[keyof Ficha]
@@ -124,7 +125,14 @@ export function Formulario() {
             {texto('contato_cargo', 'Cargo', true)}
             {texto('contato_whatsapp', 'WhatsApp', true, { tipo: 'tel', placeholder: '(31) 90000-0000' })}
             {texto('contato_email', 'E-mail', true, { tipo: 'email' })}
-            {lista('quem_decide', 'Quem decide a parceria na empresa', quemDecideOpcoes)}
+            {lista('quem_decide', 'Quem decide a parceria?', quemDecideOpcoes, true)}
+            {decideOutraPessoaSim(ficha) && (
+              <>
+                {texto('decisor_nome', 'Nome completo de quem decide', true)}
+                {texto('decisor_email', 'E-mail de quem decide', true, { tipo: 'email' })}
+                {texto('decisor_whatsapp', 'Telefone / WhatsApp de quem decide', true, { tipo: 'tel', placeholder: '(31) 90000-0000' })}
+              </>
+            )}
           </>
         )}
         {etapa === 3 && (

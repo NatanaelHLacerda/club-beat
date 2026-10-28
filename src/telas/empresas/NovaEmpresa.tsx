@@ -6,10 +6,12 @@ import { cadastrarEmpresa, conferirCnpj } from '../../dados/api'
 import { blocosFicha } from '../../dados/campos'
 import type { CamposEditaveis, Empresa } from '../../dados/tipos'
 import { origensDeIndicacao, textoConferencia, validarEntradaManual, type Conferencia } from '../../regras/entrada'
+import { camposDecisor, decideOutraPessoaSim, validarDecisor } from '../../regras/decisor'
 import { soDigitos } from '../../regras/formato'
 import { pode } from '../../lib/permissoes'
 import { useSessao } from '../../sessao'
 
+const ehDecisor = (c: string) => (camposDecisor as readonly string[]).includes(c)
 const obrigatorios: (keyof Empresa)[] = ['cnpj', 'marca', 'contato_nome', 'segmento', 'origem']
 
 export function NovaEmpresa() {
@@ -33,7 +35,7 @@ export function NovaEmpresa() {
 
   async function salvar() {
     setErro('')
-    const e = validarEntradaManual(dados as Record<string, string>)
+    const e: Record<string, string | undefined> = { ...validarEntradaManual(dados as Record<string, string>), ...validarDecisor(dados, false) }
     setErros(e)
     if (Object.values(e).some(Boolean) || conferencia?.situacao === 'ativa') return
     setSalvando(true)
@@ -47,7 +49,7 @@ export function NovaEmpresa() {
   return (
     <>
       <Topo eyebrow="Funil de parcerias" titulo="Nova empresa" />
-      <p className="muted">Mesma ficha do formulário do site. Obrigatórios: CNPJ, nome da marca, responsável, segmento e origem. O resto se completa na triagem.</p>
+      <p className="muted">Mesma ficha do formulário do site. Obrigatórios: CNPJ, nome da marca, responsável, segmento e origem. Se quem decide for outra pessoa, nome, e-mail e WhatsApp dela também. O resto se completa na triagem.</p>
       {conferencia && (
         <div className={`aviso ${conferencia.situacao === 'ativa' ? 'perigo' : 'alerta'}`} role="status">
           {textoConferencia(conferencia)} <Link to={`/empresas/${conferencia.id}`}>Abrir {conferencia.marca}</Link>
@@ -57,8 +59,8 @@ export function NovaEmpresa() {
         <section key={b.titulo} className="cartao">
           <h3>{b.titulo}</h3>
           <div className="grade-2">
-            {b.campos.filter((c) => c !== 'indicado_por' || indicacao).map((c) => (
-              <CampoEmpresa key={c} campo={c} valor={dados[c]} obrigatorio={obrigatorios.includes(c) || (c === 'indicado_por' && indicacao)}
+            {b.campos.filter((c) => (c !== 'indicado_por' || indicacao) && (!ehDecisor(c) || decideOutraPessoaSim(dados))).map((c) => (
+              <CampoEmpresa key={c} campo={c} valor={dados[c]} obrigatorio={obrigatorios.includes(c) || ehDecisor(c) || (c === 'indicado_por' && indicacao)}
                 erro={erros[c]} mudar={(v) => { setDados({ ...dados, [c]: v }); setErros({ ...erros, [c]: undefined }) }} />
             ))}
           </div>

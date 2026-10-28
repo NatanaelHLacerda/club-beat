@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { diasParaOFim, marcoDeRenovacao, pendenciasEncerramento, quemDecideRenovacao } from './renovacao'
+import { diasParaOFim, marcoDeRenovacao, motivoEncerramentoValido, pendenciasEncerramento, quemDecideRenovacao } from './renovacao'
 
 describe('renovação (REQ-013)', () => {
   it('contrato que termina em 30/11/2027 entra em renovação em 01/09/2027 (90 dias)', () => {
@@ -18,5 +18,10 @@ describe('renovação (REQ-013)', () => {
   })
   it('encerramento exige a lista completa', () => {
     expect(pendenciasEncerramento({ relatorio_final: true })).toHaveLength(3)
+  })
+  it('encerramento exige motivo digitado (REQ-044)', () => {
+    expect(motivoEncerramentoValido('')).toBe(false)
+    expect(motivoEncerramentoValido('   ')).toBe(false)
+    expect(motivoEncerramentoValido('Loja fechou as portas')).toBe(true)
   })
 })

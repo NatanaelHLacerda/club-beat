@@ -71,6 +71,9 @@ export type Empresa = {
   contato_whatsapp: string | null
   contato_email: string | null
   quem_decide: string | null
+  decisor_nome: string | null
+  decisor_email: string | null
+  decisor_whatsapp: string | null
   busca: string[]
   motivo_parceria: string | null
   objetivo: string | null
@@ -114,6 +117,14 @@ export type Empresa = {
   contrato: RegistroContrato
   exemplo: boolean
   criado_em: string
+}
+
+export type PastaJuridica = 'minutas' | 'diretrizes'
+export const rotuloPasta: Record<PastaJuridica, string> = { minutas: 'Minutas Contratuais', diretrizes: 'Regras de Classificação (Diretrizes)' }
+
+export type DocumentoJuridico = {
+  id: string; pasta: PastaJuridica; titulo: string; descricao: string | null; caminho: string
+  nome_arquivo: string; tamanho: number; enviado_por: string | null; criado_em: string
 }
 
 export type CamposEditaveis = Omit<Empresa,
@@ -160,7 +171,7 @@ export type FiltrosEmpresas = {
   origem?: Origem | ''
   busca?: string
   /* Empresas › Geral (sem recusadas) ou Empresas › Recusadas; sem valor, todas (Funil). */
-  recorte?: 'geral' | 'recusadas'
+  recorte?: 'geral' | 'recusadas' | 'funil' | 'historico'
 }
 
 // ── Mensagens (REQ-015) ───────────────────────────────────────────

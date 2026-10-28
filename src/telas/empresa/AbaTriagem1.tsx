@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { encerrarComA5, listarCategorias, listarModelos, moverEtapa, salvarTriagem1 } from '../../dados/api'
+import { pendenciaDecisor } from '../../regras/decisor'
 import { formatarData, hojeISO, soDigitos } from '../../regras/formato'
 import { preencherModelo } from '../../regras/mensagens'
 import {
@@ -28,6 +29,7 @@ export function AbaTriagem1({ empresa, atualizar, abrirAba }: PropsAba) {
   const inativa = bloqueioCnpj(receita as SituacaoReceita)
   const dias = diasDesdePedido(empresa.pedido_info_em, hojeISO())
   const pendencias = pendenciasTriagem1(marcas)
+  const faltaDecisor = pendenciaDecisor(empresa)
 
   function marcar(id: keyof MarcasTriagem1, v: boolean) {
     setMarcas({ ...marcas, [id]: v })
@@ -71,6 +73,11 @@ export function AbaTriagem1({ empresa, atualizar, abrirAba }: PropsAba) {
             )
           })}
           {pendencias.length > 0 && <p className="muted pequeno">Faltam {pendencias.length} de {itensTriagem1.length}.</p>}
+          {faltaDecisor && (
+            <div className="aviso alerta" role="alert">
+              {faltaDecisor} <button className="botao leve" onClick={() => abrirAba('resumo')}>Abrir o Resumo</button>
+            </div>
+          )}
         </section>
         <div className="pilha">
           <section className="cartao">
