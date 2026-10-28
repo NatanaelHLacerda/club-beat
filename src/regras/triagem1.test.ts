@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { alertaCategoria, bloqueioCnpj, pendenciasTriagem1, semRetorno, textosTriagem1 } from './triagem1'
+import { alertaCategoria, bloqueioCategoriaSemReceita, bloqueioCnpj, pendenciasTriagem1, semRetorno, textosTriagem1 } from './triagem1'
 
 describe('primeira triagem (REQ-005)', () => {
   it('lista completa não tem pendências', () => {
@@ -15,6 +15,12 @@ describe('primeira triagem (REQ-005)', () => {
   it('CNPJ baixado na Receita é empresa inativa', () => {
     expect(bloqueioCnpj('baixada')).toBe(textosTriagem1.inativa)
     expect(bloqueioCnpj('ativa')).toBeNull()
+  })
+  it('categoria só libera depois da situação na Receita registrada', () => {
+    expect(bloqueioCategoriaSemReceita('')).toBe(textosTriagem1.consulteReceitaAntes)
+    expect(bloqueioCategoriaSemReceita(null)).toBe(textosTriagem1.consulteReceitaAntes)
+    expect(bloqueioCategoriaSemReceita('baixada')).toBeNull()
+    expect(bloqueioCategoriaSemReceita('ativa')).toBeNull()
   })
   it('pedido em 01/11 sem resposta aparece em 08/11', () => {
     expect(semRetorno('2026-11-01', '2026-11-07')).toBe(false)

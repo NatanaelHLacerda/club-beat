@@ -21,6 +21,7 @@ export const textosTriagem1 = {
   naoAceita: 'Categoria não aceita',
   sensivel: 'Precisa de Jurídico e Direção',
   inativa: 'Empresa inativa',
+  consulteReceitaAntes: 'Consulte o CNPJ na Receita Federal antes de escolher a categoria.',
 } as const
 
 export const diasSemRetorno = 7
@@ -37,6 +38,11 @@ export function alertaCategoria(situacao: SituacaoCategoria | null | undefined):
 
 export function bloqueioCnpj(situacao: SituacaoReceita | null | undefined): string | null {
   return situacao && situacao !== 'ativa' ? textosTriagem1.inativa : null
+}
+
+// A categoria só se escolhe depois de a situação na Receita estar registrada (consulta do CNPJ feita antes).
+export function bloqueioCategoriaSemReceita(situacaoReceita: SituacaoReceita | '' | null | undefined): string | null {
+  return situacaoReceita ? null : textosTriagem1.consulteReceitaAntes
 }
 
 // Dias corridos desde o pedido de informação; null quando não houve pedido.

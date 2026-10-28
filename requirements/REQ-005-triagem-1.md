@@ -26,7 +26,8 @@ Isabela.
 4. Categoria não aceita encerra como Recusada com a mensagem A5.
 5. Faltou informação: pedido pela mensagem "Pedido de informação" (REQ-015) e prazo de 7 dias. Sem retorno em 7 dias, vai para Em espera.
 6. Ao entrar em Triagem 1, a situação na Receita (ativa ou não) e o porte declarado ficam registrados na ficha.
-7. Prazo da etapa: 1 dia útil.
+7. A consulta do CNPJ na Receita vem antes: o campo Categoria só libera depois de a situação na Receita ser registrada (card "Receita Federal" aparece primeiro na ficha, antes do card "Categoria").
+8. Prazo da etapa: 1 dia útil.
 
 ## Escopo
 
@@ -45,6 +46,7 @@ Isabela.
 3. Dado o segmento "Serviços financeiros", então a ficha mostra "Precisa de Jurídico e Direção" e o card pode seguir.
 4. Dado um pedido de informação feito em 01/11, quando chega 08/11 sem resposta, então o card aparece destacado para mover a Em espera.
 5. Dado a Receita indicando CNPJ "baixado", então a ficha mostra "Empresa inativa" e o item CNPJ não pode ser marcado.
+6. Dado a situação na Receita ainda não registrada, então o campo Categoria aparece bloqueado com o aviso "Consulte o CNPJ na Receita Federal antes de escolher a categoria."; ao registrar a situação, o campo libera.
 
 ## Restrições
 
@@ -60,3 +62,4 @@ REQ-004, REQ-015 (mensagens).
 |---|---|---|
 | `DP-0501` | Qual serviço de consulta de CNPJ usar? | Equipe de tecnologia confirma; até lá, conferência manual com link |
 | `DP-0502` | Lista de categorias editável pela tela? | Sim, pela Direção |
+| `DP-0503` | Ordem entre Receita e Categoria na ficha? | **Decidido (2026-10-28, pedido de Fernanda):** Receita Federal vem antes; Categoria só libera com a situação na Receita registrada. |

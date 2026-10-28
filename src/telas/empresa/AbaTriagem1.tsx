@@ -4,8 +4,8 @@ import { pendenciaDecisor } from '../../regras/decisor'
 import { formatarData, hojeISO, soDigitos } from '../../regras/formato'
 import { preencherModelo } from '../../regras/mensagens'
 import {
-  alertaCategoria, bloqueioCnpj, diasDesdePedido, diasSemRetorno, itensTriagem1, pendenciasTriagem1, rotuloSituacaoReceita,
-  textosTriagem1, type MarcasTriagem1, type SituacaoReceita,
+  alertaCategoria, bloqueioCategoriaSemReceita, bloqueioCnpj, diasDesdePedido, diasSemRetorno, itensTriagem1, pendenciasTriagem1,
+  rotuloSituacaoReceita, textosTriagem1, type MarcasTriagem1, type SituacaoReceita,
 } from '../../regras/triagem1'
 import { pode } from '../../lib/permissoes'
 import { useConsulta } from '../../lib/useConsulta'
@@ -27,6 +27,7 @@ export function AbaTriagem1({ empresa, atualizar, abrirAba }: PropsAba) {
   const situacaoCategoria = categorias.dado?.find((c) => c.nome === categoria)?.situacao
   const alerta = alertaCategoria(situacaoCategoria)
   const inativa = bloqueioCnpj(receita as SituacaoReceita)
+  const bloqueioCategoria = bloqueioCategoriaSemReceita(receita as SituacaoReceita | '')
   const dias = diasDesdePedido(empresa.pedido_info_em, hojeISO())
   const pendencias = pendenciasTriagem1(marcas)
   const faltaDecisor = pendenciaDecisor(empresa)
@@ -81,19 +82,6 @@ export function AbaTriagem1({ empresa, atualizar, abrirAba }: PropsAba) {
         </section>
         <div className="pilha">
           <section className="cartao">
-            <h3>Categoria</h3>
-            <label className="campo"><span>Categoria da empresa</span>
-              <select id="t1-categoria" disabled={!editavel} value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-                <option value="">Escolha a categoria</option>
-                {(categorias.dado ?? []).map((c) => <option key={c.nome} value={c.nome}>{c.nome}</option>)}
-              </select>
-            </label>
-            {alerta && <div className={`aviso ${situacaoCategoria === 'nao_aceita' ? 'perigo' : 'alerta'}`} role="status">{alerta}</div>}
-            {situacaoCategoria === 'nao_aceita' && editavel && (
-              <button className="botao perigo" onClick={() => void encerrar()}>Encerrar com A5</button>
-            )}
-          </section>
-          <section className="cartao">
             <h3>Receita Federal</h3>
             <p className="muted pequeno">Confira na <a href={`https://solucoes.receita.fazenda.gov.br/servicos/cnpjreva/cnpjreva_solicitacao.asp?cnpj=${soDigitos(empresa.cnpj)}`} target="_blank" rel="noreferrer">consulta pública do CNPJ</a> e registre aqui.</p>
             <div className="grade-2">
@@ -113,6 +101,20 @@ export function AbaTriagem1({ empresa, atualizar, abrirAba }: PropsAba) {
               </label>
             </div>
             {inativa && <div className="aviso perigo">{inativa}</div>}
+          </section>
+          <section className="cartao">
+            <h3>Categoria</h3>
+            <label className="campo"><span>Categoria da empresa</span>
+              <select id="t1-categoria" disabled={!editavel || Boolean(bloqueioCategoria)} value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+                <option value="">Escolha a categoria</option>
+                {(categorias.dado ?? []).map((c) => <option key={c.nome} value={c.nome}>{c.nome}</option>)}
+              </select>
+            </label>
+            {bloqueioCategoria && editavel && <div className="aviso alerta" role="status">{bloqueioCategoria}</div>}
+            {alerta && <div className={`aviso ${situacaoCategoria === 'nao_aceita' ? 'perigo' : 'alerta'}`} role="status">{alerta}</div>}
+            {situacaoCategoria === 'nao_aceita' && editavel && (
+              <button className="botao perigo" onClick={() => void encerrar()}>Encerrar com A5</button>
+            )}
           </section>
           <section className="cartao">
             <h3>Pedido de informação</h3>
